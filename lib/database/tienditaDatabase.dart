@@ -30,7 +30,7 @@ class Products extends Table{
   //Columns
   TextColumn get productName => text().withLength(min: 1, max: 100)();//nombre producto
   TextColumn get presentationProduct => text().withLength(min: 1, max: 100)();//presentacion producto
-  IntColumn get unitis => integer()();//unidades disponibles
+  IntColumn get units => integer()();//unidades disponibles
   TextColumn get localCoin => text().withLength(min: 1, max: 45)();//moneda
   RealColumn get price_shop => real()();//precio de compra
   RealColumn get price_sale => real()();//precio de venta
@@ -80,7 +80,7 @@ class Shopping extends Table{
 }
 
 class ShoppingDetails extends Table{
-  IntColumn get id_shopping_detils => integer().autoIncrement()();
+  IntColumn get id_shopping_details => integer().autoIncrement()();
   TextColumn get num_shop => text().withLength(min: 1,max: 100)();
   TextColumn get rfc_purveyor => text().withLength(min: 1, max: 100)();
   TextColumn get product => text().withLength(min: 1, max: 100)();
@@ -107,6 +107,17 @@ class Expensives extends Table{
   IntColumn get id_category => integer().references(Categories, #id_category, onDelete: KeyAction.cascade)();
 }
 
+class Company extends Table{
+  IntColumn get id_company => integer().autoIncrement()();
+  TextColumn get name_company => text().withLength(min: 1, max: 40)();
+  TextColumn get logo_company => text().withLength(min: 1, max: 255)();
+  TextColumn get address_company => text().withLength(min: 1, max: 50)();
+  TextColumn get phone_number_company => text().withLength(min: 1, max: 12)();
+  TextColumn get rfc_company => text().withLength(min: 1, max: 15)();
+  TextColumn get email_company => text().withLength(min: 1,max:50)();
+
+}
+
 
 @DriftDatabase(tables: [
     Categories,
@@ -115,7 +126,8 @@ class Expensives extends Table{
     Sales,
     SalesDetails,
     Shopping,
-    ShoppingDetails
+    ShoppingDetails,
+    Company
 ])
 
 class TienditaDatabase extends _$TienditaDatabase {
@@ -123,10 +135,6 @@ class TienditaDatabase extends _$TienditaDatabase {
 
   @override
   int get schemaVersion => 1;
-
-//CRUD Queries
-
-//Get all actives products (Real time)
 
 }
   LazyDatabase _openConnection(){
