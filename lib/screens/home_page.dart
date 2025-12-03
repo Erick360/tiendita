@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiendita/screens/company/company_edit_screen.dart';
 import 'package:tiendita/screens/products.dart';
 import 'sales_screen.dart';
 import 'package:tiendita/screens/my_sales_details.dart';
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen>{
         Navigator.pushNamed(context, ShoppingScreen.id);
         break;
       case 3:
-        Navigator.pushNamed(context, MyBusiness.id);
+        Navigator.pushNamed(context, CompanyEditScreen.id);
         break;
       case 4:
         Navigator.pushNamed(context, MySalesDetails.id);

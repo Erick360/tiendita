@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/model/company_model.dart';
 import 'package:tiendita/screens/home_page.dart';
-
 import '../providers/company_provider.dart';
+import 'package:tiendita/widgets/image_picker.dart';
 
 class CompanySetupScreen extends ConsumerStatefulWidget{
   const CompanySetupScreen({super.key});
+  static String id = "company_setup_screen";
 
   @override
   ConsumerState<CompanySetupScreen> createState() => _CompanySetupState();
@@ -23,6 +24,7 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
   final TextEditingController _emailCompanyController = TextEditingController();
   final TextEditingController _rfcCompanyController = TextEditingController();
 
+  String? _logoCompany;
   bool _isLoading = false;
 
   @override
@@ -45,18 +47,20 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
           nameCompany: _nameCompanyController.text.trim(),
           addressCompany: _addressCompanyController.text.trim(),
           phoneNumberCompany: _phoneCompanyController.text.trim(),
-          emailCompany: _emailCompanyController.text.trim()
+          emailCompany: _emailCompanyController.text.trim(),
+          rfcCompany: _rfcCompanyController.text.trim(),
+          logoCompany: _logoCompany
       );
 
       await ref.read(companyNotifierProvider.notifier).saveCompany(company);
       if(mounted){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+        Navigator.pushReplacementNamed(context, HomeScreen.id);
       }
 
     }catch(e){
       if(mounted){
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()),backgroundColor: Colors.red,)
+          SnackBar(content: Text("Error al guardar los datos: $e"),backgroundColor: Colors.red,)
         );
       }
     } finally{
@@ -71,14 +75,26 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
   @override 
   Widget build(BuildContext context){
     return Scaffold(
+      //backgroundColor: Color(0xFFF5F5DC),
       body: SafeArea(
           child: Form(
             key: _formKey,
             child: ListView(
               padding: const EdgeInsets.all(24.0),
               children: [
-                const SizedBox(height: 40),
-                Image(image: AssetImage("images/tiendita_icon.png")),
+                //const SizedBox(height: 40),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.only(top: 10, bottom: 20),
+                  child: SizedBox(
+                   height: 160,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: Image.asset(
+                        "images/tiendita_banner.png",
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16),
                 const Text(
                     'Bienvenido',
@@ -90,16 +106,35 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
                   ),
                 ),
                 const SizedBox(height: 8),
+                //Name field
                 const Text(
                     'Comienza a configurar tu negocio para poder iniciar',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Monserrat',
                     fontSize: 16,
-                    color: Colors.grey
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black
                   ),
                 ),
                 const SizedBox(height: 40),
+                TextFormField(
+                  controller: _nameCompanyController,
+                  decoration: const InputDecoration(
+                      labelText: 'Nombre del negocio *',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.business)
+                  ),
+                  maxLength: 40,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value){
+                      if(value==null || value.trim().isEmpty){
+                        return 'Este campo necesita rellenarse';
+                      }
+                      return null;
+                    },
+                ),
+                const SizedBox(height: 10),
                 //Phone Number field
                 TextFormField(
                   controller: _phoneCompanyController,
@@ -152,7 +187,7 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
-                  controller: _nameCompanyController,
+                  controller: _rfcCompanyController,
                   decoration: const InputDecoration(
                     labelText: 'RFC (opcional)',
                     prefixIcon: Icon(Icons.badge_outlined),
@@ -161,6 +196,13 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
                 ),
                   textCapitalization: TextCapitalization.characters,
                   maxLength: 15,
+                ),
+                ImagePicker(
+                  initialImage: _logoCompany,
+                  onImageSelected: (path) {
+                    setState(()=> _logoCompany = path);
+                  },
+                  label: 'Logo del negocio',
                 ),
                 const SizedBox(height: 20),
                 SizedBox(

@@ -28,6 +28,7 @@ dependencies:
   local_auth: ^3.0.0
   font_awesome_flutter: ^10.12.0
   flutter_riverpod: ^2.6.1
+  image_picker: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -70,12 +71,14 @@ flutter:
   # example:
   assets:
     - images/tiendita_icon.png
+    - images/tiendita_banner.png
 
 
   fonts:
     - family: Poppins
       fonts:
         - asset: fonts/Poppins-Medium.ttf
+
 
     - family: Monserrat
       fonts:

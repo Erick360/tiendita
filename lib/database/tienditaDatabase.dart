@@ -6,7 +6,11 @@ import 'package:path/path.dart' as p;
 
 part 'tienditaDatabase.g.dart';
 
-enum ProductStatus {pending, active, inactive}
+enum ProductStatus {
+  active, // 0
+  inactive, // 1
+  pending // val = 2
+}
 
 
 class Categories extends Table{
@@ -36,7 +40,7 @@ class Products extends Table{
   RealColumn get price_sale => real()();//precio de venta
   IntColumn get stock => integer()();
   // it shows if a product is available ("Pending,active,inactive")
-  TextColumn get status => textEnum<ProductStatus>().withDefault(Constant(ProductStatus.pending as String?))();
+  IntColumn get status => intEnum<ProductStatus>().withDefault(const Constant(2))();
   TextColumn get productImage => text().withLength(min: 1, max: 255)();//storage an image
   DateTimeColumn get product_expires_at => dateTime().nullable()();
 

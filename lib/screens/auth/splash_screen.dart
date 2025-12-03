@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tiendita/providers/company_provider.dart';
-import 'package:tiendita/repositories/company_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/screens/home_page.dart';
 import 'package:tiendita/screens/company_setup_screen.dart';
 
 class SplashScreen extends ConsumerStatefulWidget{
   const SplashScreen({super.key});
-
+  static String id = "splash_screen";
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
@@ -29,14 +28,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>{
     final companyExists = await repository.companyExists();
 
     if(companyExists){
-      Navigator.pushReplacement(context,
-      MaterialPageRoute(builder: (_)=>
-      HomeScreen()
-      ));
+      Navigator.pushReplacementNamed(context, HomeScreen.id);
     }else{
-      Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (_) => const CompanySetupScreen())
-      );
+      Navigator.pushReplacementNamed(context, CompanySetupScreen.id);
     }
   }
 
@@ -45,14 +39,28 @@ class _SplashScreenState extends ConsumerState<SplashScreen>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        body: Stack(
             children: [
-              Image(image: AssetImage("images/tiendita_icon.png")),
-              const CircularProgressIndicator()
+              SizedBox.expand(
+                child: Image(
+                  image: AssetImage("images/tiendita_icon.png"),
+                  fit: BoxFit.fill,
+                  //height: double.infinity,
+                  //width: double.infinity,
+                  alignment: Alignment.center,
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 4,
+                    ),
+                ),
+              )
             ],
-          )
         ),
     );
   }
