@@ -8,12 +8,14 @@ final companyRepositoryProvider = Provider<CompanyRepository>((ref){
     return CompanyRepository(database);
 });
 
-final companyStreamProvider = Provider<Stream<CompanyModel?>>((ref){
+// to show data fast
+final companyStreamProvider = StreamProvider<CompanyModel?>((ref){
   final repository = ref.watch(companyRepositoryProvider);
   return repository.watchCompany();
 });
 
-//state notifier
+
+//state notifier (to update)
 final companyNotifierProvider = StateNotifierProvider<CompanyNotifier, AsyncValue<CompanyModel?>>((ref){
   final repository = ref.watch(companyRepositoryProvider);
   return CompanyNotifier(repository);

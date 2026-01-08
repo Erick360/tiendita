@@ -3,29 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/providers/company_provider.dart';
 import 'package:tiendita/screens/company/company_edit_screen.dart';
+import 'package:tiendita/widgets/company_data.dart';
+import 'package:tiendita/model/company_model.dart';
 
 class SettingsScreen extends ConsumerWidget{
   const SettingsScreen({super.key});
   static String id = 'settings_screen';
 
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final companyState = ref.watch(companyNotifierProvider);
+    final company =  ref.read(companyRepositoryProvider).getCompany();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configuracion'),
       ),
       body: ListView(
         children: [
-          companyState.when(
-              data: (company) {
-                if(company== null)return const SizedBox();
-                return Column(
+                Column(
                   children: [
                     ListTile(
-                        leading: Icon(Icons.business),
-                      title: Text('Mi Negocio'),
-                      subtitle: Text(company.nameCompany),
+                      leading: Icon(Icons.business),
+                      title: CompanyData(),
+                      subtitle: Text('Sobre mi negocio',style: TextStyle(
+                        color: Colors.black
+                      ),),
                       trailing:   Icon(Icons.chevron_right),
                       onTap: (){
                           Navigator.pushNamed(context, CompanyEditScreen.id);
@@ -33,17 +36,7 @@ class SettingsScreen extends ConsumerWidget{
                     ),
                     const Divider()
                   ],
-                );
-              },
-              error: (e, _) => ListTile(
-                leading: Icon(Icons.error, color: Colors.red),
-                title: Text('Error: $e'),
-              ),
-              loading: () => const ListTile(
-                leading: CircularProgressIndicator(),
-                title: Text('Cargando...'),
-              ),
-          ),
+                ),
           // Security settings
           ListTile(
             leading: const Icon(Icons.security),

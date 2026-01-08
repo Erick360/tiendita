@@ -39,6 +39,40 @@ class _SplashScreenState extends ConsumerState<SplashScreen>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      backgroundColor: Color(0xFFF36618),
+      body: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ClipOval(
+                  child: SizedBox.fromSize(
+                    child: Image.asset(
+                      "images/tiendita_icon.png",
+                      //alignment: Alignment.center,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 4
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+      ),
+    );
+
+      /*
+      Scaffold(
         body: Stack(
             children: [
               SizedBox.expand(
@@ -63,5 +97,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>{
             ],
         ),
     );
+
+       */
   }
 }

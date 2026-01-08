@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:tiendita/providers/image_provider.dart' as img_provider;
 import 'package:flutter/cupertino.dart';
@@ -58,6 +57,7 @@ Future<void> _showImageSourceDialog() async{
               },
             ),
            const SizedBox(height: 10),
+           /*
            ListTile(
               leading: Icon(Icons.photo_library),
               title: const Text("Galeria"),
@@ -66,6 +66,7 @@ Future<void> _showImageSourceDialog() async{
                 _pickImage(fromCamera: false);
               },
             ),
+            */
             if(_imagePath != null )
               ListTile(
                 leading: Icon(Icons.delete, color: Colors.red),

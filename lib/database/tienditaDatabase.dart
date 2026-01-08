@@ -134,12 +134,21 @@ class Company extends Table{
     Company
 ])
 
+
 class TienditaDatabase extends _$TienditaDatabase {
   TienditaDatabase() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
 
+  //Queries
+  Selectable<String> getCompanyName(){
+    final query = selectOnly(company)..addColumns([company.name_company]);
+
+    return query.map((row){
+      return row.read(company.name_company)!;
+    });
+  }
 }
   LazyDatabase _openConnection(){
     return LazyDatabase(() async {

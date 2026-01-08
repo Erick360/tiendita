@@ -6,9 +6,9 @@ import 'sales_screen.dart';
 import 'package:tiendita/screens/my_sales_details.dart';
 import 'my_shopping_details.dart';
 import 'shopping_screen.dart';
-import 'my_business.dart';
 import 'package:tiendita/widgets/footer.dart';
 import 'package:tiendita/screens/my_purveyors.dart';
+import 'package:tiendita/widgets/company_data.dart';
 
 class HomeScreen extends StatefulWidget{
   const  HomeScreen ({super.key});
@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget{
 class _HomeScreenState extends State<HomeScreen>{
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
-  
+
   void _onItemTapped(int index){
 
     Navigator.pop(context);
@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen>{
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            const DrawerHeader(decoration: BoxDecoration(
+            DrawerHeader(decoration: BoxDecoration(
                 color: Colors.blue
             ),
               child: Column(
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen>{
                     child: Icon(Icons.person, size: 40, color: Colors.blue),
                   ),
                   SizedBox(height: 10),
-                  Text('Company Name', style: TextStyle(color: Colors.blue)),
+                  CompanyData(),
                 ],
               ),
             ),
