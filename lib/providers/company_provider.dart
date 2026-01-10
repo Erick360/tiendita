@@ -14,6 +14,11 @@ final companyStreamProvider = StreamProvider<CompanyModel?>((ref){
   return repository.watchCompany();
 });
 
+//
+final companyLogoStreamProvider = StreamProvider<String?>((ref){
+  final repository = ref.watch(companyRepositoryProvider);
+  return repository.watchCompany().map((company) => company?.logoCompany);
+});
 
 //state notifier (to update)
 final companyNotifierProvider = StateNotifierProvider<CompanyNotifier, AsyncValue<CompanyModel?>>((ref){

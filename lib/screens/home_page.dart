@@ -9,6 +9,7 @@ import 'shopping_screen.dart';
 import 'package:tiendita/widgets/footer.dart';
 import 'package:tiendita/screens/my_purveyors.dart';
 import 'package:tiendita/widgets/company_data.dart';
+import 'package:tiendita/widgets/company_icon.dart';
 
 class HomeScreen extends StatefulWidget{
   const  HomeScreen ({super.key});
@@ -85,11 +86,7 @@ class _HomeScreenState extends State<HomeScreen>{
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.person, size: 40, color: Colors.blue),
-                  ),
+                  CompanyAvatar(),
                   SizedBox(height: 10),
                   CompanyData(),
                 ],

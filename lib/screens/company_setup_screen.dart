@@ -22,7 +22,7 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
   final TextEditingController _addressCompanyController = TextEditingController();
   final TextEditingController _phoneCompanyController = TextEditingController();
   final TextEditingController _emailCompanyController = TextEditingController();
-  final TextEditingController _rfcCompanyController = TextEditingController();
+  late final TextEditingController _rfcCompanyController = TextEditingController();
 
   String? _logoCompany;
   bool _isLoading = false;
@@ -43,12 +43,16 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
     });
 
     try{
+        final rfc = _rfcCompanyController.text.trim().isEmpty
+            ? "XAXX010101000"
+            : _rfcCompanyController.text.trim();
+
       final company = CompanyModel(
           nameCompany: _nameCompanyController.text.trim(),
           addressCompany: _addressCompanyController.text.trim(),
           phoneNumberCompany: _phoneCompanyController.text.trim(),
           emailCompany: _emailCompanyController.text.trim(),
-          rfcCompany: _rfcCompanyController.text.trim(),
+          rfcCompany: rfc,
           logoCompany: _logoCompany
       );
 
@@ -192,11 +196,12 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
                     labelText: 'RFC (opcional)',
                     prefixIcon: Icon(Icons.badge_outlined),
                     border: OutlineInputBorder(),
-                    helperText: 'Solo si tu negocio cuenta con este'
+                    helperText: 'Solo si tu negocio cuenta con este',
                 ),
                   textCapitalization: TextCapitalization.characters,
-                  maxLength: 15,
+                  maxLength: 13,
                 ),
+                SizedBox(height: 20),
                 ImagePicker(
                   initialImage: _logoCompany,
                   onImageSelected: (path) {

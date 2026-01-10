@@ -152,7 +152,7 @@ Future<void> _showImageSourceDialog() async{
         ),
         const SizedBox(height: 8),
         Text(
-          'Toca para agregar imagen',
+          'Toca para agregar una imagen',
           style: TextStyle(
             color: Colors.grey[600],
             fontSize: 14,

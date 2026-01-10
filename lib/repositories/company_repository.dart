@@ -30,7 +30,7 @@ class CompanyRepository{
         .map((data) => data != null ? CompanyModel.fromRow(data) : null);
   }
 
-  //Update
+  //Update_
   Future<bool> updateCompany(CompanyModel company) async{
     if(company.idCompany == null)return false;
     return await database.update(database.company).replace(company.toCompanion() as CompanyData);

@@ -220,7 +220,7 @@ class _CompanyEditScreenState extends ConsumerState<CompanyEditScreen>{
                           prefixIcon: Icon(Icons.business)
                       ),
                       textCapitalization: TextCapitalization.characters,
-                      maxLength: 15,
+                      maxLength: 13,
                       validator: (value){
                         if(value==null || value.trim().isEmpty){
                           return 'Este campo necesita rellenarse';
