@@ -89,16 +89,26 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
                 //const SizedBox(height: 40),
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.only(top: 10, bottom: 20),
-                  child: SizedBox(
-                   height: 160,
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: Image.asset(
-                        "images/tiendita_banner.png",
-                      fit: BoxFit.contain,
-                    ),
+                  padding: EdgeInsets.only(top: 5, bottom: 5,left: 10, right: 10),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF36618),
+                    borderRadius: BorderRadius.only(
+                     bottomLeft: Radius.circular(25),
+                     bottomRight: Radius.circular(25)
+                    )
+                  ),
+                  child: Image.asset(
+                    "images/tiendita_banner.png",
+                    height: 130,
                   ),
                 ),
+
+                Padding(
+                    padding: const EdgeInsets.all(20.0),
+
+                ),
+
+
                 const SizedBox(height: 16),
                 const Text(
                     'Bienvenido',

@@ -25,7 +25,10 @@ class SettingsScreen extends ConsumerWidget{
                   children: [
                     ListTile(
                       leading: Icon(Icons.business),
-                      title: CompanyData(),
+                      title: CompanyData(
+                          Colors.black,
+                          15
+                      ),
                       subtitle: Text('Sobre mi negocio',style: TextStyle(
                         color: Colors.black
                       ),),

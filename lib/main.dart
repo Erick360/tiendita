@@ -11,6 +11,7 @@ import 'screens/settings/settings_screen.dart';
 import 'screens/company/company_edit_screen.dart';
 import 'screens/company_setup_screen.dart';
 import 'screens/products.dart';
+import 'screens/category_screen.dart';
 
 void main() {
   runApp(const ProviderScope(
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
         MyPurveyors.id: (context) => const MyPurveyors(),
         CompanyEditScreen.id: (context) => const CompanyEditScreen(),
         SettingsScreen.id: (context) => const SettingsScreen(),
-        CompanySetupScreen.id: (context) => const CompanySetupScreen()
+        CompanySetupScreen.id: (context) => const CompanySetupScreen(),
+        CategoryScreen.id: (context) => const CategoryScreen(),
       },
     );
   }

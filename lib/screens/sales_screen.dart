@@ -13,8 +13,31 @@ class _SalesScreenState extends State<SalesScreen>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('This is sales screen'),
+      appBar:  AppBar(
+        backgroundColor: const Color(0xFFF25410),
+        elevation: 0,
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.point_of_sale_sharp,
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              'Ventas',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

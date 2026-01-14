@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/screens/company/company_edit_screen.dart';
 import 'package:tiendita/screens/products.dart';
+import 'category_screen.dart';
 import 'sales_screen.dart';
 import 'package:tiendita/screens/my_sales_details.dart';
 import 'my_shopping_details.dart';
@@ -10,31 +11,31 @@ import 'package:tiendita/widgets/footer.dart';
 import 'package:tiendita/screens/my_purveyors.dart';
 import 'package:tiendita/widgets/company_data.dart';
 import 'package:tiendita/widgets/company_icon.dart';
+import 'package:tiendita/widgets/company_data.dart';
 
-class HomeScreen extends StatefulWidget{
-  const  HomeScreen ({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
   static String id = "home_screen";
 
   @override
-  State<HomeScreen> createState() =>  _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>{
+class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
 
-  void _onItemTapped(int index){
-
+  void _onItemTapped(int index) {
     Navigator.pop(context);
 
-    switch(index){
+    switch (index) {
       case 0:
         Navigator.pushNamed(context, HomeScreen.id);
-      break;
+        break;
       case 1:
         Navigator.pushNamed(context, SalesScreen.id);
         break;
-      case 2 :
+      case 2:
         Navigator.pushNamed(context, ShoppingScreen.id);
         break;
       case 3:
@@ -51,44 +52,44 @@ class _HomeScreenState extends State<HomeScreen>{
         break;
       case 7:
         Navigator.pushNamed(context, MyPurveyors.id);
+        break;
+      case 8:
+        Navigator.pushNamed(context, CategoryScreen.id);
+        break;
     }
-
 
     setState(() {
       _selectedIndex = index;
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Menu'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        elevation: 0,
+        title: CompanyData(Colors.white, 22,),
+        backgroundColor: Color(0xFFF25410),
+        centerTitle: true,
         leading: IconButton(
-            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-            icon: Icon(Icons.menu)
+          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+          icon: Icon(Icons.menu),
         ),
-
       ),
-      body: Center(
-        child: Text('Dashboard'),
-      ),
+      body: Center(child: Text('Dashboard')),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(decoration: BoxDecoration(
-                color: Colors.blue
-            ),
+            DrawerHeader(
+              decoration: BoxDecoration(color: Color(0xFFF25410)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CompanyAvatar(),
                   SizedBox(height: 10),
-                  CompanyData(),
+                  CompanyData(Colors.white, 20),
                 ],
               ),
             ),
@@ -110,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen>{
               leading: const Icon(Icons.shopping_cart),
               title: const Text('Compras'),
               selected: _selectedIndex == 2,
-              onTap: () =>  _onItemTapped(2),
+              onTap: () => _onItemTapped(2),
             ),
             // Business Section
             ListTile(
@@ -121,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen>{
             ),
             // Sales Details
             ListTile(
-              leading: const Icon(Icons.list_sharp),
+              leading: const Icon(Icons.auto_graph),
               title: const Text('Reporte de Ventas'),
               selected: _selectedIndex == 4,
               onTap: () => _onItemTapped(4),
@@ -145,12 +146,17 @@ class _HomeScreenState extends State<HomeScreen>{
               title: const Text('Mis Proveedores'),
               selected: _selectedIndex == 7,
               onTap: () => _onItemTapped(7),
-            )
+            ),
+            ListTile(
+              leading: const Icon(FontAwesomeIcons.listCheck),
+              title: const Text('Categorias'),
+              selected: _selectedIndex == 8,
+              onTap: () => _onItemTapped(8),
+            ),
           ],
         ),
       ),
-     bottomNavigationBar: Footer(),
+      bottomNavigationBar: Footer(),
     );
   }
 }
-

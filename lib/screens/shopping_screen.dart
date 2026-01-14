@@ -12,7 +12,30 @@ class _ShoppingScreenState extends State<ShoppingScreen>{
   Widget build(BuildContext context){
     return Scaffold(
       appBar:  AppBar(
-        title: Text('This is shopping screen'),
+        backgroundColor: const Color(0xFFF25410),
+        elevation: 0,
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              'Compras',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

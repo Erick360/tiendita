@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class MySalesDetails extends StatefulWidget{
-  const MySalesDetails({super.key});
+class CategoryScreen extends StatefulWidget{
+  const CategoryScreen({super.key});
+  static String id = "category";
 
-  static String id = "my_sales_details";
   @override
-  State<MySalesDetails> createState() => _MySalesDetailsState();
+  State<CategoryScreen> createState() => _CategoryScreenState();
 }
 
-class _MySalesDetailsState extends State<MySalesDetails>{
+class _CategoryScreenState extends State<CategoryScreen>{
+
   @override
-  Widget build(BuildContext context){
+  Widget build (BuildContext context){
     return Scaffold(
       appBar:  AppBar(
         backgroundColor: const Color(0xFFF25410),
@@ -21,13 +23,13 @@ class _MySalesDetailsState extends State<MySalesDetails>{
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.auto_graph,
+              FontAwesomeIcons.listCheck,
               color: Colors.white,
               size: 20,
             ),
             const SizedBox(width: 5),
             Text(
-              'Reporte de ventas',
+              'Categoria',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 22,
