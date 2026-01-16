@@ -10,7 +10,7 @@ import 'shopping_screen.dart';
 import 'package:tiendita/widgets/footer.dart';
 import 'package:tiendita/screens/my_purveyors.dart';
 import 'package:tiendita/widgets/company_data.dart';
-import 'package:tiendita/widgets/company_icon.dart';
+import 'package:tiendita/widgets/company_avatar.dart';
 import 'package:tiendita/widgets/company_data.dart';
 
 class HomeScreen extends StatefulWidget {

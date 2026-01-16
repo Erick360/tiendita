@@ -49,6 +49,8 @@ flutter:
   assets:
     - images/tiendita_icon.png
     - images/tiendita_banner.png
+    - images/excel.png
+    - images/pdf.png
 
 
   fonts:

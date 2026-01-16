@@ -123,11 +123,32 @@ class _CompanyEditScreenState extends ConsumerState<CompanyEditScreen>{
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Editar negocio'),
+          backgroundColor: const Color(0xFFF25410),
+          elevation: 0,
+          centerTitle: true,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                  'Editar negocio',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                  )
+              ),
+            ],
+          ),
           actions: <Widget>[
             IconButton(
                 onPressed: () => Navigator.pushNamed(context, SettingsScreen.id),
-                icon: Icon(Icons.settings)
+                icon: Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                    size: 20
+                )
             )
           ],
         ),

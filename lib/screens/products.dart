@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MyProducts extends StatefulWidget{
+class MyProducts extends ConsumerStatefulWidget{
   const MyProducts({super.key});
   static String id = "products";
 
   @override
-  State<MyProducts> createState() => _MyProductsState();
+  ConsumerState<MyProducts> createState() => _MyProductsState();
 }
 
-class _MyProductsState extends State<MyProducts>{
+class _MyProductsState extends ConsumerState<MyProducts>{
   @override
   Widget build (BuildContext context){
     return Scaffold(
@@ -39,7 +40,10 @@ class _MyProductsState extends State<MyProducts>{
               ],
           ),
 
-        )
+        ),
+      body: Column(
+
+      ),
     );
   }
 }
