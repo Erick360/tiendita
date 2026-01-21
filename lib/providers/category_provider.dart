@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiendita/model/category_model.dart';
-import 'package:tiendita/providers/category_provider.dart';
+import 'package:tiendita/models/category_model.dart';
 import 'package:tiendita/providers/database_provider.dart';
 import 'package:tiendita/repositories/category_repository.dart';
 
@@ -10,9 +9,9 @@ final categoryRepositoryProvider = Provider<CategoryRepository>((ref){
 });
 
 
-final categoryStreamProvider  = StreamProvider<CategoryModel?>((ref){
+final categoryListProvider  = StreamProvider<List<CategoryModel?>>((ref){
    final repository = ref.watch(categoryRepositoryProvider);
-   return repository.watchCategory();
+   return repository.watchAllCategories();
 });
 
 final categoryNotifierProvider = StateNotifierProvider<CategoryNotifier,AsyncValue<CategoryModel?>>((ref){
@@ -31,6 +30,15 @@ class CategoryNotifier extends StateNotifier<AsyncValue<CategoryModel?>>{
       state = AsyncValue.data(category);
     }catch(e,stack){
       state = AsyncError(e, stack);
+    }
+  }
+
+  Future<void> deleteCategory(int id) async{
+    try{
+      await _repository.deleteCategory(id);
+
+    }catch(e, stack){
+      state = AsyncValue.error(e, stack);
     }
   }
 

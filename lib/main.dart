@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/models/category_model.dart';
 import 'package:tiendita/screens/auth/splash_screen.dart';
+import 'package:tiendita/screens/category/category_screen.dart';
+import 'package:tiendita/screens/category/create_category.dart';
+import 'package:tiendita/screens/category/edit_category.dart';
 import 'package:tiendita/screens/my_purveyors.dart';
 import 'screens/home_page.dart';
 import 'screens/my_sales_details.dart';
@@ -9,9 +13,9 @@ import 'screens/my_shopping_details.dart';
 import 'screens/shopping_screen.dart';
 import 'screens/settings/settings_screen.dart';
 import 'screens/company/company_edit_screen.dart';
-import 'screens/company_setup_screen.dart';
+import 'screens/company/company_setup_screen.dart';
 import 'screens/products.dart';
-import 'screens/category_screen.dart';
+
 
 void main() {
   runApp(const ProviderScope(
@@ -41,6 +45,7 @@ class MyApp extends StatelessWidget {
         SettingsScreen.id: (context) => const SettingsScreen(),
         CompanySetupScreen.id: (context) => const CompanySetupScreen(),
         CategoryScreen.id: (context) => const CategoryScreen(),
+        CreateCategory.id: (context) => const CreateCategory(),
       },
     );
   }

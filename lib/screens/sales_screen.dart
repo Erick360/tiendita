@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tiendita/constants/constants.dart';
 
 class SalesScreen extends StatefulWidget {
   const SalesScreen({super.key});
@@ -14,7 +15,7 @@ class _SalesScreenState extends State<SalesScreen>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:  AppBar(
-        backgroundColor: const Color(0xFFF25410),
+        backgroundColor: kActiveColor,
         elevation: 0,
         centerTitle: true,
         title: Row(

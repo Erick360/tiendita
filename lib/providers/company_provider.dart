@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/repositories/company_repository.dart';
-import '../model/company_model.dart';
+import '../models/company_model.dart';
 import 'database_provider.dart';
 
 final companyRepositoryProvider = Provider<CompanyRepository>((ref){

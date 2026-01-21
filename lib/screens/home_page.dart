@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/screens/company/company_edit_screen.dart';
 import 'package:tiendita/screens/products.dart';
-import 'category_screen.dart';
+import '../widgets/dashboard/dashboard.dart';
+import 'category/category_screen.dart';
 import 'sales_screen.dart';
 import 'package:tiendita/screens/my_sales_details.dart';
 import 'my_shopping_details.dart';
@@ -11,7 +12,6 @@ import 'package:tiendita/widgets/footer.dart';
 import 'package:tiendita/screens/my_purveyors.dart';
 import 'package:tiendita/widgets/company_data.dart';
 import 'package:tiendita/widgets/company_avatar.dart';
-import 'package:tiendita/widgets/company_data.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: Icon(Icons.menu),
         ),
       ),
-      body: Center(child: Text('Dashboard')),
+      body: Dashboard(),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,

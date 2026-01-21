@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiendita/model/company_model.dart';
+import 'package:tiendita/models/company_model.dart';
 import 'package:tiendita/screens/home_page.dart';
-import '../providers/company_provider.dart';
+import '../../providers/company_provider.dart';
 import 'package:tiendita/widgets/image_picker.dart';
 
 class CompanySetupScreen extends ConsumerStatefulWidget{
@@ -102,14 +102,9 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
                     height: 130,
                   ),
                 ),
-
                 Padding(
                     padding: const EdgeInsets.all(20.0),
-
                 ),
-
-
-                const SizedBox(height: 16),
                 const Text(
                     'Bienvenido',
                   textAlign: TextAlign.center,

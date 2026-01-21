@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:tiendita/database/tienditaDatabase.dart';
-import 'package:tiendita/model/company_model.dart';
+import 'package:tiendita/models/company_model.dart';
 
 class CompanyRepository{
   final TienditaDatabase database;
