@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/database/tienditaDatabase.dart';
 import 'package:tiendita/models/category_model.dart';
 

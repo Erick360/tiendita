@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiendita/models/category_model.dart';
 import 'package:tiendita/screens/auth/splash_screen.dart';
 import 'package:tiendita/screens/category/category_screen.dart';
 import 'package:tiendita/screens/category/create_category.dart';
-import 'package:tiendita/screens/category/edit_category.dart';
-import 'package:tiendita/screens/my_purveyors.dart';
+import 'package:tiendita/screens/purveyors/purveyors_screen.dart';
 import 'screens/home_page.dart';
 import 'screens/my_sales_details.dart';
 import 'screens/sales_screen.dart';
@@ -26,7 +24,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -40,7 +37,7 @@ class MyApp extends StatelessWidget {
         ShoppingScreen.id: (context) => const ShoppingScreen(),
         MyShoppingDetails.id: (context) => const MyShoppingDetails(),
         MyProducts.id: (context) => const MyProducts(),
-        MyPurveyors.id: (context) => const MyPurveyors(),
+        PurveyorsScreen.id: (context) => const PurveyorsScreen(),
         CompanyEditScreen.id: (context) => const CompanyEditScreen(),
         SettingsScreen.id: (context) => const SettingsScreen(),
         CompanySetupScreen.id: (context) => const CompanySetupScreen(),

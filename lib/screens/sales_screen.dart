@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:tiendita/constants/constants.dart';
 
 class SalesScreen extends StatefulWidget {

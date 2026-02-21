@@ -9,7 +9,7 @@ import 'package:tiendita/screens/my_sales_details.dart';
 import 'my_shopping_details.dart';
 import 'shopping_screen.dart';
 import 'package:tiendita/widgets/footer.dart';
-import 'package:tiendita/screens/my_purveyors.dart';
+import 'package:tiendita/screens/purveyors/purveyors_screen.dart';
 import 'package:tiendita/widgets/company_data.dart';
 import 'package:tiendita/widgets/company_avatar.dart';
 
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.pushNamed(context, MyProducts.id);
         break;
       case 7:
-        Navigator.pushNamed(context, MyPurveyors.id);
+        Navigator.pushNamed(context, PurveyorsScreen.id);
         break;
       case 8:
         Navigator.pushNamed(context, CategoryScreen.id);

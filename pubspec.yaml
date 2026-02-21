@@ -25,6 +25,8 @@ dependencies:
   flutter_riverpod: ^2.6.1
   image_picker: ^1.2.1
 
+  riverpod: any
+  intl: any
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_test:

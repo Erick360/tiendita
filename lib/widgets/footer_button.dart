@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tiendita/widgets/text_data.dart';
 class FooterButton extends StatelessWidget{
