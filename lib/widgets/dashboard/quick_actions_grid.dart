@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiendita/screens/my_sales_details.dart';
-import 'package:tiendita/screens/products.dart';
+import 'package:tiendita/screens/products/products.dart';
 import 'package:tiendita/widgets/dashboard/quick_action_button.dart';
 
 class QuickActionsGrid extends StatelessWidget {
@@ -25,7 +25,7 @@ class QuickActionsGrid extends StatelessWidget {
           title: 'Productos',
           icon: Icons.inventory_2,
           color: Colors.blue,
-          onTap: () => Navigator.pushNamed(context, MyProducts.id),
+          onTap: () => Navigator.pushNamed(context, ProductsScreen.id),
         ),
         QuickActionButton(
           title: 'Gastos',

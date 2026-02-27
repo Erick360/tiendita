@@ -5,7 +5,7 @@ import 'package:tiendita/models/purveyors_model.dart';
 import 'package:tiendita/providers/purveyor_provider.dart';
 
 class EditPurveyors extends ConsumerStatefulWidget{
-  const EditPurveyors({super.key});
+  const EditPurveyors(PurveyorsModel? purveyors, {super.key});
   static String id = "edit_purveyors";
 
   @override
@@ -17,8 +17,8 @@ class _StateEditPurveyors extends ConsumerState<EditPurveyors>{
   TextEditingController _purveyorNameController = TextEditingController();
   TextEditingController _purveyorAddressController = TextEditingController();
   TextEditingController _purveyorPhoneController = TextEditingController();
-  late final TextEditingController _purveyorEmailController = TextEditingController();
-  late final TextEditingController _purveyorRfcController = TextEditingController();
+  TextEditingController _purveyorEmailController = TextEditingController();
+  TextEditingController _purveyorRfcController = TextEditingController();
 
   bool _isLoading = false;
   PurveyorsModel? _currentPurveyor;
@@ -149,7 +149,6 @@ class _StateEditPurveyors extends ConsumerState<EditPurveyors>{
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.location_city_outlined)                                 ,
                 ),
-                maxLength: 2,
                 validator: (value){
                   if(value == null || value.trim().isEmpty){
                     return "Este campo necesita llenarse";

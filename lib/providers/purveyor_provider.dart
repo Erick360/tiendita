@@ -43,8 +43,8 @@ class PurveyorNotifier extends StateNotifier<AsyncValue<PurveyorsModel?>>{
 
   Future<void> savePurveyor(PurveyorsModel purveyor) async{
     try{
-      final exits = await _repo.purveyorExits();
-      if(exits){
+      //final exits = await _repo.purveyorExits();
+      if(purveyor.idPurveyor != null){
         await _repo.updatePurveyorById(purveyor);
       }else{
         await _repo.createPurveyor(purveyor);

@@ -24,8 +24,9 @@ PurveyorsCompanion toCompanion(){
     id_purveyor: idPurveyor != null ? Value(idPurveyor!) : const Value.absent(),
     purveyor_name: Value(PurveyorName),
     phone_number: Value(PurveyorPhoneNumber),
-    email: Value(PurveyorPhoneNumber),
-    address: Value(PurveyorAddress)
+    email: Value(PurveyorEmail),
+    address: Value(PurveyorAddress),
+    rfc: Value(PurveyorRFC),
   );
 }
 

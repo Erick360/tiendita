@@ -4,9 +4,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/providers/purveyor_provider.dart';
 import 'package:tiendita/widgets/text_data.dart';
-
 import '../../widgets/footer_button.dart';
 import 'create_purveyors.dart';
+import 'delete_purveyors.dart';
+import 'edit_purveyors.dart';
 
 class PurveyorsScreen extends ConsumerWidget {
   const PurveyorsScreen({super.key});
@@ -42,7 +43,7 @@ class PurveyorsScreen extends ConsumerWidget {
         children: <Widget>[
           Padding(padding: const EdgeInsets.only(top: 30)),
           SearchBar(
-            hintText: 'BUscar proveedor',
+            hintText: 'Buscar proveedor',
             leading: const Icon(Icons.search),
             onChanged: (value) {},
           ),
@@ -54,9 +55,9 @@ class PurveyorsScreen extends ConsumerWidget {
                   return const Center(child: Text("No hay datos registrados"));
                 }
                 return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.only(top: 10),
                   child: SizedBox(
-                    width: double.infinity,
                     child: DataTable(
                       headingRowColor: WidgetStateProperty.all(
                         Colors.grey[200],
@@ -70,6 +71,42 @@ class PurveyorsScreen extends ConsumerWidget {
                         DataColumn(
                           label: TextData(
                             'Nombre',
+                            18,
+                            Colors.black,
+                            "Poppins",
+                            FontWeight.bold,
+                          ),
+                        ),
+                        DataColumn(
+                          label: TextData(
+                            'Direccion',
+                            18,
+                            Colors.black,
+                            "Poppins",
+                            FontWeight.bold,
+                          ),
+                        ),
+                        DataColumn(
+                          label: TextData(
+                            'Correo',
+                            18,
+                            Colors.black,
+                            "Poppins",
+                            FontWeight.bold,
+                          ),
+                        ),
+                        DataColumn(
+                          label: TextData(
+                            'Telefono',
+                            18,
+                            Colors.black,
+                            "Poppins",
+                            FontWeight.bold,
+                          ),
+                        ),
+                        DataColumn(
+                          label: TextData(
+                            'RFC',
                             18,
                             Colors.black,
                             "Poppins",
@@ -105,6 +142,30 @@ class PurveyorsScreen extends ConsumerWidget {
                               ),
                             ),
                             DataCell(
+                              Text(
+                                purveyors?.PurveyorAddress ?? "No direccion registrada",
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            DataCell(
+                              Text(
+                                purveyors?.PurveyorEmail ?? "No correo electronico registrado",
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            DataCell(
+                              Text(
+                                purveyors?.PurveyorPhoneNumber ?? "No Telefono registrado",
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            DataCell(
+                              Text(
+                                purveyors?.PurveyorRFC ?? "No RFC registrado",
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            DataCell(
                               IconButton(
                                 icon: Icon(
                                   FontAwesomeIcons.penToSquare,
@@ -112,7 +173,7 @@ class PurveyorsScreen extends ConsumerWidget {
                                   size: 20,
                                 ),
                                 onPressed: () {
-                                  //Navigator.push(context, MaterialPageRoute(builder: => EditPurveyor(purveyors!)));
+                                  Navigator.push(context, MaterialPageRoute(builder:(context) => EditPurveyors(purveyors)));
                                 },
                               ),
                             ),
@@ -120,7 +181,7 @@ class PurveyorsScreen extends ConsumerWidget {
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
-                                  //Navigator.push(context, MaterialPageRoute(builder: (context) => DeletePurveyor(purveyors!)));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => DeletePurveyor(purveyors!)));
                                 },
                               ),
                             ),

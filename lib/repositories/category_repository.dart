@@ -45,4 +45,7 @@ class CategoryRepository{
       ..where((t) => t.id_category.equals(id))).go();
   }
 
+  Future<Category?> showCategory(int id) async{
+    return await (database.select(database.categories)..where((t) => t.id_category.equals(id))).getSingleOrNull();
+  }
 }

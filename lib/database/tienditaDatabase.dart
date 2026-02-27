@@ -9,7 +9,6 @@ part 'tienditaDatabase.g.dart';
 enum ProductStatus {
   active, // 0
   inactive, // 1
-  pending // val = 2
 }
 
 
@@ -20,7 +19,7 @@ class Categories extends Table{
 
 class Purveyors extends Table{
   IntColumn get id_purveyor => integer().autoIncrement()();
-  TextColumn get rfc => text().withLength(min: 1, max: 12)();
+  TextColumn get rfc => text().withLength(min: 1, max: 13)();
   TextColumn get purveyor_name => text().withLength(min: 1, max: 100)();//razon social
   TextColumn get phone_number => text().withLength(min: 1, max: 12)();
   TextColumn get email => text().withLength(min: 1, max: 50)();
@@ -32,14 +31,13 @@ class Products extends Table{
   //Primary key
   IntColumn get id_product => integer().autoIncrement()();
   //Columns
-  TextColumn get productName => text().withLength(min: 1, max: 100)();//nombre producto
-  TextColumn get presentationProduct => text().withLength(min: 1, max: 100)();//presentacion producto
-  IntColumn get units => integer()();//unidades disponibles
-  TextColumn get localCoin => text().withLength(min: 1, max: 45)();//moneda
+  TextColumn get productName => text().withLength(min: 1, max: 30)();//nombre producto
+  TextColumn get presentationProduct => text().withLength(min: 1, max: 30)();//presentacion producto
+  TextColumn get units => text().withLength(min: 1, max: 30)();//unidad de medida (kilo,litro)
   RealColumn get price_shop => real()();//precio de compra
   RealColumn get price_sale => real()();//precio de venta
   IntColumn get stock => integer()();
-  // it shows if a product is available ("Pending,active,inactive")
+  // that shows if a product is available (active,inactive)
   IntColumn get status => intEnum<ProductStatus>().withDefault(const Constant(2))();
   TextColumn get productImage => text().withLength(min: 1, max: 255)();//storage an image
   DateTimeColumn get product_expires_at => dateTime().nullable()();
@@ -117,7 +115,7 @@ class Company extends Table{
   TextColumn get logo_company => text().withLength(min: 1, max: 255)();
   TextColumn get address_company => text().withLength(min: 1, max: 50)();
   TextColumn get phone_number_company => text().withLength(min: 1, max: 12)();
-  TextColumn get rfc_company => text().withLength(min: 1, max: 15)();
+  TextColumn get rfc_company => text().withLength(min: 1, max: 13)();
   TextColumn get email_company => text().withLength(min: 1,max:50)();
 
 }

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/screens/auth/splash_screen.dart';
 import 'package:tiendita/screens/category/category_screen.dart';
 import 'package:tiendita/screens/category/create_category.dart';
+import 'package:tiendita/screens/products/create_products.dart';
+import 'package:tiendita/screens/purveyors/create_purveyors.dart';
 import 'package:tiendita/screens/purveyors/purveyors_screen.dart';
 import 'screens/home_page.dart';
 import 'screens/my_sales_details.dart';
@@ -12,7 +14,7 @@ import 'screens/shopping_screen.dart';
 import 'screens/settings/settings_screen.dart';
 import 'screens/company/company_edit_screen.dart';
 import 'screens/company/company_setup_screen.dart';
-import 'screens/products.dart';
+import 'screens/products/products.dart';
 
 
 void main() {
@@ -36,13 +38,15 @@ class MyApp extends StatelessWidget {
         SalesScreen.id: (context) => const SalesScreen(),
         ShoppingScreen.id: (context) => const ShoppingScreen(),
         MyShoppingDetails.id: (context) => const MyShoppingDetails(),
-        MyProducts.id: (context) => const MyProducts(),
+        ProductsScreen.id: (context) => const ProductsScreen(),
         PurveyorsScreen.id: (context) => const PurveyorsScreen(),
         CompanyEditScreen.id: (context) => const CompanyEditScreen(),
         SettingsScreen.id: (context) => const SettingsScreen(),
         CompanySetupScreen.id: (context) => const CompanySetupScreen(),
         CategoryScreen.id: (context) => const CategoryScreen(),
         CreateCategory.id: (context) => const CreateCategory(),
+        CreatePurveyor.id: (context) => const CreatePurveyor(),
+        CreateProducts.id: (context) => const CreateProducts(),
       },
     );
   }

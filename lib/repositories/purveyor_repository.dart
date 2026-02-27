@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart';
 import 'package:tiendita/database/tienditaDatabase.dart';
 import 'package:tiendita/models/purveyors_model.dart';
 
@@ -29,12 +28,12 @@ class PurveyorRepository{
 
     return res > 0;
   }
-
+/*
   Future<bool> purveyorExits() async{
     final count = await database.purveyors.count().getSingle();
     return count > 0;
   }
-
+*/
   Future<int> deletePurveyor(int id) async{
     return await (database.delete(database.purveyors)
       ..where((t)=> t.id_purveyor.equals(id))).go();

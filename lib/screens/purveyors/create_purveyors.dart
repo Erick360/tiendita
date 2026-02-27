@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/models/purveyors_model.dart';
 import 'package:tiendita/providers/purveyor_provider.dart';
-import 'package:tiendita/screens/home_page.dart';
+import 'package:tiendita/screens/purveyors/purveyors_screen.dart';
 
 class CreatePurveyor extends ConsumerStatefulWidget{
   const CreatePurveyor({super.key});
@@ -18,7 +18,7 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
   TextEditingController _purveyorAddressController = TextEditingController();
   TextEditingController _purveyorPhoneController = TextEditingController();
   late final TextEditingController _purveyorEmailController = TextEditingController();
-  late final TextEditingController _purveyorRfcController = TextEditingController();
+  late final TextEditingController _purveyorRfcController= TextEditingController();
 
   bool _isLoading = false;
 
@@ -33,32 +33,30 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
   }
 
   Future<void> _savePurveyor() async {
-    if(!_formKey.currentState!.validate())return;
+    if (_formKey.currentState?.validate() != true) return;
     setState(() {
       _isLoading = true;
     });
 
     try{
-      final rfc = _purveyorRfcController.text.trim().isEmpty ? 'XAXX010101000' : _purveyorRfcController.text.trim();
-      final email = _purveyorEmailController.text.trim().isEmpty ? 'proovedor@email.com' : _purveyorEmailController.text.trim();
-
       final purveyor = PurveyorsModel(
-          PurveyorRFC: rfc,
+          PurveyorRFC: _purveyorRfcController.text.trim().isEmpty ? 'XAXX010101000' : _purveyorRfcController.text.trim(),
           PurveyorName: _purveyorNameController.text.trim(),
           PurveyorPhoneNumber: _purveyorPhoneController.text.trim(),
-          PurveyorEmail: email,
+          PurveyorEmail: _purveyorEmailController.text.trim().isEmpty ? 'proovedor@email.com' : _purveyorEmailController.text.trim(),
           PurveyorAddress: _purveyorAddressController.text.trim(),
       );
 
       await ref.read(purveyorNotifierProvider.notifier).savePurveyor(purveyor);
       if(mounted){
-        Navigator.pushReplacementNamed(context, HomeScreen.id);
+        Navigator.pushReplacementNamed(context, PurveyorsScreen.id);
       }
 
     }catch(e){
       if(mounted){
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Error al guardar los datos $e"),backgroundColor: Colors.red));
+            print(e);
       }
     }finally{
       if(mounted){
@@ -67,7 +65,6 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
         });
       }
     }
-
   }
 
   @override
@@ -118,7 +115,7 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _purveyorAddressController,
                 decoration: const InputDecoration(
@@ -126,7 +123,6 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.location_city_outlined)                                 ,
                 ),
-                maxLength: 2,
                 validator: (value){
                   if(value == null || value.trim().isEmpty){
                     return "Este campo necesita llenarse";
@@ -134,7 +130,7 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _purveyorEmailController,
                 decoration: const InputDecoration(
@@ -145,7 +141,7 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
                 ),
                 keyboardType: TextInputType.emailAddress,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 18),
               TextFormField(
                 controller: _purveyorPhoneController,
                 decoration: const InputDecoration(
@@ -174,6 +170,7 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
                 textCapitalization: TextCapitalization.characters,
                 maxLength: 13,
               ),
+              const SizedBox(height: 25),
               SizedBox(
                 height: 50,
                 child: ElevatedButton(
@@ -191,5 +188,4 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
       ),
     );
   }
-
 }

@@ -5,8 +5,8 @@ class ProductsModel{
   final int? idProduct;
   final String productName;
   final String? presentation;
-  final int? units;
-  final String? coin;
+  final String? units;
+  //final String? coin;
   final double? priceShop;
   final double? priceSale;
   final int? stock;
@@ -22,7 +22,7 @@ class ProductsModel{
     required this.productName,
     required this.presentation,
     required this.units,
-    required this.coin,
+    //required this.coin,
     required this.priceShop,
     required this.priceSale,
     required this.stock,
@@ -37,12 +37,12 @@ class ProductsModel{
       id_product: idProduct != null ? Value(idProduct!) : const Value.absent(),
       productName: Value(productName),
       presentationProduct: Value(presentation!),
-      units: units != null ? Value(units!) : const Value.absent(),
-      localCoin: Value(coin!),
+      units: Value(units!),
+      //localCoin: Value(coin!),
       price_shop: priceShop != null ? Value(priceShop!) : const Value.absent(),
       price_sale: priceSale != null ? Value(priceSale!) : const Value.absent(),
       stock: stock != null ? Value(stock!) : const Value.absent(),
-      status: status != null ? Value(ProductStatus.active) : const Value.absent(),
+      status: status != null ? Value(ProductStatus.values[status!]) : const Value.absent(),
       productImage: productImage != null ? Value(productImage!) : const Value.absent(),
       product_expires_at: productExpiresAt != null ? Value(productExpiresAt!) : const Value.absent(),
 
@@ -57,7 +57,7 @@ class ProductsModel{
         productName: row.productName,
         presentation: row.presentationProduct,
         units: row.units,
-        coin: row.localCoin,
+        //coin: row.localCoin,
         priceShop: row.price_shop,
         priceSale: row.price_sale,
         stock: row.stock,
