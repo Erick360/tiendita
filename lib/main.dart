@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/screens/auth/splash_screen.dart';
 import 'package:tiendita/screens/category/category_screen.dart';
 import 'package:tiendita/screens/category/create_category.dart';
+import 'package:tiendita/screens/clients/clients_screen.dart';
+import 'package:tiendita/screens/clients/create_client.dart';
 import 'package:tiendita/screens/products/create_products.dart';
 import 'package:tiendita/screens/purveyors/create_purveyors.dart';
 import 'package:tiendita/screens/purveyors/purveyors_screen.dart';
@@ -47,6 +49,8 @@ class MyApp extends StatelessWidget {
         CreateCategory.id: (context) => const CreateCategory(),
         CreatePurveyor.id: (context) => const CreatePurveyor(),
         CreateProducts.id: (context) => const CreateProducts(),
+        ClientsScreen.id: (context) => const ClientsScreen(),
+        CreateClient.id: (context) => const CreateClient(),
       },
     );
   }

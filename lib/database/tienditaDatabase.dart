@@ -84,9 +84,9 @@ class Shopping extends Table{
 class ShoppingDetails extends Table{
   IntColumn get id_shopping_details => integer().autoIncrement()();
   TextColumn get num_shop => text().withLength(min: 1,max: 100)();
-  TextColumn get rfc_purveyor => text().withLength(min: 1, max: 100)();
-  TextColumn get product => text().withLength(min: 1, max: 100)();
-  TextColumn get local_coin => text().withLength(min: 1, max: 100)();
+  TextColumn get rfc_purveyor => text().withLength(min: 1, max: 13)();
+  TextColumn get product => text().withLength(min: 1, max: 50)();
+  TextColumn get local_coin => text().withLength(min: 1, max: 30)();
   RealColumn get price_shop => real()();
   RealColumn get amount_shop => real()();
   RealColumn get discount => real()();
@@ -99,10 +99,10 @@ class ShoppingDetails extends Table{
 
 class Expensives extends Table{
    IntColumn get id_expensives => integer().autoIncrement()();
-   TextColumn get expensive_name => text().withLength(min: 1, max: 100)();
+   TextColumn get expensive_name => text().withLength(min: 1, max: 50)();
    TextColumn get description => text().withLength(max: 255).nullable()();
    RealColumn get amount => real()();
-   TextColumn get localCoin => text().withLength(max: 50, min: 1)();
+   TextColumn get localCoin => text().withLength(max: 30, min: 1)();
    DateTimeColumn get expenseDate => dateTime().nullable()();
 
    //foreign key
@@ -120,6 +120,14 @@ class Company extends Table{
 
 }
 
+class Clients extends Table {
+  IntColumn get id_client => integer().autoIncrement()();
+  TextColumn get client_name => text().withLength(min: 1, max: 30)();
+  TextColumn get last_name => text().withLength(min: 1, max: 40)();
+  TextColumn get phone_number => text().withLength(min: 1, max: 12)();
+  TextColumn get email_client => text().withLength(min: 1, max: 40)();
+  TextColumn get address_client => text().withLength(min: 1, max: 100)();
+}
 
 @DriftDatabase(tables: [
     Categories,
@@ -129,7 +137,8 @@ class Company extends Table{
     SalesDetails,
     Shopping,
     ShoppingDetails,
-    Company
+    Company,
+    Clients
 ])
 
 
@@ -139,14 +148,6 @@ class TienditaDatabase extends _$TienditaDatabase {
   @override
   int get schemaVersion => 1;
 
-  //Queries
-  Selectable<String> getCompanyName(){
-    final query = selectOnly(company)..addColumns([company.name_company]);
-
-    return query.map((row){
-      return row.read(company.name_company)!;
-    });
-  }
 }
   LazyDatabase _openConnection(){
     return LazyDatabase(() async {
