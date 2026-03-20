@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/models/clients_model.dart';
 
+import '../../constants/constants.dart';
 import '../../providers/clients_provider.dart';
 import 'clients_screen.dart';
 
@@ -49,12 +49,12 @@ class _CreateClientState extends ConsumerState<CreateClient>{
 
       await ref.read(clientNotifierProvider.notifier).saveClient(client);
       if(mounted){
-        Navigator.pushReplacementNamed(context, ClientsScreen.id);
+        showSuccessSnackBar(context, 'Cliente guardado exitosamente');
+        Navigator.pop(context);
       }
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Error al guardar los datos $e"),backgroundColor: Colors.red));
+        showErrorSnackBar(context, 'Error al guardar los datos');
         print(e);
       }
     }finally{

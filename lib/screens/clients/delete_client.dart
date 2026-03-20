@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/models/clients_model.dart';
 import 'package:tiendita/providers/purveyor_provider.dart';
 
+import '../../constants/constants.dart';
+
 class DeleteClient extends ConsumerStatefulWidget{
   final ClientsModel _currentClient;
   DeleteClient(this._currentClient,{super.key});
@@ -23,18 +25,14 @@ class _StateDeleteClient extends ConsumerState<DeleteClient>{
         await ref.read(purveyorNotifierProvider.notifier).deletePurveyor(widget._currentClient.idClient!);
 
         if(mounted){
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Dato eliminado correctamente"),backgroundColor: Colors.green),
-          );
+          showSuccessSnackBar(context, 'Proveedor eliminado exitosamente');
           Navigator.pop(context);
         }
       }
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error al eliminar datos: $e"),
-              backgroundColor: Colors.red),
-        );
+       showErrorSnackBar(context, 'Error al eliminar los datos');
+        print(e);
       }
     }finally{
       if(mounted){

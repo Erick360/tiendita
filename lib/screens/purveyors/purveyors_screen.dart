@@ -17,6 +17,7 @@ class PurveyorsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final purveyorListAsync = ref.watch(purveyorListProvider);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: kActiveColor,
         elevation: 0,

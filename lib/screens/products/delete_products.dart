@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/providers/products_provider.dart';
+import '../../constants/constants.dart';
 import '../../models/products_model.dart';
 
 class DeleteProduct extends ConsumerStatefulWidget{
@@ -23,18 +24,14 @@ class _StateDeleteProduct extends ConsumerState<DeleteProduct>{
         await ref.read(productsNotifierProvider.notifier).deleteProduct(widget._currentProduct.idProduct!);
 
         if(mounted){
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Dato eliminado correctamente"),backgroundColor: Colors.green),
-          );
+          showSuccessSnackBar(context, 'Producto eliminado exitosamente');
           Navigator.pop(context);
         }
       }
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error al eliminar datos: $e"),
-              backgroundColor: Colors.red),
-        );
+        showErrorSnackBar(context, 'Error al eliminar los datos');
+        print("Error al eliminar datos: $e");
       }
     }finally{
       if(mounted){

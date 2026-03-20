@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/company_model.dart';
 import 'package:tiendita/screens/home_page.dart';
 import '../../providers/company_provider.dart';
@@ -42,16 +43,12 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
     });
 
     try{
-        final rfc = _rfcCompanyController.text.trim().isEmpty
-            ? "XAXX010101000"
-            : _rfcCompanyController.text.trim();
-
       final company = CompanyModel(
           nameCompany: _nameCompanyController.text.trim(),
           addressCompany: _addressCompanyController.text.trim(),
           phoneNumberCompany: _phoneCompanyController.text.trim(),
-          emailCompany: _emailCompanyController.text.trim(),
-          rfcCompany: rfc,
+          emailCompany: _emailCompanyController.text.trim().isEmpty ? 'negocio@email.com' : _emailCompanyController.text.trim(),
+          rfcCompany: _rfcCompanyController.text.trim().isEmpty ? "XAXX010101000" : _rfcCompanyController.text.trim(),
           logoCompany: _logoCompany
       );
 
@@ -62,9 +59,7 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
 
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error al guardar los datos: $e"),backgroundColor: Colors.red,)
-        );
+        showErrorSnackBar(context, 'Error al guardar los datos');
       }
     } finally{
       if(mounted) {

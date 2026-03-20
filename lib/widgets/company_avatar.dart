@@ -9,7 +9,7 @@ class CompanyAvatar extends ConsumerWidget{
   @override
   Widget build(BuildContext context, WidgetRef ref){
     final CompanyIcon = ref.watch(companyLogoStreamProvider).value;
-    double avatarRadius = MediaQuery.of(context).size.width * 0.10;
+    double avatarRadius = MediaQuery.of(context).size.width * 0.15;
 
       return CircleAvatar(
         radius: avatarRadius,

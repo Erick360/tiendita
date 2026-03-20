@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/models/purveyors_model.dart';
 import 'package:tiendita/providers/purveyor_provider.dart';
 
+import '../../constants/constants.dart';
+
 class DeletePurveyor extends ConsumerStatefulWidget{
   final PurveyorsModel _currentPurveyor;
   DeletePurveyor(this._currentPurveyor,{super.key});
@@ -23,18 +25,14 @@ class _StateDeletePurveyor extends ConsumerState<DeletePurveyor>{
          await ref.read(purveyorNotifierProvider.notifier).deletePurveyor(widget._currentPurveyor.idPurveyor!);
 
          if(mounted){
-           ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(content: Text("Dato eliminado correctamente"),backgroundColor: Colors.green),
-           );
+           showSuccessSnackBar(context, 'Proveedor eliminado exitosamente');
            Navigator.pop(context);
          }
       }
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error al eliminar datos: $e"),
-          backgroundColor: Colors.red),
-        );
+        showErrorSnackBar(context, 'Error al eliminar los datos');
+        print("Error al eliminar datos: $e");
       }
     }finally{
       if(mounted){

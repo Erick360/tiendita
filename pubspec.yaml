@@ -12,8 +12,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   build_runner: ^2.4.0
   drift: ^2.29.0
@@ -25,9 +23,9 @@ dependencies:
   font_awesome_flutter: ^10.12.0
   flutter_riverpod: ^2.6.1
   image_picker: ^1.2.1
-
   riverpod: any
   intl: ^0.20.2
+
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_test:
@@ -66,7 +64,3 @@ flutter:
     - family: Monserrat
       fonts:
         - asset: fonts/Montserrat-Italic-VariableFont_wght.ttf
-
-
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/screens/company/company_edit_screen.dart';
-import 'package:tiendita/widgets/company_data.dart';
+import 'package:tiendita/widgets/company_name.dart';
 
 
 class SettingsScreen extends ConsumerWidget{
@@ -45,7 +45,7 @@ class SettingsScreen extends ConsumerWidget{
                   children: [
                     ListTile(
                       leading: Icon(Icons.business),
-                      title: CompanyData(
+                      title: CompanyName(
                           Colors.black,
                           15
                       ),
@@ -69,7 +69,17 @@ class SettingsScreen extends ConsumerWidget{
             onTap: (){
 
             },
-          )
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.brush_outlined),
+            title: Text('Temas'),
+            subtitle: Text('cambiar estilo'),
+            trailing: Icon(Icons.chevron_right),
+            onTap: (){
+            },
+          ),
+
         ],
       ),
     );

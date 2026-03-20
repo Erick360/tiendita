@@ -57,10 +57,8 @@ class _StateEditProducts extends ConsumerState<EditProducts>{
 
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error al cargar los datos $e"), backgroundColor: Colors.red),
-        );
-
+        showErrorSnackBar(context, 'Error al cargar los datos');
+        print(e);
       }
     }
   }
@@ -97,11 +95,13 @@ class _StateEditProducts extends ConsumerState<EditProducts>{
 
       await ref.read(productsNotifierProvider.notifier).saveProduct(updateProduct);
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Cambios Guardados"),backgroundColor: Colors.green));
+        showSuccessSnackBar(context, 'Producto actualizado exitosamente');
+        Navigator.pop(context);
       }
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error al guardar")));
+        showErrorSnackBar(context, 'Error al actualizar los datos');
+        print(e);
       }
     }finally{
       if(mounted){
@@ -171,7 +171,7 @@ class _StateEditProducts extends ConsumerState<EditProducts>{
                 categoryList.when(
                     data: (categories){
                       if(categories.isEmpty){
-                        return const Center(child: Text("No hay datos registrados", style: TextStyle(color: Colors.red)));
+                        return const Center(child: Text("No hay categorias registradas", style: TextStyle(color: Colors.red)));
                       }
                       return DropdownButtonFormField<int>(
                         initialValue: _selectedCategoryId,

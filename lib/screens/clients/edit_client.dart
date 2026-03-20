@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/models/clients_model.dart';
@@ -46,7 +45,8 @@ class _EditControllerState extends ConsumerState<EditClient>{
       }
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error al cargar datos: $e")));
+        showErrorSnackBar(context, 'Error al cargar los datos');
+        print(e);
       }
     }finally{
       setState(() {
@@ -78,11 +78,11 @@ class _EditControllerState extends ConsumerState<EditClient>{
        await ref.read(clientNotifierProvider.notifier).saveClient(updateClient);
 
        if(mounted){
-         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Cambios Guardados"),backgroundColor: Colors.green));
+         showSuccessSnackBar(context, 'Cliente actualizado exitosamente');
        }
    }catch(e){
      if(mounted){
-       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error al guardar")));
+       showErrorSnackBar(context, 'Error al actualizar los datos');
      }
    }finally{
      setState(() {
@@ -100,6 +100,7 @@ class _EditControllerState extends ConsumerState<EditClient>{
       );
     }
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: kActiveColor,
         elevation: 0,

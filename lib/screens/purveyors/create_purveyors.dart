@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/purveyors_model.dart';
 import 'package:tiendita/providers/purveyor_provider.dart';
 import 'package:tiendita/screens/purveyors/purveyors_screen.dart';
@@ -49,13 +50,13 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
 
       await ref.read(purveyorNotifierProvider.notifier).savePurveyor(purveyor);
       if(mounted){
-        Navigator.pushReplacementNamed(context, PurveyorsScreen.id);
+        showSuccessSnackBar(context, 'Proveedor guardado exitosamente');
+          Navigator.pop(context);
       }
 
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Error al guardar los datos $e"),backgroundColor: Colors.red));
+        showErrorSnackBar(context, 'Error al guardar los datos');
             print(e);
       }
     }finally{

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/category_model.dart';
 import 'package:tiendita/providers/category_provider.dart';
 
@@ -20,20 +21,14 @@ class _StateDeleteCategory extends ConsumerState<DeleteCategory>{
           await ref.read(categoryNotifierProvider.notifier).deleteCategory(widget._currentCategory.idCategory!);
 
           if(mounted){
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text("Categoria eliminada exitosamente"),
-                    backgroundColor: Colors.green));
-
+            showSuccessSnackBar(context, 'Categoria eliminada exitosamente');
             Navigator.pop(context);
           }
         }
       }catch(e){
         if(mounted){
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text("Error al eliminar: $e"),
-                  backgroundColor: Colors.green));
+          showErrorSnackBar(context, 'Error al eliminar los datos');
+          print(e);
         }
       }finally{
         if (mounted) {

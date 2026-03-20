@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/category_model.dart';
 import 'package:tiendita/providers/category_provider.dart';
 
@@ -32,23 +33,14 @@ class _StateCreateCategory extends ConsumerState<CreateCategory> {
       await ref.read(categoryNotifierProvider.notifier).saveCategory(category);
 
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-           const SnackBar(
-               content: Text("Categpria guardada exitosamente"),
-             backgroundColor: Colors.green,
-           )
-        );
+        showSuccessSnackBar(context, 'Categoria guardada exitosamente');
         Navigator.pop(context);
       }
 
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Error al guardar los datos: $e"),
-            backgroundColor: Colors.red,
-          ),
-        );
+        showErrorSnackBar(context, 'Error al guardar los datos');
+        print(e);
       }
     } finally {
       if (mounted) {

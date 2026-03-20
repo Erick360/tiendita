@@ -69,14 +69,13 @@ class _StateCreateProducts extends ConsumerState<CreateProducts>{
 
       await ref.read(productsNotifierProvider.notifier).saveProduct(product);
       if(mounted){
-        Navigator.pushReplacementNamed(context, ProductsScreen.id);
+        showSuccessSnackBar(context, 'Producto guardado exitosamente');
+        Navigator.pop(context);
       }
 
     }catch(e){
         if(mounted){
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Error al guardar los datos $e"), backgroundColor: Colors.red),
-          );
+          showErrorSnackBar(context, 'Error al guardar los datos');
           print("Error al guardar los datos $e");
         }
     }finally{
@@ -169,7 +168,7 @@ class _StateCreateProducts extends ConsumerState<CreateProducts>{
                   categoryList.when(
                       data: (categories){
                         if(categories.isEmpty){
-                          return const Center(child: Text("No hay datos registrados", style: TextStyle(color: Colors.red)));
+                          return const Center(child: Text("No hay categorias registradas", style: TextStyle(color: Colors.red)));
                         }
                         return DropdownButtonFormField<int>(
                             initialValue: _selectedCategoryId,

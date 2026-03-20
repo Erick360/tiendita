@@ -1,17 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tiendita/screens/company/company_edit_screen.dart';
-import 'package:tiendita/screens/products/products.dart';
+import 'package:tiendita/screens/settings/settings_screen.dart';
+import 'package:tiendita/widgets/text_data.dart';
 import '../widgets/dashboard/dashboard.dart';
-import 'category/category_screen.dart';
-import 'sales_screen.dart';
-import 'package:tiendita/screens/my_sales_details.dart';
-import 'my_shopping_details.dart';
-import 'shopping_screen.dart';
 import 'package:tiendita/widgets/footer.dart';
-import 'package:tiendita/screens/purveyors/purveyors_screen.dart';
-import 'package:tiendita/widgets/company_data.dart';
-import 'package:tiendita/widgets/company_avatar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,8 +14,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _selectedIndex = 0;
+  //int _selectedIndex = 0;
 
+  /*
   void _onItemTapped(int index) {
     Navigator.pop(context);
 
@@ -62,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedIndex = index;
     });
   }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -69,15 +62,16 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0,
-        title: CompanyData(Colors.white, 22,),
+        title: TextData('Mi Negocio', 22, Colors.white, 'Poppins', FontWeight.w600),
         backgroundColor: Color(0xFFF25410),
         centerTitle: true,
         leading: IconButton(
-          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-          icon: Icon(Icons.menu),
+          onPressed: () => Navigator.pushNamed(context, SettingsScreen.id),//_scaffoldKey.currentState?.openDrawer(),
+          icon: Icon(Icons.settings,color: Colors.white,),
         ),
       ),
       body: Dashboard(),
+      /*
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -155,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-      ),
+      ),*/
       bottomNavigationBar: Footer(),
     );
   }

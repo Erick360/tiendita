@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/providers/category_provider.dart';
 
 import '../../models/category_model.dart';
@@ -43,23 +44,13 @@ class _EditCategoryState extends ConsumerState<EditCategory> {
 
       ref.read(categoryNotifierProvider.notifier).saveCategory(category);
       if(mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Cambios guardados'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        showSuccessSnackBar(context, 'Categoria actualizada exitosamente');
+        Navigator.pop(context);
       }
-      Navigator.pop(context);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error al guardar cambios: $e'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pop(context);
+        showErrorSnackBar(context, 'Error al guardar los datos');
+        print(e);
       }
     } finally {
       setState(() {
@@ -71,6 +62,7 @@ class _EditCategoryState extends ConsumerState<EditCategory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: const Color(0xFFF25410),
         elevation: 0,

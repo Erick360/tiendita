@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/providers/company_provider.dart';
 
-class CompanyData extends ConsumerWidget{
-  const CompanyData(this.color,this.font,{
+class CompanyName extends ConsumerWidget{
+  const CompanyName(this.color,this.font,{
     super.key,
     this.alignment = TextAlign.start
   });
@@ -15,9 +15,9 @@ class CompanyData extends ConsumerWidget{
 
   @override
   Widget build(BuildContext context, WidgetRef ref){
-    final companyData = ref.watch(companyStreamProvider);
+    final companyName = ref.watch(companyStreamProvider);
     return Text(
-      companyData.value?.nameCompany ?? 'Mi Negocio',
+      companyName.value?.nameCompany ?? 'Mi Negocio',
       textAlign: alignment,
       style: TextStyle(
         color: color,

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tiendita/constants/constants.dart';
+import 'package:tiendita/widgets/company_avatar.dart';
 import 'package:tiendita/widgets/dashboard/metric_card.dart';
 import 'package:tiendita/widgets/dashboard/quick_actions_grid.dart';
+
+import '../company_name.dart';
 
 
 class Dashboard extends StatelessWidget{
@@ -12,10 +15,15 @@ class Dashboard extends StatelessWidget{
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("Dashboard",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          Column(
+            children: [
+              CompanyAvatar(),
+              SizedBox(height: 10),
+              CompanyName(Colors.black, 20),
+            ],
+          ),
           const SizedBox(height: 8),
           Text("Resumen $kDate", style: TextStyle(color: Colors.grey)),
           const SizedBox(height: 24),
@@ -60,8 +68,9 @@ class Dashboard extends StatelessWidget{
           ),
           const SizedBox(height: 24),
           Text(
-            'Acciones Rápidas',
+            'Menu',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ),
           SizedBox(height: 16),
           QuickActionsGrid(),

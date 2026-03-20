@@ -69,34 +69,5 @@ class _SplashScreenState extends ConsumerState<SplashScreen>{
           )
       ),
     );
-
-      /*
-      Scaffold(
-        body: Stack(
-            children: [
-              SizedBox.expand(
-                child: Image(
-                  image: AssetImage("images/tiendita_icon.png"),
-                  fit: BoxFit.fill,
-                  //height: double.infinity,
-                  //width: double.infinity,
-                  alignment: Alignment.center,
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 4,
-                    ),
-                ),
-              )
-            ],
-        ),
-    );
-
-       */
   }
 }

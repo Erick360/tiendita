@@ -26,6 +26,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
   Widget build(BuildContext context) {
     final productList = ref.watch(productsListProvider);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: const Color(0xFFF25410),
         elevation: 0,
@@ -52,7 +53,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
         children: <Widget>[
           Padding(padding: const EdgeInsets.only(top: 30)),
           SearchBar(
-            hintText: 'Buscar proveedor',
+            hintText: 'Buscar producto',
             leading: const Icon(Icons.search),
             onChanged: (value) {},
           ),

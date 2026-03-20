@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import '../../constants/constants.dart';
 import '../../providers/clients_provider.dart';
 import '../../widgets/footer_button.dart';
 import '../../widgets/text_data.dart';
@@ -17,11 +16,33 @@ class ClientsScreen extends ConsumerWidget{
   Widget build(BuildContext context, WidgetRef ref){
     final clientsList = ref.watch(clientListProvider);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: kActiveColor,
+        elevation: 0,
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(FontAwesomeIcons.peopleGroup, color: Colors.white, size: 20),
+            const SizedBox(width: 5),
+            Text(
+              'Mis Clientes',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Column(
         children: <Widget>[
           Padding(padding: const EdgeInsets.only(top: 30)),
           SearchBar(
-            hintText: 'Buscar proveedor',
+            hintText: 'Buscar Cliente',
             leading: const Icon(Icons.search),
             onChanged: (value) {},
           ),

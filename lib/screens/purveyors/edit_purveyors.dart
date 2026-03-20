@@ -45,7 +45,7 @@ class _StateEditPurveyors extends ConsumerState<EditPurveyors>{
       }
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error al cargar datos: $e")));
+        showErrorSnackBar(context, 'Error al cargar los datos');
       }
     }
   }
@@ -74,11 +74,13 @@ class _StateEditPurveyors extends ConsumerState<EditPurveyors>{
     await ref.read(purveyorNotifierProvider.notifier).savePurveyor(updatePurveyor);
 
     if(mounted){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Cambios Guardados"),backgroundColor: Colors.green));
+      showSuccessSnackBar(context, 'Proveedor actualizado exitosamente');
+      Navigator.pop(context);
     }
   }catch(e){
     if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error al guardar")));
+       showErrorSnackBar(context, 'Error al actualizar los datos');
+       print(e);
       }
     }finally{
       setState(() {

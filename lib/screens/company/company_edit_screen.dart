@@ -5,6 +5,8 @@ import 'package:tiendita/providers/company_provider.dart';
 import 'package:tiendita/screens/settings/settings_screen.dart';
 import 'package:tiendita/widgets/image_picker.dart';
 
+import '../../constants/constants.dart';
+
 class CompanyEditScreen extends ConsumerStatefulWidget{
   const CompanyEditScreen({super.key});
   static String id = "company_edit_screen";
@@ -49,9 +51,8 @@ class _CompanyEditScreenState extends ConsumerState<CompanyEditScreen>{
       }
     }catch(e){
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error Cargando datos: $e")),
-        );
+        showErrorSnackBar(context, 'Error al cargar los datos');
+        print(e);
       }
     }
   }
@@ -86,22 +87,13 @@ class _CompanyEditScreenState extends ConsumerState<CompanyEditScreen>{
       await ref.read(companyNotifierProvider.notifier).saveCompany(updateCompany);
 
       if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-         const SnackBar(
-             content: Text('Cambios guardados'),
-          backgroundColor: Colors.green,
-         ),
-        );
+        showSuccessSnackBar(context, 'Negocio actualizado exitosamente');
         Navigator.pop(context);
       }
 
     }catch(e){
         if(mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error al guardar'),
-            )
-          );
+          showErrorSnackBar(context, 'Error al actualizar los datos');
         }
     }finally{
       setState(() {
