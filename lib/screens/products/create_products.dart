@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/products_model.dart';
 import 'package:tiendita/providers/products_provider.dart';
-import 'package:tiendita/screens/products/products.dart';
 import '../../widgets/image_picker.dart';
 
 class CreateProducts extends ConsumerStatefulWidget{

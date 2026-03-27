@@ -4,7 +4,6 @@ import 'package:tiendita/models/clients_model.dart';
 
 import '../../constants/constants.dart';
 import '../../providers/clients_provider.dart';
-import 'clients_screen.dart';
 
 class CreateClient extends ConsumerStatefulWidget{
   const CreateClient({super.key});

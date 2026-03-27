@@ -3,8 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/screens/my_sales_details.dart';
 import 'package:tiendita/screens/my_shopping_details.dart';
 import 'package:tiendita/screens/products/products.dart';
-import 'package:tiendita/screens/sales_screen.dart';
-import 'package:tiendita/screens/shopping_screen.dart';
+import 'package:tiendita/screens/sales/sales_screen.dart';
+import 'package:tiendita/screens/shops/shopping_screen.dart';
 import 'package:tiendita/widgets/dashboard/quick_action_button.dart';
 
 import '../../screens/category/category_screen.dart';

@@ -51,7 +51,6 @@ class Sales extends Table{
   IntColumn get id_sales => integer().autoIncrement()();
   DateTimeColumn get sale_date => dateTime().nullable()();
   TextColumn get num_sale => text().withLength()();
-  TextColumn get local_coin => text().withLength(min: 1,max: 50)();
   RealColumn get subtotal => real()();
   RealColumn get total => real()();
 }
@@ -73,7 +72,6 @@ class Shopping extends Table{
   IntColumn get id_shops => integer().autoIncrement()();
   DateTimeColumn get shop_date => dateTime().nullable()();
   TextColumn get num_shop => text().withLength(min: 1,max: 100)();
-  TextColumn get local_coin => text().withLength(min: 1, max: 50)();
   RealColumn get subtotal => real()();
   RealColumn get total => real()();
 
@@ -86,7 +84,6 @@ class ShoppingDetails extends Table{
   TextColumn get num_shop => text().withLength(min: 1,max: 100)();
   TextColumn get rfc_purveyor => text().withLength(min: 1, max: 13)();
   TextColumn get product => text().withLength(min: 1, max: 50)();
-  TextColumn get local_coin => text().withLength(min: 1, max: 30)();
   RealColumn get price_shop => real()();
   RealColumn get amount_shop => real()();
   RealColumn get discount => real()();
@@ -97,12 +94,11 @@ class ShoppingDetails extends Table{
   IntColumn get id_category => integer().references(Categories, #id_category, onDelete: KeyAction.cascade)();
 }
 
-class Expensives extends Table{
-   IntColumn get id_expensives => integer().autoIncrement()();
-   TextColumn get expensive_name => text().withLength(min: 1, max: 50)();
+class Expenses extends Table{
+   IntColumn get id_expenses => integer().autoIncrement()();
+   TextColumn get expense_name => text().withLength(min: 1, max: 50)();
    TextColumn get description => text().withLength(max: 255).nullable()();
    RealColumn get amount => real()();
-   TextColumn get localCoin => text().withLength(max: 30, min: 1)();
    DateTimeColumn get expenseDate => dateTime().nullable()();
 
    //foreign key

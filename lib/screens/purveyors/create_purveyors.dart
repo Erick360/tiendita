@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/purveyors_model.dart';
 import 'package:tiendita/providers/purveyor_provider.dart';
-import 'package:tiendita/screens/purveyors/purveyors_screen.dart';
 
 class CreatePurveyor extends ConsumerStatefulWidget{
   const CreatePurveyor({super.key});
