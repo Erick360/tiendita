@@ -21,9 +21,10 @@ class ShoppingNotifier extends StateNotifier<AsyncValue<List<ShoppingModel?>>> {
 
   Future<void> saveShopping(ShoppingModel model) async {
     try{
-      await _repo.createShopping(model);
-
+       final id = await _repo.createShopping(model);
+      print("SUCCESS: Compra guardada en la base de datos con ID: $id");
     }catch(e, stack){
+      print("ERROR SAVING COMPRA: $e");
       state = AsyncError(e, stack);
     }
   }
@@ -39,9 +40,19 @@ class ShoppingNotifier extends StateNotifier<AsyncValue<List<ShoppingModel?>>> {
   Future<void> loadShopsForDay(DateTime date) async {
     try {
       state = const AsyncLoading();
+      print("Buscando compras para la fecha: $date");
+
+      final allShops = await _repo.database.select(_repo.database.shopping).get();
+      print("Total de compras en toda la base de datos: ${allShops.length}");
+      for(var shop in allShops) {
+        print("   - Ticket: ${shop.num_shop} | Fecha guardada: ${shop.shop_date}");
+      }
+
       final shops = await _repo.getShopsForDay(date);
+      print("Total de compras hot: ${shops.length}");
       state = AsyncData(shops);
     } catch (e, stack) {
+      print("ERROR FETCHING SHOPS: $e");
       state = AsyncError(e, stack);
     }
   }

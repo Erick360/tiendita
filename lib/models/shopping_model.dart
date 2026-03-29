@@ -3,7 +3,7 @@ import 'package:tiendita/database/tienditaDatabase.dart';
 
 class ShoppingModel{
   final int? idShopping;
-  final DateTime shopDate;
+  final DateTime? shopDate;
   final String numShop;
   final double subtotal;
   final double total;
@@ -30,14 +30,14 @@ class ShoppingModel{
     );
   }
 
-  factory ShoppingModel.fromRow(Shopping row){
+  factory ShoppingModel.fromRow(ShoppingData row){
     return ShoppingModel(
-        idShopping: row.id_shops as int,
-        shopDate: row.shop_date as DateTime,
-        numShop: row.num_shop as String,
-        subtotal: row.subtotal as double,
-        total: row.total as double,
-        idPurveyor: row.id_purveyor as int
+        idShopping: row.id_shops,
+        shopDate: row.shop_date,
+        numShop: row.num_shop,
+        subtotal: row.subtotal,
+        total: row.total,
+        idPurveyor: row.id_purveyor
     );
   }
 }

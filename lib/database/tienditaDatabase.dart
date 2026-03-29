@@ -70,7 +70,7 @@ class SalesDetails extends Table{
 
 class Shopping extends Table{
   IntColumn get id_shops => integer().autoIncrement()();
-  DateTimeColumn get shop_date => dateTime().nullable()();
+  DateTimeColumn get shop_date => dateTime()();
   TextColumn get num_shop => text().withLength(min: 1,max: 100)();
   RealColumn get subtotal => real()();
   RealColumn get total => real()();

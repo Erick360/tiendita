@@ -8,6 +8,8 @@ import 'package:tiendita/screens/clients/create_client.dart';
 import 'package:tiendita/screens/products/create_products.dart';
 import 'package:tiendita/screens/purveyors/create_purveyors.dart';
 import 'package:tiendita/screens/purveyors/purveyors_screen.dart';
+import 'package:tiendita/screens/shops/shops_history_custom.dart';
+import 'package:tiendita/screens/shops/shops_history_today.dart';
 import 'screens/home_page.dart';
 import 'screens/my_sales_details.dart';
 import 'screens/sales/sales_screen.dart';
@@ -51,6 +53,8 @@ class MyApp extends StatelessWidget {
         CreateProducts.id: (context) => const CreateProducts(),
         ClientsScreen.id: (context) => const ClientsScreen(),
         CreateClient.id: (context) => const CreateClient(),
+        ShoppingHistoryToday.id: (context) => const ShoppingHistoryToday(),
+        ShoppingHistoryCustom.id: (context) => const ShoppingHistoryCustom(),
       },
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
+import 'package:tiendita/screens/shops/shops_history_custom.dart';
+import 'package:tiendita/screens/shops/shops_history_today.dart';
 import '../../models/products_model.dart';
 import '../../models/purveyors_model.dart';
 import '../../models/shopping_model.dart';
@@ -59,7 +61,35 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
           ],
         ),
         actions: <Widget>[
-
+          PopupMenuButton<String>(
+            onSelected: (String route) {
+              Navigator.pushNamed(context, route);
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem<String>(
+                  value: ShoppingHistoryToday.id,
+                  child: Row(
+                    children: [
+                      Icon(Icons.history, color: Colors.black54),
+                      SizedBox(width: 8),
+                      Text('Consultar compras (hoy)'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: ShoppingHistoryCustom.id,
+                  child: const Row(
+                    children: [
+                      Icon(Icons.history_outlined, color: Colors.black54),
+                      SizedBox(width: 8),
+                      Text('Consultar compras (fechas)'),
+                    ],
+                  ),
+                ),
+              ];
+            },
+          ),
         ],
       ),
       body: SafeArea(
@@ -109,7 +139,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
               loading: () => const Center(child: CircularProgressIndicator()),
             ),
             const SizedBox(height: 16),
-            if(_selectedPurveyorId != null)
+            if (_selectedPurveyorId != null)
               Card(
                 elevation: 2,
                 color: Colors.blue[50],
@@ -122,58 +152,91 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                     columnSpacing: 20,
                     showCheckboxColumn: false,
                     columns: const [
-                      DataColumn(label: Text('Ticket de Compra', style: TextStyle(fontWeight: FontWeight.bold))),
-                      DataColumn(label: Text('Proveedor', style: TextStyle(fontWeight: FontWeight.bold))),
+                      DataColumn(
+                        label: Text(
+                          'Ticket de Compra',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Proveedor',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ],
                     rows: [
-                      DataRow(cells: [
-                        DataCell(Text(_currentPurchaseTicket, style: const TextStyle(fontSize: 16, color: Colors.red))),
-                        DataCell(Text(_selectedPurveyorName ?? '', style: const TextStyle(fontSize: 16))),
-                      ]),
+                      DataRow(
+                        cells: [
+                          DataCell(
+                            Text(
+                              _currentPurchaseTicket,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              _selectedPurveyorName ?? '',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ),
             const SizedBox(height: 16),
             productsAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (err, stack) => Text('Error al cargar productos: $err'),
-                data: (products) {
-                  final validProducts = products.whereType<ProductsModel>().toList();
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, stack) => Text('Error al cargar productos: $err'),
+              data: (products) {
+                final validProducts = products
+                    .whereType<ProductsModel>()
+                    .toList();
 
-                  return Autocomplete<ProductsModel>(
-                    optionsBuilder: (TextEditingValue textEditingValue) {
-                      if (textEditingValue.text.isEmpty) {
-                        return const Iterable<ProductsModel>.empty();
-                      }
-                      return validProducts.where((ProductsModel item) {
-                        return item.productName.toLowerCase().contains(textEditingValue.text.toLowerCase());
-                      });
-                    },
+                return Autocomplete<ProductsModel>(
+                  optionsBuilder: (TextEditingValue textEditingValue) {
+                    if (textEditingValue.text.isEmpty) {
+                      return const Iterable<ProductsModel>.empty();
+                    }
+                    return validProducts.where((ProductsModel item) {
+                      return item.productName.toLowerCase().contains(
+                        textEditingValue.text.toLowerCase(),
+                      );
+                    });
+                  },
 
-                    displayStringForOption: (ProductsModel option) => option.productName,
+                  displayStringForOption: (ProductsModel option) =>
+                      option.productName,
 
-                    onSelected: (ProductsModel selection) {
-                      cartNotifier.addItem(CartItem(
+                  onSelected: (ProductsModel selection) {
+                    cartNotifier.addItem(
+                      CartItem(
                         productId: selection.idProduct ?? 0,
                         name: selection.productName,
                         price: selection.priceShop ?? 0.0,
                         stock: selection.stock ?? 0,
-                      ));
-                    },
-                    fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
-                      return TextField(
-                        controller: controller,
-                        focusNode: focusNode,
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.add_shopping_cart),
-                          labelText: "Busca un producto para agregar...",
-                          border: OutlineInputBorder(),
-                        ),
-                      );
-                    },
-                  );
-                }
+                      ),
+                    );
+                  },
+                  fieldViewBuilder:
+                      (context, controller, focusNode, onFieldSubmitted) {
+                        return TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          decoration: const InputDecoration(
+                            icon: Icon(Icons.add_shopping_cart),
+                            labelText: "Busca un producto para agregar...",
+                            border: OutlineInputBorder(),
+                          ),
+                        );
+                      },
+                );
+              },
             ),
             const SizedBox(height: 25),
             SingleChildScrollView(
@@ -187,12 +250,60 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                   columnSpacing: 15,
                   showCheckboxColumn: false,
                   columns: [
-                    DataColumn(label: TextData("Item", 18, Colors.black, "Poppins", FontWeight.bold)),
-                    DataColumn(label: TextData("Nombre", 18, Colors.black, "Poppins", FontWeight.bold)),
-                    DataColumn(label: TextData("Precio Compra", 18, Colors.black, "Poppins", FontWeight.bold)),
-                    DataColumn(label: TextData("Cantidad", 18, Colors.black, "Poppins", FontWeight.bold)),
-                    DataColumn(label: TextData("Importe", 18, Colors.black, "Poppins", FontWeight.bold)),
-                    DataColumn(label: TextData("Eliminar", 18, Colors.black, "Poppins", FontWeight.bold)),
+                    DataColumn(
+                      label: TextData(
+                        "Item",
+                        18,
+                        Colors.black,
+                        "Poppins",
+                        FontWeight.bold,
+                      ),
+                    ),
+                    DataColumn(
+                      label: TextData(
+                        "Nombre",
+                        18,
+                        Colors.black,
+                        "Poppins",
+                        FontWeight.bold,
+                      ),
+                    ),
+                    DataColumn(
+                      label: TextData(
+                        "Precio Compra",
+                        18,
+                        Colors.black,
+                        "Poppins",
+                        FontWeight.bold,
+                      ),
+                    ),
+                    DataColumn(
+                      label: TextData(
+                        "Cantidad",
+                        18,
+                        Colors.black,
+                        "Poppins",
+                        FontWeight.bold,
+                      ),
+                    ),
+                    DataColumn(
+                      label: TextData(
+                        "Importe",
+                        18,
+                        Colors.black,
+                        "Poppins",
+                        FontWeight.bold,
+                      ),
+                    ),
+                    DataColumn(
+                      label: TextData(
+                        "Eliminar",
+                        18,
+                        Colors.black,
+                        "Poppins",
+                        FontWeight.bold,
+                      ),
+                    ),
                   ],
                   rows: cart.asMap().entries.map((entry) {
                     int index = entry.key;
@@ -207,27 +318,49 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
+                                icon: const Icon(
+                                  Icons.remove_circle_outline,
+                                  color: Colors.red,
+                                ),
                                 onPressed: () {
                                   if (item.quantity > 1) {
-                                    cartNotifier.updateQuantity(item.productId, item.quantity - 1);
+                                    cartNotifier.updateQuantity(
+                                      item.productId,
+                                      item.quantity - 1,
+                                    );
                                   }
-                                }
+                                },
                               ),
-                              Text('${item.quantity}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                '${item.quantity}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               IconButton(
-                                icon: const Icon(Icons.add_circle_outline, color: Colors.green),
-                                onPressed: () => cartNotifier.updateQuantity(item.productId, item.quantity + 1),
+                                icon: const Icon(
+                                  Icons.add_circle_outline,
+                                  color: Colors.green,
+                                ),
+                                onPressed: () => cartNotifier.updateQuantity(
+                                  item.productId,
+                                  item.quantity + 1,
+                                ),
                               ),
                             ],
                           ),
                         ),
                         DataCell(Text('\$${item.total.toStringAsFixed(2)}')),
                         DataCell(
-                            IconButton(
-                              icon: const Icon(Icons.delete_outline, color: Colors.red),
-                              onPressed: () {cartNotifier.updateQuantity(item.productId, 0);},
-                            )
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              cartNotifier.updateQuantity(item.productId, 0);
+                            },
+                          ),
                         ),
                       ],
                     );
@@ -241,7 +374,10 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
               child: ElevatedButton.icon(
                 onPressed: () async {
                   if (_selectedPurveyorId == null) {
-                    showErrorSnackBar(context, 'Por favor, selecciona un proveedor.');
+                    showErrorSnackBar(
+                      context,
+                      'Por favor, selecciona un proveedor.',
+                    );
                     return;
                   }
                   if (cart.isEmpty) {
@@ -257,23 +393,29 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                     idPurveyor: _selectedPurveyorId!,
                   );
 
-                  await ref.read(shopsNotifierProvider.notifier).saveShopping(newPurchase);
+                  await ref
+                      .read(shopsNotifierProvider.notifier)
+                      .saveShopping(newPurchase);
 
                   if (context.mounted) {
-                    showSuccessSnackBar(context, '¡Compra registrada con éxito!');
+                    showSuccessSnackBar(
+                      context,
+                      '¡Compra registrada con éxito!',
+                    );
                   }
 
                   cartNotifier.clearCart();
                   setState(() {
                     _selectedPurveyorId = null;
                     _selectedPurveyorName = null;
-                    _currentPurchaseTicket = "COMP-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}";
+                    _currentPurchaseTicket =
+                        "COMP-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}";
                   });
                 },
                 icon: const Icon(Icons.save),
                 label: const Text("Registrar Compra"),
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -21,7 +21,7 @@ class ShoppingRepository{
       ..where((t) => t.shop_date.isBetweenValues(start, end));
 
     final rows = await query.get();
-    return rows.map((row) => ShoppingModel.fromRow(row as Shopping)).toList();
+    return rows.map((row) => ShoppingModel.fromRow(row)).toList();
   }
 
   Future<List<ShoppingModel>> getShopsForDay(DateTime date) async {
