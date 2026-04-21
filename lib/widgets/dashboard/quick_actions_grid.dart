@@ -10,6 +10,7 @@ import 'package:tiendita/widgets/dashboard/quick_action_button.dart';
 import '../../screens/category/category_screen.dart';
 import '../../screens/clients/clients_screen.dart';
 import '../../screens/company/company_edit_screen.dart';
+import '../../screens/expenses/expenses_screen.dart';
 import '../../screens/purveyors/purveyors_screen.dart';
 
 class QuickActionsGrid extends StatelessWidget {
@@ -50,7 +51,7 @@ class QuickActionsGrid extends StatelessWidget {
           title: 'Gastos',
           icon: Icons.receipt,
           color: Colors.orange,
-          onTap: () {},
+          onTap: () => Navigator.pushNamed(context, ExpensesScreen.id),
         ),
         QuickActionButton(
             title: 'Mi Negocio',

@@ -59,3 +59,4 @@ key.properties
 *.g.dart
 *.freezed.dart
 *.gr.dart
+*.lock

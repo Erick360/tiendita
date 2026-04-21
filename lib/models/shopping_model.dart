@@ -22,7 +22,7 @@ class ShoppingModel{
   ShoppingCompanion toCompanion(){
     return ShoppingCompanion(
       id_shops: idShopping != null ? Value(idShopping!) : const Value.absent(),
-      shop_date: Value(shopDate),
+      shop_date: Value(shopDate!),
       num_shop: Value(numShop),
       subtotal: Value(subtotal),
       total: Value(total),

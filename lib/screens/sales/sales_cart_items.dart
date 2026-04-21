@@ -1,20 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CartItem{
+class SalesCartItems{
   final int productId;
   final String name;
   final double price;
   int quantity;
   int stock;
-  CartItem({required this.productId,required this.name, required this.price, this.quantity = 1, required this.stock});
+  SalesCartItems({required this.productId,required this.name, required this.price, this.quantity = 1, required this.stock});
 
   double get total => price * quantity;
 }
 
-class CartNotifier extends StateNotifier<List<CartItem>> {
+class CartNotifier extends StateNotifier<List<SalesCartItems>> {
   CartNotifier() : super([]);
 
-  void addItem(CartItem item) {
+  void addItem(SalesCartItems item) {
     final index = state.indexWhere((element) => element.productId == item.productId);
     if (index != -1) {
 
@@ -49,6 +49,6 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
 }
 
 
-final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) {
+final cartProvider = StateNotifierProvider<CartNotifier, List<SalesCartItems>>((ref) {
   return CartNotifier();
 });

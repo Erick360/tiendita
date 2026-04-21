@@ -10,7 +10,7 @@ import '../../providers/products_provider.dart';
 import '../../providers/purveyor_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../widgets/text_data.dart';
-import 'cart_item.dart';
+import 'shops_cart_items.dart';
 
 class ShoppingScreen extends ConsumerStatefulWidget {
   const ShoppingScreen({super.key});
@@ -215,7 +215,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
 
                   onSelected: (ProductsModel selection) {
                     cartNotifier.addItem(
-                      CartItem(
+                      ShopsCartItems(
                         productId: selection.idProduct ?? 0,
                         name: selection.productName,
                         price: selection.priceShop ?? 0.0,
@@ -307,7 +307,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                   ],
                   rows: cart.asMap().entries.map((entry) {
                     int index = entry.key;
-                    CartItem item = entry.value;
+                    ShopsCartItems item = entry.value;
                     return DataRow(
                       cells: [
                         DataCell(Text('${index + 1}')),

@@ -24,7 +24,6 @@ class Purveyors extends Table{
   TextColumn get phone_number => text().withLength(min: 1, max: 12)();
   TextColumn get email => text().withLength(min: 1, max: 50)();
   TextColumn get address => text().withLength(min: 1, max: 100)();
-// date and state
 }
 
 class Products extends Table{
@@ -49,10 +48,12 @@ class Products extends Table{
 
 class Sales extends Table{
   IntColumn get id_sales => integer().autoIncrement()();
-  DateTimeColumn get sale_date => dateTime().nullable()();
+  DateTimeColumn get sale_date => dateTime()();
   TextColumn get num_sale => text().withLength()();
   RealColumn get subtotal => real()();
   RealColumn get total => real()();
+
+  IntColumn get id_client => integer().references(Clients, #id_client, onDelete: KeyAction.cascade)();
 }
 
 class SalesDetails extends Table{
@@ -99,10 +100,7 @@ class Expenses extends Table{
    TextColumn get expense_name => text().withLength(min: 1, max: 50)();
    TextColumn get description => text().withLength(max: 255).nullable()();
    RealColumn get amount => real()();
-   DateTimeColumn get expenseDate => dateTime().nullable()();
-
-   //foreign key
-  IntColumn get id_category => integer().references(Categories, #id_category, onDelete: KeyAction.cascade)();
+   DateTimeColumn get expenseDate => dateTime()();
 }
 
 class Company extends Table{
@@ -134,7 +132,8 @@ class Clients extends Table {
     Shopping,
     ShoppingDetails,
     Company,
-    Clients
+    Clients,
+    Expenses
 ])
 
 
