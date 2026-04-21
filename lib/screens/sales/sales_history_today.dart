@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +8,7 @@ import '../../widgets/text_data.dart';
 class SalesHistoryToday extends ConsumerStatefulWidget {
   const SalesHistoryToday({super.key});
 
-  static String id = "shopping_history_today";
+  static String id = "sales_history_today";
 
   @override
   ConsumerState<SalesHistoryToday> createState() => _SalesHistoryTodayState();

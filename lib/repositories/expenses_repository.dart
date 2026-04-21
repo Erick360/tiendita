@@ -38,4 +38,19 @@ class ExpensesRepository{
     return await (database.delete(database.expenses)
       ..where((t) => t.id_expenses.equals(id))).go();
   }
+
+  Future<List<ExpensesModel>> getExpensesByDateRange(DateTime start, DateTime end) async{
+    final query = database.select(database.expenses)
+        ..where((t) => t.expenseDate.isBetweenValues(start, end));
+
+    final rows = await query.get();
+    return rows.map((row) => ExpensesModel.fromRow(row)).toList();
+  }
+
+  Future<List<ExpensesModel>> getExpensesPerDay(DateTime date) async{
+    final startDay = DateTime(date.year, date.month, date.day);
+
+    final endDay = DateTime(date.year, date.month, date.day, 23, 59, 59);
+    return await getExpensesByDateRange(startDay, endDay);
+  }
 }

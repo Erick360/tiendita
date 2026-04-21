@@ -145,47 +145,50 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                       color: Colors.blue[50],
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: DataTable(
-                          headingRowHeight: 40,
-                          dataRowMinHeight: 40,
-                          dataRowMaxHeight: 40,
-                          columnSpacing: 20,
-                          showCheckboxColumn: false,
-                          columns: const [
-                            DataColumn(
-                              label: Text(
-                                'Ticket de Venta',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            headingRowHeight: 40,
+                            dataRowMinHeight: 40,
+                            dataRowMaxHeight: 40,
+                            columnSpacing: 20,
+                            showCheckboxColumn: false,
+                            columns: const [
+                              DataColumn(
+                                label: Text(
+                                  'Ticket de Venta',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Cliente',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                              DataColumn(
+                                label: Text(
+                                  'Cliente',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                          ],
-                          rows: [
-                            DataRow(
-                              cells: [
-                                DataCell(
-                                  Text(
-                                    _currentSalesTicket,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.red,
+                            ],
+                            rows: [
+                              DataRow(
+                                cells: [
+                                  DataCell(
+                                    Text(
+                                      _currentSalesTicket,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.red,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                DataCell(
-                                  Text(
-                                    _selectedClientName ?? 'venta rapida',
-                                    style: const TextStyle(fontSize: 16),
+                                  DataCell(
+                                    Text(
+                                      _selectedClientName ?? 'venta rapida',
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -218,7 +221,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                             SalesCartItems(
                               productId: selection.idProduct ?? 0,
                               name: selection.productName,
-                              price: selection.priceShop ?? 0.0,
+                              price: selection.priceSale ?? 0.0,
                               stock: selection.stock ?? 0,
                             ),
                           );

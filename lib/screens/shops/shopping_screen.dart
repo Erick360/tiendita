@@ -145,47 +145,50 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                 color: Colors.blue[50],
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: DataTable(
-                    headingRowHeight: 40,
-                    dataRowMinHeight: 40,
-                    dataRowMaxHeight: 40,
-                    columnSpacing: 20,
-                    showCheckboxColumn: false,
-                    columns: const [
-                      DataColumn(
-                        label: Text(
-                          'Ticket de Compra',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      headingRowHeight: 50,
+                      dataRowMinHeight: 50,
+                      dataRowMaxHeight: 50,
+                      columnSpacing: 30,
+                      showCheckboxColumn: false,
+                      columns: const [
+                        DataColumn(
+                          label: Text(
+                            'Ticket de Compra',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Proveedor',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        DataColumn(
+                          label: Text(
+                            'Proveedor',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                    ],
-                    rows: [
-                      DataRow(
-                        cells: [
-                          DataCell(
-                            Text(
-                              _currentPurchaseTicket,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.red,
+                      ],
+                      rows: [
+                        DataRow(
+                          cells: [
+                            DataCell(
+                              Text(
+                                _currentPurchaseTicket,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.red,
+                                ),
                               ),
                             ),
-                          ),
-                          DataCell(
-                            Text(
-                              _selectedPurveyorName ?? '',
-                              style: const TextStyle(fontSize: 16),
+                            DataCell(
+                              Text(
+                                _selectedPurveyorName ?? '',
+                                style: const TextStyle(fontSize: 16),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
