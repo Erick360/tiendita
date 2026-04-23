@@ -18,6 +18,7 @@ class ExpensesScreen extends ConsumerStatefulWidget {
 class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
   DateTime? _startDate;
   DateTime? _endDate;
+  bool _isShowingToday = true;
 
   Future<void> _selectDateRange(BuildContext context) async {
     final DateTimeRange? pickedRange = await showDateRangePicker(
@@ -53,6 +54,8 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
       });
 
       ref.read(expenseNotifierProvider.notifier).loadExpensesByDateRange(_startDate!, _endDate!);
+    }else if(_startDate == null){
+      _loadToday();
     }
   }
 
@@ -82,7 +85,9 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
     if (confirm == true && context.mounted) {
       await ref.read(expenseNotifierProvider.notifier).deleteExpense(expenseId);
 
-      if (_startDate != null && _endDate != null) {
+      if(_isShowingToday) {
+        _loadToday();
+      }else if (_startDate != null && _endDate != null) {
         ref.read(expenseNotifierProvider.notifier).loadExpensesByDateRange(_startDate!, _endDate!);
       }
 
@@ -90,23 +95,30 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
     }
   }
 
-  /*
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(expenseNotifierProvider.notifier).loadExpensesForDay(DateTime.now());
+      _loadToday();
     });
   }
-  */
+
+  void _loadToday() {
+    setState(() {
+      _isShowingToday = true;
+    });
+    ref.read(expenseNotifierProvider.notifier).loadExpensesForDay(DateTime.now());
+  }
 
   @override
   Widget build(BuildContext) {
     final expensesState = ref.watch(expenseNotifierProvider);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF25410),
+        backgroundColor: kActiveColor,
         elevation: 0,
         centerTitle: true,
         title: Row(
@@ -133,6 +145,177 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                          onTap: _loadToday,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: _isShowingToday ? const Color(0xFFF25410) : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                        ),
+                          child: Center(
+                            child: Text(
+                              "Hoy",
+                              style: TextStyle(
+                                color: _isShowingToday ? Colors.white : Colors.black87,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                        child: GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              _isShowingToday = false;
+                            });
+                            _selectDateRange(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              color: !_isShowingToday ? kActiveColor : Colors.transparent,
+                              borderRadius: BorderRadius.circular(12),
+                          ),
+                            child: Center(
+                              child: Text(
+                                "Por Fechas",
+                                style: TextStyle(
+                                  color: !_isShowingToday ? Colors.white : Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              if(!_isShowingToday && _startDate != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueGrey[50],
+                      foregroundColor: Colors.black87,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    icon: const Icon(Icons.calendar_today, color: Color(0xFFF25410)),
+                    label: Text(
+                      "${DateFormat('dd/MMM/yyyy').format(_startDate!)}  -  ${DateFormat('dd/MMM/yyyy').format(_endDate!)}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    onPressed: () => _selectDateRange(context),
+                  ),
+                ),
+              Expanded(
+                  child: (!_isShowingToday && _startDate == null) ? 
+                  const Center(
+                    child: Text(
+                      "Selecciona un rango de fechas.",
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ) : expensesState.when(
+                      data: (expenses){
+                        if(expenses.isEmpty){
+                          return Center(
+                            child: Text(
+                              _isShowingToday ? "No tienes gastos registrados hoy." : "No se encontraron gastos.",
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          );
+                        }
+                        final double totalSum = expenses.fold(0.0, (sum, expense) => sum + (expense?.amount ?? 0.0));
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.red[50],
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.red.shade200),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Total Gastado:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red)),
+                                  Text("\$${totalSum.toStringAsFixed(2)}", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red)),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: DataTable(
+                                    headingRowColor: WidgetStateProperty.all(Colors.grey[200]),
+                                    headingRowHeight: 60,
+                                    dataRowMaxHeight: 60,
+                                    columnSpacing: 25,
+                                    showCheckboxColumn: false,
+                                    columns: [
+                                      DataColumn(label: TextData(_isShowingToday ? "Hora" : "Fecha", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                      DataColumn(label: TextData("Descripción", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                      DataColumn(label: TextData("Monto", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                      DataColumn(label: TextData("Acciones", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                    ],
+                                    rows: expenses.map((expense) {
+                                      return DataRow(
+                                        cells: [
+                                          DataCell(Text(
+                                              _isShowingToday
+                                                  ? DateFormat('hh:mm a').format(expense!.expenseDate)
+                                                  : DateFormat('dd/MM/yy').format(expense!.expenseDate),
+                                              style: TextStyle(fontWeight: _isShowingToday ? FontWeight.bold : FontWeight.normal)
+                                          )),
+                                          DataCell(Text(expense.description ?? "Sin descripción")),
+                                          DataCell(Text("\$${expense.amount.toStringAsFixed(2) ?? '0.00'}", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red))),
+                                          DataCell(
+                                            IconButton(
+                                              icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                              onPressed: () {
+                                                if (expense?.idExpenses != null) {
+                                                  _confirmDelete(context, expense!.idExpenses!);
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      error: (e, stack) => Center(child: Text("Error: $e", style: const TextStyle(color: Colors.red))),
+                      loading: () => const Center(child: CircularProgressIndicator()),
+                  ),
+              ),
+
+
+
+              /*
               Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -140,6 +323,61 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
+                      const Text("Gastos del dia de hoy", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      expensesToday.when(
+                          data: (expenses){
+                            if(expenses.isEmpty){
+                              return const  Center(child: Text("No haz realizado ningun gasto hoy", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)));
+                            }
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                padding: const EdgeInsets.only(top: 10),
+                                child: DataTable(
+                                  headingRowColor: WidgetStateProperty.all(Colors.grey[200]),
+                                  headingRowHeight: 40,
+                                  dataRowMinHeight: 40,
+                                  dataRowMaxHeight: 40,
+                                  columnSpacing: 20,
+                                  showCheckboxColumn: false,
+                                  columns: [
+                                    DataColumn(label: TextData("Ticket", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                    DataColumn(label: TextData("Hora", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                    DataColumn(label: TextData("Subtotal", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                    DataColumn(label: TextData("Total", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                    DataColumn(label: TextData("Acciones", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                  ],
+                                  rows: expenses.map((exp){
+                                    return DataRow(
+                                      cells: [
+                                        DataCell(Text(exp!.expenseName, style: const TextStyle(fontWeight: FontWeight.bold))),
+                                        DataCell(Text(exp.description, style: const TextStyle(fontWeight: FontWeight.bold))),
+                                        DataCell(Text(DateFormat('hh:mm a').format(exp.expenseDate))),
+                                        DataCell(Text("\$${exp.amount.toStringAsFixed(2)}", style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold))),
+
+                                        DataCell(
+                                            IconButton(
+                                              icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                              onPressed: () async {
+                                                if (exp.idExpenses != null) {
+                                                  await ref.read(expenseNotifierProvider.notifier).deleteExpense(exp.idExpenses!);
+                                                  ref.read(expenseNotifierProvider.notifier).loadExpensesForDay(exp.expenseDate);
+                                                }
+                                              },
+                                            )
+                                        ),
+                                      ],
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            );
+                          },
+                          error: (e, stack) => Text("Error al cargar datos: $e"),
+                          loading: () => const Center(child: CircularProgressIndicator()),
+                      ),
+                      const SizedBox(height: 20),
                       const Text(
                         "Selecciona un rango de fechas",
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -164,6 +402,8 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                   ),
                 ),
               ),
+
+
               const SizedBox(height: 20),
               Expanded(
                 child: _startDate == null
@@ -252,6 +492,8 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                   },
                 ),
               ),
+              */
+
             ],
           ),
         ),

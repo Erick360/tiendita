@@ -3,13 +3,13 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../constants/constants.dart';
 import '../../database/tienditaDatabase.dart';
 import '../../providers/category_provider.dart';
 import '../../providers/products_provider.dart';
 import '../../widgets/footer_button.dart';
 import '../../widgets/text_data.dart';
 import 'create_products.dart';
-import 'delete_products.dart';
 import 'edit_products.dart';
 
 class ProductsScreen extends ConsumerStatefulWidget {
@@ -25,6 +25,36 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     final productList = ref.watch(productsListProvider);
+
+    Future<void> _confirmDelete(BuildContext context, int id) async{
+      final bool? confirm = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context){
+            return AlertDialog(
+              title: const Text("Eliminar Producto"),
+              content: const Text("¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer."),
+              shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("Canceler", style: TextStyle(color: Colors.grey)),
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text("Eliminar", style: TextStyle(color: Colors.white))
+                ),
+              ],
+            );
+          }
+      );
+      if(confirm == true && context.mounted){
+        await ref.read(productsNotifierProvider.notifier).deleteProduct(id);
+
+        showSuccessSnackBar(context, 'Producto eliminado correctamente');
+      }
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -281,11 +311,13 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                                     IconButton(
                                       icon: Icon(Icons.delete, color: Colors.red),
                                       onPressed: () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => DeleteProduct(product!)));
+                                        if(product?.idProduct != null){
+                                          _confirmDelete(context, product!.idProduct!);
+                                        }
                                       },
                                     ),
                                   ),
-                                ]
+                                ],
                             );
                           }).toList(),
                       ),

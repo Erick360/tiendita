@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/providers/category_provider.dart';
 import 'package:tiendita/screens/category/create_category.dart';
-import 'package:tiendita/screens/category/delete_category.dart';
 import 'package:tiendita/screens/category/edit_category.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import 'package:tiendita/widgets/footer_button.dart';
@@ -15,6 +14,37 @@ class CategoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    Future<void> _confirmDelete(BuildContext context, int id) async{
+      final bool? confirm = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context){
+            return AlertDialog(
+              title: const Text("Eliminar Categoria"),
+              content: const Text("¿Estás seguro de que deseas eliminar esta categoria? Esta acción no se puede deshacer."),
+              shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("Canceler", style: TextStyle(color: Colors.grey)),
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text("Eliminar", style: TextStyle(color: Colors.white))
+                ),
+              ],
+            );
+          }
+      );
+      if(confirm == true && context.mounted){
+        await ref.read(categoryNotifierProvider.notifier).deleteCategory(id);
+
+        showSuccessSnackBar(context, 'Categoria eliminada correctamente');
+      }
+    }
+
+
     final categoryListAsync = ref.watch(categoryListProvider);
     return Scaffold(
       appBar: AppBar(
@@ -128,10 +158,9 @@ class CategoryScreen extends ConsumerWidget {
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => DeleteCategory(category!)),
-                                  );
+                                  if(category?.idCategory != null){
+                                    _confirmDelete(context, category!.idCategory!);
+                                  }
                                 },
                               ),
                             ),

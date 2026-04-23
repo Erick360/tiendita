@@ -6,7 +6,6 @@ import '../../providers/clients_provider.dart';
 import '../../widgets/footer_button.dart';
 import '../../widgets/text_data.dart';
 import 'create_client.dart';
-import 'delete_client.dart';
 import 'edit_client.dart';
 
 class ClientsScreen extends ConsumerWidget{
@@ -15,6 +14,36 @@ class ClientsScreen extends ConsumerWidget{
 
   Widget build(BuildContext context, WidgetRef ref){
     final clientsList = ref.watch(clientListProvider);
+
+    Future<void> _confirmDelete(BuildContext context, int id) async{
+      final bool? confirm = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context){
+            return AlertDialog(
+              title: const Text("Eliminar Cliente"),
+              content: const Text("¿Estás seguro de que deseas eliminar este dato? Esta acción no se puede deshacer."),
+              shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("Canceler", style: TextStyle(color: Colors.grey)),
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text("Eliminar", style: TextStyle(color: Colors.white))
+                ),
+              ],
+            );
+          }
+      );
+      if(confirm == true && context.mounted){
+        await ref.read(clientNotifierProvider.notifier).deleteClient(id);
+
+        showSuccessSnackBar(context, 'Categoria eliminada correctamente');
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kActiveColor,
@@ -180,7 +209,9 @@ class ClientsScreen extends ConsumerWidget{
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => DeleteClient(client!)));
+                                  if(client?.idClient != null){
+                                    _confirmDelete(context, client!.idClient!);
+                                  }
                                 },
                               ),
                             ),

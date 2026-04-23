@@ -6,7 +6,6 @@ import 'package:tiendita/providers/purveyor_provider.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import '../../widgets/footer_button.dart';
 import 'create_purveyors.dart';
-import 'delete_purveyors.dart';
 import 'edit_purveyors.dart';
 
 class PurveyorsScreen extends ConsumerWidget {
@@ -16,6 +15,35 @@ class PurveyorsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final purveyorListAsync = ref.watch(purveyorListProvider);
+    Future<void> _confirmDelete(BuildContext context, int id) async{
+      final bool? confirm = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context){
+            return AlertDialog(
+              title: const Text("Eliminar Categoria"),
+              content: const Text("¿Estás seguro de que deseas eliminar esta categoria? Esta acción no se puede deshacer."),
+              shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("Canceler", style: TextStyle(color: Colors.grey)),
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text("Eliminar", style: TextStyle(color: Colors.white))
+                ),
+              ],
+            );
+          }
+      );
+      if(confirm == true && context.mounted){
+        await ref.read(purveyorNotifierProvider.notifier).deletePurveyor(id);
+
+        showSuccessSnackBar(context, 'Dato eliminado correctamente');
+      }
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -182,7 +210,9 @@ class PurveyorsScreen extends ConsumerWidget {
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => DeletePurveyor(purveyors!)));
+                                  if(purveyors?.idPurveyor != null){
+                                    _confirmDelete(context, purveyors!.idPurveyor!);
+                                  }
                                 },
                               ),
                             ),

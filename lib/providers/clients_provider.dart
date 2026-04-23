@@ -47,4 +47,13 @@ class ClientNotifier extends StateNotifier<AsyncValue<ClientsModel?>>{
      rethrow;
    }
  }
+
+ Future<void> deleteClient(int id) async{
+   try{
+     await _repo.deleteClient(id);
+   }catch(e, stack){
+     state = AsyncValue.error(e, stack);
+   }
+ }
+
 }
