@@ -286,14 +286,14 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                                                   : DateFormat('dd/MM/yy').format(expense!.expenseDate),
                                               style: TextStyle(fontWeight: _isShowingToday ? FontWeight.bold : FontWeight.normal)
                                           )),
-                                          DataCell(Text(expense.description ?? "Sin descripción")),
-                                          DataCell(Text("\$${expense.amount.toStringAsFixed(2) ?? '0.00'}", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red))),
+                                          DataCell(Text(expense.description)),
+                                          DataCell(Text("\$${expense.amount.toStringAsFixed(2)}", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red))),
                                           DataCell(
                                             IconButton(
                                               icon: const Icon(Icons.delete_outline, color: Colors.red),
                                               onPressed: () {
-                                                if (expense?.idExpenses != null) {
-                                                  _confirmDelete(context, expense!.idExpenses!);
+                                                if (expense.idExpenses != null) {
+                                                  _confirmDelete(context, expense.idExpenses!);
                                                 }
                                               },
                                             ),

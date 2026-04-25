@@ -15,9 +15,9 @@ import 'package:tiendita/screens/sales/sales_history_today.dart';
 import 'package:tiendita/screens/shops/shops_history_custom.dart';
 import 'package:tiendita/screens/shops/shops_history_today.dart';
 import 'screens/home_page.dart';
-import 'screens/my_sales_details.dart';
+import 'screens/sales_details/my_sales_details.dart';
 import 'screens/sales/sales_screen.dart';
-import 'screens/my_shopping_details.dart';
+import 'screens/shop_details/my_shopping_details.dart';
 import 'screens/shops/shopping_screen.dart';
 import 'screens/settings/settings_screen.dart';
 import 'screens/company/company_edit_screen.dart';
@@ -42,10 +42,10 @@ class MyApp extends StatelessWidget {
       //initialRoute: SplashScreen.id,
       routes: {
         HomeScreen.id: (context) => const HomeScreen(),
-        MySalesDetails.id: (context) => const MySalesDetails(),
+        SalesDetails.id: (context) => const SalesDetails(),
         SalesScreen.id: (context) => const SalesScreen(),
         ShoppingScreen.id: (context) => const ShoppingScreen(),
-        MyShoppingDetails.id: (context) => const MyShoppingDetails(),
+        ShoppingDetails.id: (context) => const ShoppingDetails(),
         ProductsScreen.id: (context) => const ProductsScreen(),
         PurveyorsScreen.id: (context) => const PurveyorsScreen(),
         CompanyEditScreen.id: (context) => const CompanyEditScreen(),

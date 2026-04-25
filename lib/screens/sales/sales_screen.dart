@@ -121,11 +121,15 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                 _selectedClientId = c.idClient;
                                 _selectedClientName = c.clientName;
                               });
+                              FocusScope.of(context).unfocus();
                             },
                             fieldViewBuilder: (context, controller, focusNode, onEditingComplete){
                               return TextField(
                                 controller: controller,
                                 focusNode: focusNode,
+                                onSubmitted: (String value){
+                                  onEditingComplete();
+                                },
                                 decoration: const InputDecoration(
                                   icon: Icon(Icons.search),
                                   labelText: "Buscar cliente...",
@@ -225,12 +229,16 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                               stock: selection.stock ?? 0,
                             ),
                           );
+                          FocusScope.of(context).unfocus();
                         },
                         fieldViewBuilder:
                             (context, controller, focusNode, onFieldSubmitted) {
                           return TextField(
                             controller: controller,
                             focusNode: focusNode,
+                            onSubmitted: (String value){
+                              onFieldSubmitted();
+                            },
                             decoration: const InputDecoration(
                               icon: Icon(Icons.add_shopping_cart),
                               labelText: "Busca un producto para agregar...",

@@ -120,12 +120,16 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                       _selectedPurveyorId = selection.idPurveyor;
                       _selectedPurveyorName = selection.PurveyorName;
                     });
+                    FocusScope.of(context).unfocus();
                   },
                   fieldViewBuilder:
                       (context, controller, focusNode, onFieldSubmitted) {
                         return TextField(
                           controller: controller,
                           focusNode: focusNode,
+                          onSubmitted: (String value){
+                            onFieldSubmitted();
+                          },
                           decoration: const InputDecoration(
                             icon: Icon(Icons.search),
                             labelText: "Buscar proveedor...",
@@ -225,12 +229,16 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                         stock: selection.stock ?? 0,
                       ),
                     );
+                    FocusScope.of(context).unfocus();
                   },
                   fieldViewBuilder:
                       (context, controller, focusNode, onFieldSubmitted) {
                         return TextField(
                           controller: controller,
                           focusNode: focusNode,
+                          onSubmitted: (String value){
+                            onFieldSubmitted();
+                          },
                           decoration: const InputDecoration(
                             icon: Icon(Icons.add_shopping_cart),
                             labelText: "Busca un producto para agregar...",

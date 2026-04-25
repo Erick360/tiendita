@@ -45,6 +45,7 @@ class ClientsScreen extends ConsumerWidget{
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: kActiveColor,
         elevation: 0,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tiendita/screens/my_sales_details.dart';
-import 'package:tiendita/screens/my_shopping_details.dart';
+import 'package:tiendita/screens/sales_details/my_sales_details.dart';
+import 'package:tiendita/screens/shop_details/my_shopping_details.dart';
 import 'package:tiendita/screens/products/products.dart';
 import 'package:tiendita/screens/sales/sales_screen.dart';
 import 'package:tiendita/screens/shops/shopping_screen.dart';
@@ -63,13 +63,13 @@ class QuickActionsGrid extends StatelessWidget {
           title: 'Reportes Ventas',
           icon: Icons.bar_chart,
           color: Colors.purple,
-          onTap: () => Navigator.pushNamed(context, MySalesDetails.id),
+          onTap: () => Navigator.pushNamed(context, SalesDetails.id),
         ),
         QuickActionButton(
             title: 'Reporte Compras',
             icon: Icons.bar_chart_sharp,
             color: Colors.amberAccent,
-            onTap: () => Navigator.pushNamed(context, MyShoppingDetails.id)
+            onTap: () => Navigator.pushNamed(context, ShoppingDetails.id)
         ),
         QuickActionButton(
             title: 'Mis Proveedores',

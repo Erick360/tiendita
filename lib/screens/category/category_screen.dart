@@ -47,6 +47,7 @@ class CategoryScreen extends ConsumerWidget {
 
     final categoryListAsync = ref.watch(categoryListProvider);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: kActiveColor,
         elevation: 0,
