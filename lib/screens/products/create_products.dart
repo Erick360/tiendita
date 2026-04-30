@@ -16,13 +16,9 @@ class CreateProducts extends ConsumerStatefulWidget{
 class _StateCreateProducts extends ConsumerState<CreateProducts>{
   final _formKey = GlobalKey<FormState>();
   TextEditingController _productNameController = TextEditingController();
-  TextEditingController _productDescriptionController = TextEditingController();
-  TextEditingController _productPresentationController = TextEditingController();
   TextEditingController _productPriceShopController = TextEditingController();
   TextEditingController _productPriceSalesController = TextEditingController();
   TextEditingController _productStockController = TextEditingController();
-  TextEditingController _productUnitsController = TextEditingController();
-  TextEditingController _productLocalCoinController = TextEditingController();
   TextEditingController _expirationDateController = TextEditingController();
 
   bool _isLoading = false;
@@ -30,16 +26,18 @@ class _StateCreateProducts extends ConsumerState<CreateProducts>{
   DateTime? _selectedExpirationDate;
   int? _selectedCategoryId;
   String? _imageProduct;
+  String? _selectedUnit;
+  String? _selectedPresentation;
 
+  final List<String> _units = ['Kilo', 'Gramo', 'Litro', 'Mililitro','Metro','Centimetro'];
+  final List<String> _presentation = ['Caja', 'Saco', 'Pieza','Tira','Bolsa'];
+
+  @override
   void dispose(){
     _productNameController.dispose();
-    _productDescriptionController.dispose();
-    _productPresentationController.dispose();
     _productPriceShopController.dispose();
     _productPriceSalesController.dispose();
     _productStockController.dispose();
-    _productUnitsController.dispose();
-    _productLocalCoinController.dispose();
     _expirationDateController.dispose();
     super.dispose();
   }
@@ -53,9 +51,8 @@ class _StateCreateProducts extends ConsumerState<CreateProducts>{
     try{
       final product = ProductsModel(
           productName: _productNameController.text.trim(),
-          presentation: _productPresentationController.text.trim(),
-          units:  _productUnitsController.text.trim(),
-          //coin: _productLocalCoinController.text.trim().isEmpty? null : _productLocalCoinController.text.trim(),
+          presentation: _selectedPresentation,
+          units:  _selectedUnit,
           priceShop: double.tryParse(_productPriceShopController.text.trim()),
           priceSale: double.tryParse(_productPriceSalesController.text.trim()),
           stock: int.tryParse(_productStockController.text.trim()),
@@ -63,7 +60,6 @@ class _StateCreateProducts extends ConsumerState<CreateProducts>{
           productImage: _imageProduct,
           productExpiresAt: _selectedExpirationDate,
           idCategory: _selectedCategoryId
-
       );
 
       await ref.read(productsNotifierProvider.notifier).saveProduct(product);
@@ -199,35 +195,57 @@ class _StateCreateProducts extends ConsumerState<CreateProducts>{
                       loading: () => const Center(child: CircularProgressIndicator())
                   ),
                   const SizedBox(height: 15),
-                  TextFormField(
-                    controller: _productPresentationController,
-                    decoration: InputDecoration(
-                      labelText: 'Presentación (ej. Caja, Pieza, Saco)',
-                      border: OutlineInputBorder()
-                    ),
-                      maxLength: 20,
-                      validator: (value) {
-                        if (value == null || value
-                            .trim()
-                            .isEmpty) {
-                          return 'Este campo necesita llenarse';
-                        }
-                        return null;
+                  DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                          labelText: 'Presentación (ej. Caja, Pieza, Saco)',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                      ),
+                      initialValue: _selectedPresentation,
+                      items: _presentation.map((String value){
+                        return DropdownMenuItem<String>(
+                          value: value,
+                            child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue){
+                        setState(() {
+                          _selectedPresentation = newValue;
+                        });
                       },
+                    validator: (value){
+                      if(value == null){
+                        return "Por favor seleccione una opcion";
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 15),
-                  TextFormField(
-                    controller: _productUnitsController,
+                  DropdownButtonFormField<String>(
                     decoration: InputDecoration(
-                        labelText: 'Unidad de medida (ej. Kilo ,litro ,Gramo)',
-                        border: OutlineInputBorder()
+                      labelText: 'Unidad de medida (ej. Kilo ,litro ,Gramo)',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                     ),
-                    maxLength: 20,
-                    validator: (value) {
-                      if (value == null || value
-                          .trim()
-                          .isEmpty) {
-                        return 'Este campo necesita llenarse';
+                    initialValue: _selectedUnit,
+                    items: _units.map((String value){
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue){
+                      setState(() {
+                        _selectedUnit = newValue;
+                      });
+                    },
+                    validator: (value){
+                      if(value == null){
+                        return "Por favor seleccione una opcion";
                       }
                       return null;
                     },
@@ -275,12 +293,6 @@ class _StateCreateProducts extends ConsumerState<CreateProducts>{
                     ),
                     onTap: (){
                       _selectDate(context);
-                    },
-                    validator: (value){
-                      if (value == null || value.isEmpty) {
-                        return 'Seleccione una fecha de caducidad';
-                      }
-                      return null;
                     },
                   ),
                   const SizedBox(height: 15),

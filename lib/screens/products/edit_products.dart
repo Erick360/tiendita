@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:tiendita/models/products_model.dart';
 import '../../constants/constants.dart';
 import '../../providers/products_provider.dart';
 import '../../widgets/image_picker.dart';
 
 class EditProducts extends ConsumerStatefulWidget{
-    const EditProducts(ProductsModel? product,{super.key});
+    final ProductsModel? product;
+    const EditProducts(this.product,{super.key});
     static String id = "edit_products";
 
     @override
@@ -16,13 +18,9 @@ class EditProducts extends ConsumerStatefulWidget{
 class _StateEditProducts extends ConsumerState<EditProducts>{
   final _formKey = GlobalKey<FormState>();
   TextEditingController _productNameController = TextEditingController();
-  TextEditingController _productDescriptionController = TextEditingController();
-  TextEditingController _productPresentationController = TextEditingController();
   TextEditingController _productPriceShopController = TextEditingController();
   TextEditingController _productPriceSalesController = TextEditingController();
   TextEditingController _productStockController = TextEditingController();
-  TextEditingController _productUnitsController = TextEditingController();
-  TextEditingController _productLocalCoinController = TextEditingController();
   TextEditingController _expirationDateController = TextEditingController();
 
   bool _isLoading = false;
@@ -31,6 +29,12 @@ class _StateEditProducts extends ConsumerState<EditProducts>{
   int? _selectedCategoryId;
   String? _imageProduct;
   ProductsModel? _currentProduct;
+  String? _selectedUnit;
+  String? _selectedPresentation;
+
+  final List<String> _units = ['Kilo', 'Gramo', 'Litro', 'Mililitro','Metro','Centimetro'];
+  final List<String> _presentation = ['Caja', 'Saco', 'Pieza','Tira','Bolsa'];
+
 
   @override
   void initState(){
@@ -40,19 +44,24 @@ class _StateEditProducts extends ConsumerState<EditProducts>{
 
   Future<void> _loadProduct() async{
     try{
-      final product = await ref.read(productsRepositoryProvider).getProduct();
-      if(product!= null){
-        _currentProduct = product;
-        _productNameController.text = product.productName;
-        _productPresentationController.text = product.presentation!;
-        _productUnitsController.text = product.units!;
-        _productPriceShopController.text = product.priceShop.toString();
-        _productPriceSalesController.text = product.priceSale.toString();
-        _productStockController.text = product.stock.toString();
-        _isActive = product.status == 1;
-        _imageProduct = product.productImage;
-        _selectedExpirationDate = product.productExpiresAt;
-        _selectedCategoryId = product.idCategory;
+      //final product = await ref.read(productsRepositoryProvider).getProduct();
+      if(widget.product != null) {
+        _currentProduct = widget.product;
+        _productNameController.text = widget.product!.productName;
+        _selectedPresentation = widget.product!.presentation;
+        _selectedUnit = widget.product!.units;
+        _productPriceShopController.text = widget.product!.priceShop.toString();
+        _productPriceSalesController.text =
+            widget.product!.priceSale.toString();
+        _productStockController.text = widget.product!.stock.toString();
+        _isActive = widget.product!.status == 1;
+        _imageProduct = widget.product!.productImage;
+        _selectedExpirationDate = widget.product!.productExpiresAt;
+        _selectedCategoryId = widget.product!.idCategory;
+
+        if (_selectedExpirationDate != null) {
+          _expirationDateController.text = DateFormat('dd/MM/yyyy').format(_selectedExpirationDate!);
+        }
       }
 
     }catch(e){
@@ -63,27 +72,55 @@ class _StateEditProducts extends ConsumerState<EditProducts>{
     }
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedExpirationDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      builder: (context, child){
+        return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: kActiveColor,
+              ),
+            ),
+            child: child!
+        );
+      },
+    );
+
+    if(picked != null && picked != _selectedExpirationDate){
+      setState(() {
+        _selectedExpirationDate = picked;
+        _expirationDateController.text = DateFormat('dd/MM/yyyy').format(picked);
+      });
+    }
+  }
+
   @override
   void dispose(){
     _productNameController.dispose();
-    _productDescriptionController.dispose();
-    _productPresentationController.dispose();
     _productPriceShopController.dispose();
     _productPriceSalesController.dispose();
     _productStockController.dispose();
-    _productUnitsController.dispose();
-    _productLocalCoinController.dispose();
     _expirationDateController.dispose();
     super.dispose();
   }
 
   Future<void> _updateProduct()  async {
+    if (_formKey.currentState?.validate() != true) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
     try{
       final updateProduct = ProductsModel(
           idProduct: _currentProduct!.idProduct,
           productName: _productNameController.text.trim(),
-          presentation: _productPresentationController.text.trim(),
-          units: _productUnitsController.text.trim(),
+          presentation: _selectedPresentation,
+          units: _selectedUnit,
           priceShop: double.tryParse(_productPriceShopController.text.trim()),
           priceSale: double.tryParse(_productPriceSalesController.text.trim()),
           stock: int.parse(_productStockController.text.trim()),
@@ -203,35 +240,57 @@ class _StateEditProducts extends ConsumerState<EditProducts>{
                     loading: () => const Center(child: CircularProgressIndicator())
                 ),
                 const SizedBox(height: 15),
-                TextFormField(
-                  controller: _productPresentationController,
+                DropdownButtonFormField<String>(
                   decoration: InputDecoration(
-                      labelText: 'Presentación (ej. Caja, Pieza, Saco)',
-                      border: OutlineInputBorder()
+                    labelText: 'Presentación (ej. Caja, Pieza, Saco)',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
-                  maxLength: 20,
-                  validator: (value) {
-                    if (value == null || value
-                        .trim()
-                        .isEmpty) {
-                      return 'Este campo necesita llenarse';
+                  initialValue: _selectedPresentation,
+                  items: _presentation.map((String value){
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue){
+                    setState(() {
+                      _selectedPresentation = newValue;
+                    });
+                  },
+                  validator: (value){
+                    if(value == null){
+                      return "Por favor seleccione una opcion";
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 15),
-                TextFormField(
-                  controller: _productUnitsController,
+                DropdownButtonFormField<String>(
                   decoration: InputDecoration(
-                      labelText: 'Unidad de medida (ej. Kilo ,litro ,Gramo)',
-                      border: OutlineInputBorder()
+                    labelText: 'Unidad de medida (ej. Kilo ,litro ,Gramo)',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
-                  maxLength: 20,
-                  validator: (value) {
-                    if (value == null || value
-                        .trim()
-                        .isEmpty) {
-                      return 'Este campo necesita llenarse';
+                  initialValue: _selectedUnit,
+                  items: _units.map((String value){
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue){
+                    setState(() {
+                      _selectedUnit = newValue;
+                    });
+                  },
+                  validator: (value){
+                    if(value == null){
+                      return "Por favor seleccione una opcion";
                     }
                     return null;
                   },
@@ -273,20 +332,26 @@ class _StateEditProducts extends ConsumerState<EditProducts>{
                   controller: _expirationDateController,
                   readOnly: true,
                   decoration: InputDecoration(
-                      labelText: "Fecha de caducidad",
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.calendar_today)
+                    labelText: "Fecha de caducidad (Opcional)",
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.calendar_today),
+                    suffixIcon: _selectedExpirationDate != null
+                        ? IconButton(
+                      icon: const Icon(Icons.clear, color: Colors.grey),
+                      onPressed: () {
+                        setState(() {
+                          _selectedExpirationDate = null;
+                          _expirationDateController.clear();
+                        });
+                      },
+                    )
+                        : null,
                   ),
-                  onTap: (){
-                    _selectedExpirationDate!;
-                  },
-                  validator: (value){
-                    if (value == null || value.isEmpty) {
-                      return 'Seleccione una fecha de caducidad';
-                    }
-                    return null;
+                  onTap: () {
+                    _selectDate(context);
                   },
                 ),
+
                 const SizedBox(height: 15),
                 SwitchListTile(
                   title: const Text("Estado del producto", style: TextStyle(fontWeight: FontWeight.bold)),
