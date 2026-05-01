@@ -5,8 +5,7 @@ import 'package:tiendita/screens/shop_details/my_shopping_details.dart';
 import 'package:tiendita/screens/products/products.dart';
 import 'package:tiendita/screens/sales/sales_screen.dart';
 import 'package:tiendita/screens/shops/shopping_screen.dart';
-import 'package:tiendita/widgets/dashboard/quick_action_button.dart';
-
+import 'package:tiendita/screens/dashboard/quick_action_button.dart';
 import '../../screens/category/category_screen.dart';
 import '../../screens/clients/clients_screen.dart';
 import '../../screens/company/company_edit_screen.dart';

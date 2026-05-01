@@ -1,0 +1,129 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/constants/constants.dart';
+import 'package:tiendita/providers/shopping_provider.dart';
+import 'package:tiendita/widgets/company_avatar.dart';
+import 'package:tiendita/screens/dashboard/metric_card.dart';
+import 'package:tiendita/screens/dashboard/quick_actions_grid.dart';
+import '../../providers/salesProviders.dart';
+import '../../widgets/company_name.dart';
+
+class Dashboard extends ConsumerStatefulWidget {
+  Dashboard({super.key});
+
+  @override
+  ConsumerState<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends ConsumerState<Dashboard>{
+
+  @override
+  void initState(){
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      final now = DateTime.now();
+      ref.read(salesNotifierProvider.notifier).loadSalesPerDay(now);
+      ref.read(shopsNotifierProvider.notifier).loadShopsForDay(now);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context){
+    final sales = ref.watch(salesNotifierProvider);
+    final shops = ref.watch(shopsNotifierProvider);
+
+    double totalSales = 0.0;
+    bool isLoadingSales = false;
+    sales.when(
+      data: (sales) => totalSales = sales.fold(0.0, (sum, sale) => sum + (sale?.total ?? 0.0)),
+      loading: () => isLoadingSales = true,
+      error: (e, stack) => print("Error loading sales: $e"),
+    );
+
+    double totalShops = 0.0;
+    bool isLoadingShops = false;
+    shops.when(
+      data: (shops) => totalShops = shops.fold(0.0, (sum, shop) => sum + (shop?.total ?? 0.0)),
+      loading: () => isLoadingShops = true,
+      error: (e, stack) => print("Error loading shops: $e"),
+    );
+
+    double profit = totalSales - totalShops;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              CompanyAvatar(),
+              SizedBox(height: 10),
+              CompanyName(Colors.black, 20),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text("Resumen $kDate", style: TextStyle(color: Colors.grey)),
+          const SizedBox(height: 24),
+          Row(
+              children: [
+                        Expanded(
+                            child: MetricCard(
+                                title: "Ganancias",
+                                value: '\$${profit.toStringAsFixed(2)}',
+                                icon: Icons.trending_up,
+                                color: profit >= 0 ? Colors.blue : Colors.red,
+                                isLoading: isLoadingSales,
+                            )
+                        ),
+                const SizedBox(width: 16),
+                        Expanded(
+                            child: MetricCard(
+                                title: "Inverido",
+                                value: "${totalShops.toStringAsFixed(2)}",
+                                icon: Icons.monetization_on_outlined,
+                                color: Colors.green,
+                              isLoading: isLoadingShops,
+                            ),
+                        ),
+                /*
+
+                const SizedBox(width: 16),
+                Expanded(
+                    child: MetricCard(
+                        title: "Productos",
+                        value: "0",
+                        icon: Icons.inventory_2,
+                        color: Colors.blue
+                    )
+                ),
+                */
+
+                /*
+
+                const SizedBox(width: 16),
+                Expanded(
+                    child: MetricCard(
+                        title: "Ganancias",
+                        value: "\$10.00",
+                        icon: Icons.trending_up,
+                        color: Colors.purple
+                    )
+                ),
+                */
+              ],
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Menu',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 16),
+          QuickActionsGrid(),
+        ],
+      ),
+    );
+  }
+}
+

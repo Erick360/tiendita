@@ -3,6 +3,7 @@ import 'package:tiendita/providers/company_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/screens/home_page.dart';
 import 'package:tiendita/screens/company/company_setup_screen.dart';
+import 'auth/authentication.dart';
 
 class SplashScreen extends ConsumerStatefulWidget{
   const SplashScreen({super.key});
@@ -19,7 +20,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>{
   }
 
   Future<void> _checkSetup() async{
-    await Future.delayed(const Duration(seconds: 2));
+
+    await Future.delayed(const Duration(seconds: 4));
 
     if(!mounted)return;
 
@@ -27,7 +29,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>{
     final companyExists = await repository.companyExists();
 
     if(companyExists){
-      Navigator.pushReplacementNamed(context, HomeScreen.id);
+      Navigator.pushReplacementNamed(context, Authentication.id);
     }else{
       Navigator.pushReplacementNamed(context, CompanySetupScreen.id);
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiendita/screens/auth/splash_screen.dart';
+import 'package:tiendita/screens/auth/authentication.dart';
+import 'package:tiendita/screens/splash_screen.dart';
 import 'package:tiendita/screens/category/category_screen.dart';
 import 'package:tiendita/screens/category/create_category.dart';
 import 'package:tiendita/screens/clients/clients_screen.dart';
@@ -38,8 +39,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light(),
-      home: SplashScreen(),
-      //initialRoute: SplashScreen.id,
+      initialRoute: SplashScreen.id,
       routes: {
         HomeScreen.id: (context) => const HomeScreen(),
         SalesDetails.id: (context) => const SalesDetails(),
@@ -63,6 +63,8 @@ class MyApp extends StatelessWidget {
         ExpensesScreen.id: (context) => const ExpensesScreen(),
         SalesHistoryToday.id: (context) => const SalesHistoryToday(),
         SalesHistoryCustom.id: (context) => const SalesHistoryCustom(),
+        Authentication.id: (context) => const Authentication(),
+        SplashScreen.id: (context) => const SplashScreen(),
       },
     );
   }

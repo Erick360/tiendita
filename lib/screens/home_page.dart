@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tiendita/screens/settings/settings_screen.dart';
 import 'package:tiendita/widgets/text_data.dart';
-import '../widgets/dashboard/dashboard.dart';
 import 'package:tiendita/widgets/footer.dart';
+import 'dashboard/dashboard.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

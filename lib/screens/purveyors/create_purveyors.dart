@@ -104,7 +104,7 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.person),
                 ),
-                maxLength: 20,
+                maxLength: 30,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Este campo necesita llenarse';

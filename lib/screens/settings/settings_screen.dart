@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/screens/auth/authentication.dart';
 import 'package:tiendita/screens/company/company_edit_screen.dart';
 import 'package:tiendita/widgets/company_name.dart';
 
@@ -66,9 +67,7 @@ class SettingsScreen extends ConsumerWidget{
             title: Text('Seguridad'),
             subtitle: Text('PIN y Huella digital'),
             trailing: Icon(Icons.chevron_right),
-            onTap: (){
-
-            },
+            onTap: () => Navigator.pushReplacementNamed(context, Authentication.id),
           ),
           const Divider(),
           ListTile(
