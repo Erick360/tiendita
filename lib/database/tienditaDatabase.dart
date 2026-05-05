@@ -46,7 +46,7 @@ class Products extends Table{
 
 
 class Sales extends Table{
-  IntColumn get id_sales => integer().autoIncrement()();
+  IntColumn get id_sales => integer().nullable().autoIncrement()();
   DateTimeColumn get sale_date => dateTime()();
   TextColumn get num_sale => text().withLength()();
   RealColumn get subtotal => real()();

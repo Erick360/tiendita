@@ -21,6 +21,7 @@ class ProductsScreen extends ConsumerStatefulWidget {
 }
 
 class _MyProductsState extends ConsumerState<ProductsScreen> {
+  String _searchQuery = "";
 
   @override
   Widget build(BuildContext context) {
@@ -85,15 +86,30 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
           SearchBar(
             hintText: 'Buscar producto',
             leading: const Icon(Icons.search),
-            onChanged: (value) {},
+            onChanged: (value) {
+              setState(() {
+                _searchQuery = value.toLowerCase();
+              });
+            },
           ),
           const SizedBox(height: 16),
           Expanded(
             child: productList.when(
                 data: (products){
-                  if(products.isEmpty){
-                    return const Center(child: Text("No hay datos registrados"));
+                  final filteredProducts = products.where((product){
+                    final productName =  product?.productName.toLowerCase() ?? "";
+                    return productName.contains(_searchQuery);
+                  }).toList();
+
+                  if(filteredProducts.isEmpty){
+                    return Center(
+                        child: Text(_searchQuery.isEmpty ? "No hay datos registrados" : "No se encontraron productos",
+                        style: TextStyle(fontSize: 16)
+                        ),
+                    );
                   }
+
+
                   return SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.only(top: 10),
@@ -214,7 +230,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                               ),
                             ),
                           ],
-                          rows: products.map((product) {
+                          rows: filteredProducts.map((product) {
                             return DataRow(
                                 cells: [
                                   DataCell(

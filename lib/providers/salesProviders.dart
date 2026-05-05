@@ -40,7 +40,7 @@ class SalesNotifier extends StateNotifier<AsyncValue<List<SalesModel?>>>{
         print("   - Ticket: ${sale.num_sale} | Fecha guardada: ${sale.sale_date}");
       }
       final sales = await _repo.getSalesPerDay(date);
-      print("Total de compras hoY: ${sales.length}");
+      print("Total de ventas hoy: ${sales.length}");
       state = AsyncData(sales);
     }catch(e, stack){
       print("ERROR FETCHING SALES: $e");

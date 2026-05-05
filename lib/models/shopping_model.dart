@@ -7,7 +7,7 @@ class ShoppingModel{
   final String numShop;
   final double subtotal;
   final double total;
-  final int idPurveyor;
+  final int? idPurveyor;
 
 
   ShoppingModel({
@@ -26,7 +26,7 @@ class ShoppingModel{
       num_shop: Value(numShop),
       subtotal: Value(subtotal),
       total: Value(total),
-      id_purveyor: Value(idPurveyor)
+      id_purveyor: Value(idPurveyor!)
     );
   }
 

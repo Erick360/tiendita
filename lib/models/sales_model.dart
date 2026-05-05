@@ -7,7 +7,7 @@ class SalesModel{
   final String numSales;
   final double subTotal;
   final double total;
-  final int? idClient;
+  final int idClient;
 
   SalesModel({
     this.idSales,
@@ -15,7 +15,7 @@ class SalesModel{
     required this.numSales,
     required this.subTotal,
     required this.total,
-    this.idClient,
+    required this.idClient,
   });
 
   SalesCompanion toCompanion(){
@@ -25,7 +25,7 @@ class SalesModel{
       num_sale: Value(numSales),
       subtotal: Value(subTotal),
       total: Value(total),
-      id_client: Value(idClient!)
+      id_client: Value(idClient)
     );
   }
 

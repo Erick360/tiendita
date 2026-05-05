@@ -13,22 +13,37 @@ class Authentication extends StatefulWidget {
 
 class _AuthenticationState extends State<Authentication> {
   final LocalAuthentication auth = LocalAuthentication();
-
+  //_SupportState _supportState = _SupportState.unknown;
   String _authStatus = "No autenticado";
   bool _isAuthenticating = false;
 
   Future<void> _authenticateUser() async {
     bool authenticated = false;
 
+
+    /*
+    @override
+    void initState(){
+      super.initState();
+      auth.isDeviceSupported().then(
+            (bool isSupported) => setState(
+              () => _supportState = isSupported
+              ? _SupportState.supported
+              : _SupportState.unsupported,
+        ),
+      );
+    }
+*/
     setState(() {
       _isAuthenticating = true;
       _authStatus = "Autenticando...";
     });
 
     try {
-      final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
-      final bool canAuthenticate = canAuthenticateWithBiometrics || await auth.isDeviceSupported();
+      //final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+      //final bool canAuthenticate = canAuthenticateWithBiometrics || await auth.isDeviceSupported();
 
+      /*
       if (!canAuthenticate) {
         setState(() {
           _authStatus = "Autenticación biométrica no soportada o no configurada en este dispositivo.";
@@ -36,6 +51,7 @@ class _AuthenticationState extends State<Authentication> {
         });
         return;
       }
+      */
 
       //(v3.0.0)
       authenticated = await auth.authenticate(

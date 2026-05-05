@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/clients_model.dart';
 import 'package:tiendita/providers/clients_provider.dart';
-import 'package:tiendita/screens/sales/sales_cart_items.dart';
+import 'package:tiendita/widgets/cart_items.dart';
 import 'package:tiendita/screens/sales/sales_history_custom.dart';
 import 'package:tiendita/screens/sales/sales_history_today.dart';
 import 'package:tiendita/widgets/text_data.dart';
@@ -21,9 +21,12 @@ class SalesScreen extends ConsumerStatefulWidget {
 }
 
 class _SalesScreenState extends ConsumerState<SalesScreen>{
-  int? _selectedClientId;
-  String? _selectedClientName;
+  int _selectedClientId = 1;
+  String? _selectedClientName = "Venta rápida";
   String _currentSalesTicket = "VENT-0001";
+
+  Key _clientSearch = UniqueKey();
+  Key _productSearch = UniqueKey();
 
   @override
   void initState(){
@@ -104,6 +107,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                       data: (clients){
                         final validClients = clients.whereType<ClientsModel>().toList();
                         return Autocomplete<ClientsModel>(
+                          key: _clientSearch,
                             optionsBuilder: (TextEditingValue textEditingValue){
                               if(textEditingValue.text.isEmpty){
                                 return const Iterable<ClientsModel>.empty();
@@ -118,7 +122,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                             option.clientName,
                             onSelected: (ClientsModel c){
                               setState(() {
-                                _selectedClientId = c.idClient;
+                                _selectedClientId = c.idClient!;
                                 _selectedClientName = c.clientName;
                               });
                               FocusScope.of(context).unfocus();
@@ -130,10 +134,22 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                 onSubmitted: (String value){
                                   onEditingComplete();
                                 },
-                                decoration: const InputDecoration(
-                                  icon: Icon(Icons.search),
+                                decoration: InputDecoration(
+                                  icon: const Icon(Icons.search),
                                   labelText: "Buscar cliente...",
-                                  border: OutlineInputBorder(),
+                                  border: const OutlineInputBorder(),
+                                  suffixIcon: _selectedClientId != 1
+                                      ?  IconButton(
+                                    icon: const Icon(Icons.clear, color: Colors.grey),
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedClientId = 1;
+                                        _selectedClientName = "Venta rápida";
+                                        controller.clear();
+                                      });
+                                    },
+                                  )
+                                      : null,
                                 ),
                               );
                             }
@@ -143,59 +159,58 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                       loading: () => const Center(child: CircularProgressIndicator()),
                   ),
                   const SizedBox(height: 20),
-                  if(_selectedClientId != null)
-                    Card(
-                      elevation: 2,
-                      color: Colors.blue[50],
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            headingRowHeight: 40,
-                            dataRowMinHeight: 40,
-                            dataRowMaxHeight: 40,
-                            columnSpacing: 20,
-                            showCheckboxColumn: false,
-                            columns: const [
-                              DataColumn(
-                                label: Text(
-                                  'Ticket de Venta',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
+                  Card(
+                    elevation: 2,
+                    color: Colors.blue[50],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          headingRowHeight: 40,
+                          dataRowMinHeight: 40,
+                          dataRowMaxHeight: 40,
+                          columnSpacing: 20,
+                          showCheckboxColumn: false,
+                          columns: const [
+                            DataColumn(
+                              label: Text(
+                                'Ticket de Venta',
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              DataColumn(
-                                label: Text(
-                                  'Cliente',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Cliente',
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                            ],
-                            rows: [
-                              DataRow(
-                                cells: [
-                                  DataCell(
-                                    Text(
-                                      _currentSalesTicket,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.red,
-                                      ),
+                            ),
+                          ],
+                          rows: [
+                            DataRow(
+                              cells: [
+                                DataCell(
+                                  Text(
+                                    _currentSalesTicket,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.red,
                                     ),
                                   ),
-                                  DataCell(
-                                    Text(
-                                      _selectedClientName ?? 'venta rapida',
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    _selectedClientName ?? 'venta rapida',
+                                    style: const TextStyle(fontSize: 16),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                  ),
                   const SizedBox(height: 16),
                   productsAsync.when(
                     loading: () => const Center(child: CircularProgressIndicator()),
@@ -206,6 +221,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                           .toList();
 
                       return Autocomplete<ProductsModel>(
+                        key: _productSearch,
                         optionsBuilder: (TextEditingValue textEditingValue) {
                           if (textEditingValue.text.isEmpty) {
                             return const Iterable<ProductsModel>.empty();
@@ -222,7 +238,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
 
                         onSelected: (ProductsModel selection) {
                           cartNotifier.addItem(
-                            SalesCartItems(
+                            CartItems(
                               productId: selection.idProduct ?? 0,
                               name: selection.productName,
                               price: selection.priceSale ?? 0.0,
@@ -250,182 +266,205 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                     },
                   ),
                   SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.only(top: 10),
-                    child: SizedBox(
-                      child: DataTable(
-                        headingRowColor: WidgetStateProperty.all(Colors.grey[200]),
-                        headingRowHeight: 60,
-                        dataRowMaxHeight: 60,
-                        columnSpacing: 15,
-                        showCheckboxColumn: false,
-                          columns: [
-                            DataColumn(
-                              label: TextData(
-                                  "Item",
-                                18,
-                                Colors.black,
-                                "Poppins",
-                                FontWeight.bold,
-                              )
-                            ),
-                            DataColumn(
-                                label: TextData(
-                                  "Nombre",
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                )
-                            ),
-                            DataColumn(
-                                label: TextData(
-                                  "Precio venta ",
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                )
-                            ),
-                            DataColumn(
-                                label: TextData(
-                                  "stock",
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                )
-                            ),
-                            DataColumn(
-                                label: TextData(
-                                  "Cantidad",
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                )
-                            ),
-                            DataColumn(
-                                label: TextData(
-                                  "Importe",
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                )
-                            ),
-                          ],
-                          rows: cart.asMap().entries.map((entry){
-                            int index = entry.key;
-                            SalesCartItems item = entry.value;
-                            return DataRow(
-                                cells: [
-                                  DataCell(Text('${index + 1}')),
-                                  DataCell(Text(item.name)),
-                                  DataCell(Text('\$${item.price.toStringAsFixed(2)}')),
-                                  DataCell(
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
+                      scrollDirection: Axis.vertical,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.only(top: 10),
+                        child: SizedBox(
+                          child: DataTable(
+                            headingRowColor: WidgetStateProperty.all(Colors.grey[200]),
+                            headingRowHeight: 60,
+                            dataRowMaxHeight: 60,
+                            columnSpacing: 15,
+                            showCheckboxColumn: false,
+                              columns: [
+                                DataColumn(
+                                  label: TextData(
+                                      "Item",
+                                    18,
+                                    Colors.black,
+                                    "Poppins",
+                                    FontWeight.bold,
+                                  )
+                                ),
+                                DataColumn(
+                                    label: TextData(
+                                      "Nombre",
+                                      18,
+                                      Colors.black,
+                                      "Poppins",
+                                      FontWeight.bold,
+                                    )
+                                ),
+                                DataColumn(
+                                    label: TextData(
+                                      "Precio venta ",
+                                      18,
+                                      Colors.black,
+                                      "Poppins",
+                                      FontWeight.bold,
+                                    )
+                                ),
+                                DataColumn(
+                                    label: TextData(
+                                      "stock",
+                                      18,
+                                      Colors.black,
+                                      "Poppins",
+                                      FontWeight.bold,
+                                    )
+                                ),
+                                DataColumn(
+                                    label: TextData(
+                                      "Cantidad",
+                                      18,
+                                      Colors.black,
+                                      "Poppins",
+                                      FontWeight.bold,
+                                    )
+                                ),
+                                DataColumn(
+                                    label: TextData(
+                                      "Importe",
+                                      18,
+                                      Colors.black,
+                                      "Poppins",
+                                      FontWeight.bold,
+                                    )
+                                ),
+                              ],
+                              rows: cart.asMap().entries.map((entry){
+                                int index = entry.key;
+                                CartItems item = entry.value;
+                                return DataRow(
+                                    cells: [
+                                      DataCell(Text('${index + 1}')),
+                                      DataCell(Text(item.name)),
+                                      DataCell(Text('\$${item.price.toStringAsFixed(2)}')),
+                                      DataCell(
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.remove_circle_outline,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                if (item.quantity > 1) {
+                                                  cartNotifier.updateQuantity(
+                                                    item.productId,
+                                                    item.quantity - 1,
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                            Text(
+                                              '${item.quantity}',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.add_circle_outline,
+                                                color: Colors.green,
+                                              ),
+                                              onPressed: () => cartNotifier.updateQuantity(
+                                                item.productId,
+                                                item.quantity + 1,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      DataCell(Text('\$${item.total.toStringAsFixed(2)}')),
+                                      DataCell(
                                         IconButton(
                                           icon: const Icon(
-                                            Icons.remove_circle_outline,
+                                            Icons.delete_outline,
                                             color: Colors.red,
                                           ),
                                           onPressed: () {
-                                            if (item.quantity > 1) {
-                                              cartNotifier.updateQuantity(
-                                                item.productId,
-                                                item.quantity - 1,
-                                              );
-                                            }
+                                            cartNotifier.updateQuantity(item.productId, 0);
                                           },
                                         ),
-                                        Text(
-                                          '${item.quantity}',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.add_circle_outline,
-                                            color: Colors.green,
-                                          ),
-                                          onPressed: () => cartNotifier.updateQuantity(
-                                            item.productId,
-                                            item.quantity + 1,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  DataCell(Text('\$${item.total.toStringAsFixed(2)}')),
-                                  DataCell(
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.delete_outline,
-                                        color: Colors.red,
                                       ),
-                                      onPressed: () {
-                                        cartNotifier.updateQuantity(item.productId, 0);
-                                      },
-                                    ),
-                                  ),
-
-                                ]
-                            );
-                          }).toList(),
+                                    ]
+                                );
+                              }).toList(),
+                          ),
+                        ),
                       ),
-                    ),
                   ),
                   const SizedBox(height: 40),
-                  SizedBox(
-                  height: 40,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        if (_selectedClientId == null) {
-                          showErrorSnackBar(
-                            context,
-                            'Por favor, selecciona un cliente.',
-                          );
-                          return;
-                        }
-                        if (cart.isEmpty) {
-                          showErrorSnackBar(context, 'El carrito está vacío.');
-                          return;
-                        }
+                  Row(
+                    children: [
+                      Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: (){
+                              cartNotifier.clearCart();
+                              setState(() {
+                                _selectedClientId = 1;
+                                _selectedClientName = "Venta Rapida";
+                                _clientSearch = UniqueKey();
+                                _productSearch = UniqueKey();
+                              });
+                            },
+                            icon: const Icon(Icons.cancel, color: Colors.red),
+                            label: const Text("Cancelar", style: TextStyle(color: Colors.red)),
+                            style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 15)
+                            ),
+                          )
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            if (cart.isEmpty) {
+                              showErrorSnackBar(context, 'El carrito está vacío.');
+                              return;
+                            }
 
-                        final newSale = SalesModel(
-                          salesDate: DateTime.now(),
-                          numSales: _currentSalesTicket,
-                          subTotal: cartNotifier.subtotal,
-                          total: cartNotifier.total,
-                          idClient: _selectedClientId,
-                        );
+                            final newSale = SalesModel(
+                              salesDate: DateTime.now(),
+                              numSales: _currentSalesTicket,
+                              subTotal: cartNotifier.subtotal,
+                              total: cartNotifier.total,
+                              idClient: _selectedClientId,
+                            );
 
-                        await ref
-                            .read(salesNotifierProvider.notifier)
-                            .saveSales(newSale);
+                            await ref
+                                .read(salesNotifierProvider.notifier)
+                                .saveSales(newSale);
 
-                        if (context.mounted) {
-                          showSuccessSnackBar(
-                            context,
-                            '¡Venta registrada con éxito!',
-                          );
-                        }
+                            if (context.mounted) {
+                              showSuccessSnackBar(
+                                context,
+                                '¡Venta registrada con éxito!',
+                              );
+                            }
 
-                        cartNotifier.clearCart();
-                        setState(() {
-                          _selectedClientId = null;
-                          _selectedClientName = null;
-                          _currentSalesTicket =
-                          "COMP-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}";
-                        });
-                      },
-                      icon: const Icon(Icons.save),
-                      label: const Text("Registrar Venta"),
-                    ),
+                            cartNotifier.clearCart();
+                            setState(() {
+                              _selectedClientId = 1;
+                              _selectedClientName = "Venta rápida";
+                              _currentSalesTicket =
+                              "VENT-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}";
+
+                              _clientSearch = UniqueKey();
+                              _productSearch = UniqueKey();
+                            });
+                          },
+                          icon: const Icon(Icons.save),
+                          label: const Text("Registrar Venta"),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               )

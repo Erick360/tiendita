@@ -10,7 +10,8 @@ import '../../providers/products_provider.dart';
 import '../../providers/purveyor_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../widgets/text_data.dart';
-import 'shops_cart_items.dart';
+import 'package:tiendita/widgets/cart_items.dart';
+
 
 class ShoppingScreen extends ConsumerStatefulWidget {
   const ShoppingScreen({super.key});
@@ -23,6 +24,9 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
   int? _selectedPurveyorId;
   String? _selectedPurveyorName;
   String _currentPurchaseTicket = "COMP-0001";
+
+  Key _purveyorSearch = UniqueKey();
+  Key _productSearch = UniqueKey();
 
   @override
   void initState() {
@@ -103,6 +107,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                     .toList();
 
                 return Autocomplete<PurveyorsModel>(
+                  key: _purveyorSearch,
                   optionsBuilder: (TextEditingValue textEditingValue) {
                     if (textEditingValue.text.isEmpty) {
                       return const Iterable<PurveyorsModel>.empty();
@@ -206,6 +211,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                     .toList();
 
                 return Autocomplete<ProductsModel>(
+                  key: _productSearch,
                   optionsBuilder: (TextEditingValue textEditingValue) {
                     if (textEditingValue.text.isEmpty) {
                       return const Iterable<ProductsModel>.empty();
@@ -222,7 +228,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
 
                   onSelected: (ProductsModel selection) {
                     cartNotifier.addItem(
-                      ShopsCartItems(
+                      CartItems(
                         productId: selection.idProduct ?? 0,
                         name: selection.productName,
                         price: selection.priceShop ?? 0.0,
@@ -318,7 +324,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                   ],
                   rows: cart.asMap().entries.map((entry) {
                     int index = entry.key;
-                    ShopsCartItems item = entry.value;
+                    CartItems item = entry.value;
                     return DataRow(
                       cells: [
                         DataCell(Text('${index + 1}')),
@@ -380,52 +386,75 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
               ),
             ),
             const SizedBox(height: 40),
-            SizedBox(
-              height: 40,
-              child: ElevatedButton.icon(
-                onPressed: () async {
-                  if (_selectedPurveyorId == null) {
-                    showErrorSnackBar(
-                      context,
-                      'Por favor, selecciona un proveedor.',
-                    );
-                    return;
-                  }
-                  if (cart.isEmpty) {
-                    showErrorSnackBar(context, 'El carrito está vacío.');
-                    return;
-                  }
+            Row(
+              children: [
+                Expanded(
+                    child: OutlinedButton.icon(
+                        onPressed: (){
+                          cartNotifier.clearCart();
+                          setState(() {
+                            _productSearch = UniqueKey();
+                            _purveyorSearch = UniqueKey();
+                          });
+                        },
+                        icon: const Icon(Icons.cancel, color: Colors.red),
+                      label: const Text("Cancelar", style: TextStyle(color: Colors.red)),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
+                    ),
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        if (_selectedPurveyorId == null) {
+                          showErrorSnackBar(
+                            context,
+                            'Por favor, selecciona un proveedor.',
+                          );
+                          return;
+                        }
+                        if (cart.isEmpty) {
+                          showErrorSnackBar(context, 'El carrito está vacío.');
+                          return;
+                        }
 
-                  final newPurchase = ShoppingModel(
-                    shopDate: DateTime.now(),
-                    numShop: _currentPurchaseTicket,
-                    subtotal: cartNotifier.subtotal,
-                    total: cartNotifier.total,
-                    idPurveyor: _selectedPurveyorId!,
-                  );
+                        final newPurchase = ShoppingModel(
+                          shopDate: DateTime.now(),
+                          numShop: _currentPurchaseTicket,
+                          subtotal: cartNotifier.subtotal,
+                          total: cartNotifier.total,
+                          idPurveyor: _selectedPurveyorId!,
+                        );
 
-                  await ref
-                      .read(shopsNotifierProvider.notifier)
-                      .saveShopping(newPurchase);
+                        await ref
+                            .read(shopsNotifierProvider.notifier)
+                            .saveShopping(newPurchase);
 
-                  if (context.mounted) {
-                    showSuccessSnackBar(
-                      context,
-                      '¡Compra registrada con éxito!',
-                    );
-                  }
+                        if (context.mounted) {
+                          showSuccessSnackBar(
+                            context,
+                            '¡Compra registrada con éxito!',
+                          );
+                        }
 
-                  cartNotifier.clearCart();
-                  setState(() {
-                    _selectedPurveyorId = null;
-                    _selectedPurveyorName = null;
-                    _currentPurchaseTicket =
-                        "COMP-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}";
-                  });
-                },
-                icon: const Icon(Icons.save),
-                label: const Text("Registrar Compra"),
-              ),
+                        cartNotifier.clearCart();
+                        setState(() {
+                          _selectedPurveyorId = null;
+                          _selectedPurveyorName = null;
+                          _currentPurchaseTicket =
+                          "COMP-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}";
+
+                          _purveyorSearch = UniqueKey();
+                          _purveyorSearch = UniqueKey();
+                        });
+                      },
+                      icon: const Icon(Icons.save),
+                      label: const Text("Registrar Compra"),
+                    ),
+                ),
+              ],
             ),
           ],
         ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiendita/providers/company_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiendita/screens/home_page.dart';
 import 'package:tiendita/screens/company/company_setup_screen.dart';
 import 'auth/authentication.dart';
 

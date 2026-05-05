@@ -200,6 +200,7 @@ class _SalesDetailsState extends ConsumerState<SalesDetails>{
                                             return DataRow(
                                                 cells: [
                                                   DataCell(Text(sale?.numSales ?? "N/A", style: const TextStyle(fontWeight: FontWeight.bold))),
+                                                  //DataCell(Text()),
                                                   DataCell(Text(dateFormat.format(sale!.salesDate))),
                                                   DataCell(Text("\$${sale.total.toStringAsFixed(2)}", style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold))),
                                                 ],

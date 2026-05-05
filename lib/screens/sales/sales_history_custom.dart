@@ -164,11 +164,9 @@ class _SalesHistoryCustomState extends ConsumerState<SalesHistoryCustom>{
                                     IconButton(
                                       icon: const Icon(Icons.delete_outline, color: Colors.red),
                                       onPressed: () async {
-                                        if (shop.idClient != null) {
-                                          await ref.read(salesNotifierProvider.notifier).deleteSale(shop.idSales!);
-                                          ref.read(salesNotifierProvider.notifier).loadSalesByRange(_startDate!, _endDate!);
-                                        }
-                                      },
+                                        await ref.read(salesNotifierProvider.notifier).deleteSale(shop.idSales!);
+                                        ref.read(salesNotifierProvider.notifier).loadSalesByRange(_startDate!, _endDate!);
+                                                                            },
                                     )
                                 ),
                               ],

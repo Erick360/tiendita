@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light(),
-      initialRoute: SplashScreen.id,
+      home:  SplashScreen(),
       routes: {
         HomeScreen.id: (context) => const HomeScreen(),
         SalesDetails.id: (context) => const SalesDetails(),
@@ -64,7 +64,6 @@ class MyApp extends StatelessWidget {
         SalesHistoryToday.id: (context) => const SalesHistoryToday(),
         SalesHistoryCustom.id: (context) => const SalesHistoryCustom(),
         Authentication.id: (context) => const Authentication(),
-        SplashScreen.id: (context) => const SplashScreen(),
       },
     );
   }
