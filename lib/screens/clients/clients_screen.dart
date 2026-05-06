@@ -8,11 +8,25 @@ import '../../widgets/text_data.dart';
 import 'create_client.dart';
 import 'edit_client.dart';
 
-class ClientsScreen extends ConsumerWidget{
+class ClientsScreen extends ConsumerStatefulWidget {
   const ClientsScreen({super.key});
   static String id = "clients_screen";
 
-  Widget build(BuildContext context, WidgetRef ref){
+  @override
+  ConsumerState<ClientsScreen> createState() => _ClientScreenState();
+}
+
+class _ClientScreenState extends ConsumerState<ClientsScreen>{
+  String _searchQuery = "";
+  TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose(){
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Widget build(BuildContext context){
     final clientsList = ref.watch(clientListProvider);
 
     Future<void> _confirmDelete(BuildContext context, int id) async{
@@ -72,17 +86,51 @@ class ClientsScreen extends ConsumerWidget{
         children: <Widget>[
           Padding(padding: const EdgeInsets.only(top: 30)),
           SearchBar(
+            controller: _searchController,
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12), // Customize radius
+              ),
+            ),
             hintText: 'Buscar Cliente',
             leading: const Icon(Icons.search),
-            onChanged: (value) {},
+            onChanged: (value) {
+              setState(() {
+                _searchQuery = value.toLowerCase();
+              });
+            },
+            trailing: [
+              IconButton(
+                  onPressed: (){
+                    _searchController.clear();
+
+                    setState(() {
+                      _searchQuery = "";
+                    });
+                  },
+                  icon: Icon(Icons.clear)
+              )
+            ],
           ),
           const SizedBox(height: 10),
           Expanded(
             child: clientsList.when(
               data: (clients) {
-                if (clients.isEmpty) {
-                  return const Center(child: Text("No hay datos registrados"));
+                final filteredClients = clients.where((client){
+                  final clientName = client?.clientName.toLowerCase() ?? "";
+                  return clientName.contains(_searchQuery);
+                });
+
+                if (filteredClients.isEmpty) {
+                  return Center(
+                    child: Text(
+                        _searchQuery.isEmpty ? "No hay datos registrados" : "No se encontraron productos",
+                        style: TextStyle(fontSize: 16)
+                    ),
+                  );
                 }
+
+
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.only(top: 10),
@@ -161,7 +209,7 @@ class ClientsScreen extends ConsumerWidget{
                           ),
                         ),
                       ],
-                      rows: clients.map((client) {
+                      rows: filteredClients.map((client) {
                         return DataRow(
                           cells: [
                             DataCell(
@@ -231,20 +279,23 @@ class ClientsScreen extends ConsumerWidget{
         ],
       ),
       floatingActionButton: SizedBox(
-        height: 65,
-        width: 65,
+        height: 60,
+        width: 60,
         child: FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(context, CreateClient.id);
           },
           backgroundColor: Color(0xFFF25410),
-          elevation: 4,
+          mouseCursor: WidgetStateMouseCursor.textable,
+          tooltip: "Agregar Cliente",
+          elevation: 10,
           shape: const CircleBorder(),
           child: const Icon(Icons.add, size: 30, color: Colors.white),
         ),
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
 
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
@@ -262,6 +313,7 @@ class ClientsScreen extends ConsumerWidget{
           ],
         ),
       ),
+
     );
   }
 }

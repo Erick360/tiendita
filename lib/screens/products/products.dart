@@ -22,10 +22,17 @@ class ProductsScreen extends ConsumerStatefulWidget {
 
 class _MyProductsState extends ConsumerState<ProductsScreen> {
   String _searchQuery = "";
+  TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose(){
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final productList = ref.watch(productsListProvider);
+    final productList = ref. watch(productsListProvider);
 
     Future<void> _confirmDelete(BuildContext context, int id) async{
       final bool? confirm = await showDialog<bool>(
@@ -84,6 +91,12 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
         children: <Widget>[
           Padding(padding: const EdgeInsets.only(top: 30)),
           SearchBar(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12), // Customize radius
+              ),
+            ),
+            controller: _searchController,
             hintText: 'Buscar producto',
             leading: const Icon(Icons.search),
             onChanged: (value) {
@@ -91,6 +104,18 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                 _searchQuery = value.toLowerCase();
               });
             },
+            trailing: [
+              IconButton(
+                  onPressed: (){
+                    _searchController.clear();
+
+                    setState(() {
+                      _searchQuery = "";
+                    });
+                  },
+                  icon: Icon(Icons.clear),
+              )
+            ],
           ),
           const SizedBox(height: 16),
           Expanded(

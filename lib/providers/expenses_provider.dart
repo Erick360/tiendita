@@ -48,7 +48,7 @@ class ExpensesNotifier extends StateNotifier<AsyncValue<List<ExpensesModel?>>> {
     }
   }
 
-  Future<void> loadExpensesForDay(DateTime time) async{
+  Future<void> loadExpensesPerDay(DateTime time) async{
     try{
       state = const AsyncLoading();
       print("Buscando gastos para la fecha: $time");

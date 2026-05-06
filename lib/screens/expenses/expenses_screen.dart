@@ -108,7 +108,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
     setState(() {
       _isShowingToday = true;
     });
-    ref.read(expenseNotifierProvider.notifier).loadExpensesForDay(DateTime.now());
+    ref.read(expenseNotifierProvider.notifier).loadExpensesPerDay(DateTime.now());
   }
 
   @override

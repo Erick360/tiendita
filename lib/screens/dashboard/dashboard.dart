@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/providers/shopping_provider.dart';
 import 'package:tiendita/widgets/company_avatar.dart';
+import 'package:tiendita/providers/expenses_provider.dart';
 import 'package:tiendita/screens/dashboard/metric_card.dart';
 import 'package:tiendita/screens/dashboard/quick_actions_grid.dart';
 import '../../providers/salesProviders.dart';
@@ -24,6 +25,7 @@ class _DashboardState extends ConsumerState<Dashboard>{
       final now = DateTime.now();
       ref.read(salesNotifierProvider.notifier).loadSalesPerDay(now);
       ref.read(shopsNotifierProvider.notifier).loadShopsForDay(now);
+      ref.read(expenseNotifierProvider.notifier).loadExpensesPerDay(now);
     });
   }
 
@@ -31,6 +33,7 @@ class _DashboardState extends ConsumerState<Dashboard>{
   Widget build(BuildContext context){
     final sales = ref.watch(salesNotifierProvider);
     final shops = ref.watch(shopsNotifierProvider);
+    final expenses = ref.watch(expenseNotifierProvider);
 
     double totalSales = 0.0;
     bool isLoadingSales = false;
@@ -48,7 +51,15 @@ class _DashboardState extends ConsumerState<Dashboard>{
       error: (e, stack) => print("Error loading shops: $e"),
     );
 
-    double profit = totalSales - totalShops;
+    double totalExpenses = 0.0;
+    bool isLoadingExpenses = false;
+    expenses.when(
+        data: (exp) => totalExpenses = exp.fold(0.0, (sum, exp) => sum + (exp?.amount ?? 0.0)),
+        error: (e, stack) => print("Error loading shops: $e"),
+        loading: () => isLoadingExpenses = true,
+    );
+
+    double profit = totalSales - totalShops - totalExpenses;
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),

@@ -8,12 +8,27 @@ import '../../widgets/footer_button.dart';
 import 'create_purveyors.dart';
 import 'edit_purveyors.dart';
 
-class PurveyorsScreen extends ConsumerWidget {
+class PurveyorsScreen extends ConsumerStatefulWidget {
   const PurveyorsScreen({super.key});
+
   static String id = "purveyors";
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PurveyorsScreen> createState() => _PurveyorScreenState();
+}
+
+ class _PurveyorScreenState extends ConsumerState<PurveyorsScreen>{
+  String _searchQuery = "";
+  TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose(){
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final purveyorListAsync = ref.watch(purveyorListProvider);
     Future<void> _confirmDelete(BuildContext context, int id) async{
       final bool? confirm = await showDialog<bool>(
@@ -72,17 +87,49 @@ class PurveyorsScreen extends ConsumerWidget {
         children: <Widget>[
           Padding(padding: const EdgeInsets.only(top: 30)),
           SearchBar(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12), // Customize radius
+              ),
+            ),
+            controller: _searchController,
             hintText: 'Buscar proveedor',
             leading: const Icon(Icons.search),
-            onChanged: (value) {},
+            onChanged: (value) {
+              setState(() {
+                _searchQuery = value.toLowerCase();
+              });
+            },
+            trailing: [
+              IconButton(
+                  onPressed: (){
+                    _searchController.clear();
+
+                    setState(() {
+                      _searchQuery = "";
+                    });
+                  },
+                  icon: Icon(Icons.clear)
+              )
+            ],
           ),
           const SizedBox(height: 10),
           Expanded(
             child: purveyorListAsync.when(
               data: (purveyors) {
-                if (purveyors.isEmpty) {
-                  return const Center(child: Text("No hay datos registrados"));
+                 final filteredPurveyors = purveyors.where((purveyor){
+                  final purveyorName = purveyor?.PurveyorName.toLowerCase() ?? "";
+                 return purveyorName.contains(_searchQuery);
+                 }).toList();
+
+                if(filteredPurveyors.isEmpty){
+                  return Center(
+                    child: Text(_searchQuery.isEmpty ? "No hay datos registrados" : "No se encontraron productos",
+                        style: TextStyle(fontSize: 16)
+                    ),
+                  );
                 }
+
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.only(top: 10),
@@ -161,7 +208,7 @@ class PurveyorsScreen extends ConsumerWidget {
                           ),
                         ),
                       ],
-                      rows: purveyors.map((purveyors) {
+                      rows: filteredPurveyors.map((purveyors) {
                         return DataRow(
                           cells: [
                             DataCell(

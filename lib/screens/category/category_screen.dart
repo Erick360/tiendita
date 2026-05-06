@@ -8,13 +8,27 @@ import 'package:tiendita/screens/category/edit_category.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import 'package:tiendita/widgets/footer_button.dart';
 
-class CategoryScreen extends ConsumerWidget {
+class CategoryScreen extends ConsumerStatefulWidget {
   const CategoryScreen({super.key});
+
   static String id = "category";
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CategoryScreen> createState() => _CategoryScreenState();
+}
 
+class _CategoryScreenState extends ConsumerState<CategoryScreen>{
+  String _searchQuery = "";
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose(){
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     Future<void> _confirmDelete(BuildContext context, int id) async{
       final bool? confirm = await showDialog<bool>(
           context: context,
@@ -72,9 +86,30 @@ class CategoryScreen extends ConsumerWidget {
         children: <Widget>[
           Padding(padding: const EdgeInsets.only(top: 30)),
           SearchBar(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12), // Customize radius
+              ),
+            ),
+            controller: _searchController,
             hintText: "Buscar categoria",
             leading: const Icon(Icons.search),
-            onChanged: (value) {},
+            onChanged: (value) {
+              setState(() {
+                _searchQuery = value.toLowerCase();
+              });
+            },
+            trailing: [
+              IconButton(
+                  onPressed: (){
+                    _searchController.clear();
+                    setState(() {
+                      _searchQuery = "";
+                    });
+                  },
+                  icon: const Icon(Icons.clear),
+              )
+            ],
           ),
           const SizedBox(height: 10),
           Expanded(
@@ -83,9 +118,17 @@ class CategoryScreen extends ConsumerWidget {
               loading: () =>
                   const Center(child: const CircularProgressIndicator()),
               data: (categories) {
-                if (categories.isEmpty) {
-                  return const Center(
-                    child: Text("No hay categorias registradas."),
+                final filteredCategory = categories.where((category){
+                  final categoryName = category?.CategoryName?.toLowerCase() ?? "";
+                  return categoryName.contains(_searchQuery);
+                });
+
+                if (filteredCategory.isEmpty) {
+                  return Center(
+                    child: Text(
+                        _searchQuery.isEmpty ? "No hay datos registrados" : "No se encontraron productos",
+                        style: TextStyle(fontSize: 16)
+                    ),
                   );
                 }
 
@@ -133,7 +176,7 @@ class CategoryScreen extends ConsumerWidget {
                         ),
                       ],
                       //rows
-                      rows: categories.map((category) {
+                      rows: filteredCategory.map((category) {
                         return DataRow(
                           cells: [
                             DataCell(
