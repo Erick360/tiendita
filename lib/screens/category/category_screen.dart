@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/providers/category_provider.dart';
+import 'package:tiendita/screens/category/CategoryDataSource.dart';
 import 'package:tiendita/screens/category/create_category.dart';
 import 'package:tiendita/screens/category/edit_category.dart';
 import 'package:tiendita/widgets/text_data.dart';
@@ -81,36 +82,42 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
             ),
           ],
         ),
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(70),
+            child: Padding(
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12.0),
+              child: SearchBar(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12), // Customize radius
+                  ),
+                ),
+                controller: _searchController,
+                hintText: "Buscar categoria",
+                leading: const Icon(Icons.search),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value.toLowerCase();
+                  });
+                },
+                trailing: [
+                  IconButton(
+                    onPressed: (){
+                      _searchController.clear();
+                      setState(() {
+                        _searchQuery = "";
+                      });
+                    },
+                    icon: const Icon(Icons.clear),
+                  )
+                ],
+              ),
+            )
+        ),
       ),
       body: Column(
         children: <Widget>[
           Padding(padding: const EdgeInsets.only(top: 30)),
-          SearchBar(
-            shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12), // Customize radius
-              ),
-            ),
-            controller: _searchController,
-            hintText: "Buscar categoria",
-            leading: const Icon(Icons.search),
-            onChanged: (value) {
-              setState(() {
-                _searchQuery = value.toLowerCase();
-              });
-            },
-            trailing: [
-              IconButton(
-                  onPressed: (){
-                    _searchController.clear();
-                    setState(() {
-                      _searchQuery = "";
-                    });
-                  },
-                  icon: const Icon(Icons.clear),
-              )
-            ],
-          ),
           const SizedBox(height: 10),
           Expanded(
             child: categoryListAsync.when(
@@ -132,85 +139,83 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
                   );
                 }
 
+                final source = CategoryDataSource(
+                    categories: categories,
+                    context: context,
+                    onDelete: (id) => _confirmDelete(context, id),
+                );
+
                 return SingleChildScrollView(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: DataTable(
-                      headingRowColor: WidgetStateProperty.all(
-                        Colors.grey[200],
+                  scrollDirection: Axis.horizontal,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade400, width: 1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            blurRadius: 3,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
-                      headingRowHeight: 60,
-                      dataRowMaxHeight: 60,
-                      dividerThickness: 2,
-                      columnSpacing: 20,
-                      showCheckboxColumn: false,
-                      columns: [
-                        DataColumn(
-                          label: TextData(
-                            "Nombre",
-                            18,
-                            Colors.black,
-                            "Poppins",
-                            FontWeight.bold,
-                          ),
-                        ),
-                        DataColumn(
-                          label: TextData(
-                            "Editar",
-                            18,
-                            Colors.black,
-                            "Poppins",
-                            FontWeight.bold,
-                          ),
-                        ),
-                        DataColumn(
-                          label: TextData(
-                            "Eliminar",
-                            18,
-                            Colors.black,
-                            "Poppins",
-                            FontWeight.bold,
-                          ),
-                          numeric: true,
-                        ),
-                      ],
-                      //rows
-                      rows: filteredCategory.map((category) {
-                        return DataRow(
-                          cells: [
-                            DataCell(
-                              Text(
-                                category?.CategoryName ?? "Sin nombre",
-                                style: TextStyle(fontSize: 15),
+                      margin: const EdgeInsets.all(8),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
+                        child: PaginatedDataTable(
+                          header: Center(
+                            child: const Text("Lista de categorias",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold
                               ),
                             ),
-                            DataCell(
-                              IconButton(
-                                icon: Icon(
-                                  FontAwesomeIcons.penToSquare,
-                                  color: Colors.blueAccent,
-                                  size: 20,
-                                ),
-                                onPressed: () {
-                                  Navigator.push(context, 
-                                      MaterialPageRoute(builder:(context) => EditCategory(category!)));
-                                },
+                          ),
+                          headingRowColor: WidgetStateProperty.all(
+                            Colors.grey[200],
+                          ),
+                          headingRowHeight: 60,
+                          dataRowMaxHeight: 60,
+                          dividerThickness: 2,
+                          columnSpacing: 20,
+                          showCheckboxColumn: false,
+                          columns: [
+                            DataColumn(
+                              label: TextData(
+                                "Nombre",
+                                18,
+                                Colors.black,
+                                "Poppins",
+                                FontWeight.bold,
                               ),
                             ),
-                            DataCell(
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
-                                  if(category?.idCategory != null){
-                                    _confirmDelete(context, category!.idCategory!);
-                                  }
-                                },
+                            DataColumn(
+                              label: TextData(
+                                "Editar",
+                                18,
+                                Colors.black,
+                                "Poppins",
+                                FontWeight.bold,
                               ),
+                            ),
+                            DataColumn(
+                              label: TextData(
+                                "Eliminar",
+                                18,
+                                Colors.black,
+                                "Poppins",
+                                FontWeight.bold,
+                              ),
+                              numeric: true,
                             ),
                           ],
-                        );
-                      }).toList(),
+                          //rows: filteredCategory.map((category) {}).toList(),
+                          source: source,
+                        ),
+                      ),
                     ),
                   ),
                 );

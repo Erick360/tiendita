@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiendita/screens/clients/ClientsDataSource.dart';
 import '../../constants/constants.dart';
 import '../../providers/clients_provider.dart';
 import '../../widgets/footer_button.dart';
 import '../../widgets/text_data.dart';
 import 'create_client.dart';
-import 'edit_client.dart';
 
 class ClientsScreen extends ConsumerStatefulWidget {
   const ClientsScreen({super.key});
@@ -81,37 +81,43 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
             ),
           ],
         ),
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(70),
+            child: Padding(
+                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 12.0),
+              child: SearchBar(
+                controller: _searchController,
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                hintText: 'Buscar Cliente',
+                leading: const Icon(Icons.search),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value.toLowerCase();
+                  });
+                },
+                trailing: [
+                  IconButton(
+                      onPressed: (){
+                        _searchController.clear();
+
+                        setState(() {
+                          _searchQuery = "";
+                        });
+                      },
+                      icon: Icon(Icons.clear)
+                  )
+                ],
+              ),
+            )
+        ),
       ),
       body: Column(
         children: <Widget>[
-          Padding(padding: const EdgeInsets.only(top: 30)),
-          SearchBar(
-            controller: _searchController,
-            shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12), // Customize radius
-              ),
-            ),
-            hintText: 'Buscar Cliente',
-            leading: const Icon(Icons.search),
-            onChanged: (value) {
-              setState(() {
-                _searchQuery = value.toLowerCase();
-              });
-            },
-            trailing: [
-              IconButton(
-                  onPressed: (){
-                    _searchController.clear();
-
-                    setState(() {
-                      _searchQuery = "";
-                    });
-                  },
-                  icon: Icon(Icons.clear)
-              )
-            ],
-          ),
+          //Padding(padding: const EdgeInsets.only(top: 30)),
           const SizedBox(height: 10),
           Expanded(
             child: clientsList.when(
@@ -130,143 +136,128 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
                   );
                 }
 
+                final source = ClientsDataSource(
+                    clients: clients,
+                    context: context,
+                    onDelete: (id) => _confirmDelete(context, id)
+                );
 
                 return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.only(top: 10),
-                  child: SizedBox(
-                    child: DataTable(
-                      headingRowColor: WidgetStateProperty.all(
-                        Colors.grey[200],
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade400, width: 1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            blurRadius: 3,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
-                      headingRowHeight: 60,
-                      dataRowMaxHeight: 60,
-                      dividerThickness: 2,
-                      columnSpacing: 20,
-                      showCheckboxColumn: false,
-                      columns: [
-                        DataColumn(
-                          label: TextData(
-                            'Cliente',
-                            18,
-                            Colors.black,
-                            "Poppins",
-                            FontWeight.bold,
+                      margin: const EdgeInsets.all(8),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          cardTheme: const CardThemeData(
+                            elevation: 0,
+                            color: Colors.transparent,
+                            margin: EdgeInsets.zero,
                           ),
                         ),
-                        DataColumn(
-                          label: TextData(
-                            'Apellidos',
-                            18,
-                            Colors.black,
-                            "Poppins",
-                            FontWeight.bold,
-                          ),
-                        ),
-                        DataColumn(
-                          label: TextData(
-                            'Direccion',
-                            18,
-                            Colors.black,
-                            "Poppins",
-                            FontWeight.bold,
-                          ),
-                        ),
-                        DataColumn(
-                          label: TextData(
-                            'Correo',
-                            18,
-                            Colors.black,
-                            "Poppins",
-                            FontWeight.bold,
-                          ),
-                        ),
-                        DataColumn(
-                          label: TextData(
-                            'Telefono',
-                            18,
-                            Colors.black,
-                            "Poppins",
-                            FontWeight.bold,
-                          ),
-                        ),
-                        DataColumn(
-                          label: TextData(
-                            'Editar',
-                            18,
-                            Colors.black,
-                            "Poppins",
-                            FontWeight.bold,
-                          ),
-                        ),
-                        DataColumn(
-                          label: TextData(
-                            'Eliminar',
-                            18,
-                            Colors.black,
-                            "Poppins",
-                            FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                      rows: filteredClients.map((client) {
-                        return DataRow(
-                          cells: [
-                            DataCell(
-                              Text(
-                                 client?.clientName ?? "Sin nombre",
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                client?.clientLastName ?? "No apellidos registrados",
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                client?.clientAddress ?? "No direccion registrada",
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                client?.clientEmail ?? "No correo electronico registrado",
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                client?.clientPhoneNumber ?? "No Telefono registrado",
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ),
-                            DataCell(
-                              IconButton(
-                                icon: Icon(
-                                  FontAwesomeIcons.penToSquare,
-                                  color: Colors.blueAccent,
-                                  size: 20,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
+                          child: PaginatedDataTable(
+                            header: Center(
+                              child: const Text("Lista de clientes",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                fontWeight: FontWeight.bold
                                 ),
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder:(context) => EditClient(client)));
-                                },
                               ),
                             ),
-                            DataCell(
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
-                                  if(client?.idClient != null){
-                                    _confirmDelete(context, client!.idClient!);
-                                  }
-                                },
-                              ),
+                            headingRowColor: WidgetStateProperty.all(
+                              Colors.grey[200],
                             ),
-                          ],
-                        );
-                      }).toList(),
+                            headingRowHeight: 45,
+                            dataRowMaxHeight: 50,
+                            dividerThickness: 2,
+                            columnSpacing: 20,
+                            showCheckboxColumn: false,
+                            columns: [
+                              DataColumn(
+                                label: TextData(
+                                  'Cliente',
+                                  18,
+                                  Colors.black,
+                                  "Poppins",
+                                  FontWeight.bold,
+                                ),
+                              ),
+                              DataColumn(
+                                label: TextData(
+                                  'Apellidos',
+                                  18,
+                                  Colors.black,
+                                  "Poppins",
+                                  FontWeight.bold,
+                                ),
+                              ),
+                              DataColumn(
+                                label: TextData(
+                                  'Direccion',
+                                  18,
+                                  Colors.black,
+                                  "Poppins",
+                                  FontWeight.bold,
+                                ),
+                              ),
+                              DataColumn(
+                                label: TextData(
+                                  'Correo',
+                                  18,
+                                  Colors.black,
+                                  "Poppins",
+                                  FontWeight.bold,
+                                ),
+                              ),
+                              DataColumn(
+                                label: TextData(
+                                  'Telefono',
+                                  18,
+                                  Colors.black,
+                                  "Poppins",
+                                  FontWeight.bold,
+                                ),
+                              ),
+                              DataColumn(
+                                label: TextData(
+                                  'Editar',
+                                  18,
+                                  Colors.black,
+                                  "Poppins",
+                                  FontWeight.bold,
+                                ),
+                              ),
+                              DataColumn(
+                                label: TextData(
+                                  'Eliminar',
+                                  18,
+                                  Colors.black,
+                                  "Poppins",
+                                  FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                            rowsPerPage: 10,
+                            availableRowsPerPage: [10,20,50],
+                            source: source,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 );
