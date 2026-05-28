@@ -7,7 +7,6 @@ import 'package:tiendita/screens/purveyors/PurveyorDataSource.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import '../../widgets/footer_button.dart';
 import 'create_purveyors.dart';
-import 'edit_purveyors.dart';
 
 class PurveyorsScreen extends ConsumerStatefulWidget {
   const PurveyorsScreen({super.key});

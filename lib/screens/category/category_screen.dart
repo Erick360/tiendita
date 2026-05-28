@@ -5,7 +5,6 @@ import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/providers/category_provider.dart';
 import 'package:tiendita/screens/category/CategoryDataSource.dart';
 import 'package:tiendita/screens/category/create_category.dart';
-import 'package:tiendita/screens/category/edit_category.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import 'package:tiendita/widgets/footer_button.dart';
 

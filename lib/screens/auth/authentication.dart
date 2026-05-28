@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:tiendita/screens/home_page.dart';
 
-
 class Authentication extends StatefulWidget {
   const Authentication({super.key});
   static String id = "auth";
@@ -13,46 +12,17 @@ class Authentication extends StatefulWidget {
 
 class _AuthenticationState extends State<Authentication> {
   final LocalAuthentication auth = LocalAuthentication();
-  //_SupportState _supportState = _SupportState.unknown;
   String _authStatus = "No autenticado";
   bool _isAuthenticating = false;
 
   Future<void> _authenticateUser() async {
     bool authenticated = false;
-
-
-    /*
-    @override
-    void initState(){
-      super.initState();
-      auth.isDeviceSupported().then(
-            (bool isSupported) => setState(
-              () => _supportState = isSupported
-              ? _SupportState.supported
-              : _SupportState.unsupported,
-        ),
-      );
-    }
-*/
     setState(() {
       _isAuthenticating = true;
       _authStatus = "Autenticando...";
     });
 
     try {
-      //final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
-      //final bool canAuthenticate = canAuthenticateWithBiometrics || await auth.isDeviceSupported();
-
-      /*
-      if (!canAuthenticate) {
-        setState(() {
-          _authStatus = "Autenticación biométrica no soportada o no configurada en este dispositivo.";
-          _isAuthenticating = false;
-        });
-        return;
-      }
-      */
-
       //(v3.0.0)
       authenticated = await auth.authenticate(
         localizedReason: 'Escanea tu huella (o usa tu rostro) para autenticarte.',
@@ -137,7 +107,7 @@ class _AuthenticationState extends State<Authentication> {
                           onPressed: _isAuthenticating ? null : _authenticateUser,
                           icon: _isAuthenticating
                               ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                              : const Icon(Icons.fingerprint, size: 30),
+                              : const Icon(Icons.fingerprint_outlined, size: 30),
                           label: Text(_isAuthenticating ? 'Esperando...' : 'Acceder'),
                           style:
                           ElevatedButton.styleFrom(

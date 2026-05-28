@@ -22,11 +22,16 @@ class _DashboardState extends ConsumerState<Dashboard>{
   void initState(){
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_){
-      final now = DateTime.now();
-      ref.read(salesNotifierProvider.notifier).loadSalesPerDay(now);
-      ref.read(shopsNotifierProvider.notifier).loadShopsForDay(now);
-      ref.read(expenseNotifierProvider.notifier).loadExpensesPerDay(now);
+     _refreshData();
     });
+  }
+
+  Future<void> _refreshData() async {
+    ref.read(salesNotifierProvider.notifier).loadSalesPerDay(now);
+    ref.read(shopsNotifierProvider.notifier).loadShopsForDay(now);
+    ref.read(expenseNotifierProvider.notifier).loadExpensesPerDay(now);
+
+    await Future.delayed(const Duration(milliseconds: 500));
   }
 
   @override
@@ -61,78 +66,60 @@ class _DashboardState extends ConsumerState<Dashboard>{
 
     double profit = totalSales - totalShops - totalExpenses;
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Column(
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        color: kActiveColor,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CompanyAvatar(),
-              SizedBox(height: 10),
-              CompanyName(Colors.black, 20),
+              Column(
+                children: [
+                  CompanyAvatar(),
+                  SizedBox(height: 10),
+                  CompanyName(Colors.black, 20),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text("Resumen $kDate", style: TextStyle(color: Colors.grey)),
+              const SizedBox(height: 24),
+              Row(
+                  children: [
+                            Expanded(
+                                child: MetricCard(
+                                    title: "Ganancias",
+                                    value: '\$${profit.toStringAsFixed(2)}',
+                                    icon: Icons.trending_up,
+                                    color: profit >= 0 ? Colors.blue : Colors.red,
+                                    isLoading: isLoadingSales,
+                                )
+                            ),
+                    const SizedBox(width: 16),
+                            Expanded(
+                                child: MetricCard(
+                                    title: "Invertido",
+                                    value: "${totalShops.toStringAsFixed(2)}",
+                                    icon: Icons.monetization_on_outlined,
+                                    color: Colors.green,
+                                  isLoading: isLoadingShops,
+                                ),
+                            ),
+                  ],
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Menu',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 16),
+              QuickActionsGrid(),
             ],
           ),
-          const SizedBox(height: 8),
-          Text("Resumen $kDate", style: TextStyle(color: Colors.grey)),
-          const SizedBox(height: 24),
-          Row(
-              children: [
-                        Expanded(
-                            child: MetricCard(
-                                title: "Ganancias",
-                                value: '\$${profit.toStringAsFixed(2)}',
-                                icon: Icons.trending_up,
-                                color: profit >= 0 ? Colors.blue : Colors.red,
-                                isLoading: isLoadingSales,
-                            )
-                        ),
-                const SizedBox(width: 16),
-                        Expanded(
-                            child: MetricCard(
-                                title: "Inverido",
-                                value: "${totalShops.toStringAsFixed(2)}",
-                                icon: Icons.monetization_on_outlined,
-                                color: Colors.green,
-                              isLoading: isLoadingShops,
-                            ),
-                        ),
-                /*
-
-                const SizedBox(width: 16),
-                Expanded(
-                    child: MetricCard(
-                        title: "Productos",
-                        value: "0",
-                        icon: Icons.inventory_2,
-                        color: Colors.blue
-                    )
-                ),
-                */
-
-                /*
-
-                const SizedBox(width: 16),
-                Expanded(
-                    child: MetricCard(
-                        title: "Ganancias",
-                        value: "\$10.00",
-                        icon: Icons.trending_up,
-                        color: Colors.purple
-                    )
-                ),
-                */
-              ],
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Menu',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 16),
-          QuickActionsGrid(),
-        ],
+        ),
       ),
     );
   }

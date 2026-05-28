@@ -56,7 +56,7 @@ class QuickActionsGrid extends StatelessWidget {
             title: 'Mi Negocio',
             icon: Icons.store,
             color: Colors.redAccent,
-            onTap: () => Navigator.pushNamed(context, CompanyEditScreen.id)
+            onTap: () => Navigator.pushNamed(context, CompanyEditScreen.id),
         ),
         QuickActionButton(
           title: 'Reportes Ventas',

@@ -232,6 +232,7 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
                                   "Poppins",
                                   FontWeight.bold,
                                 ),
+
                               ),
                               DataColumn(
                                 label: TextData(
