@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-const kActiveColor = Color(0xFFF25410);
+const kActiveColor = Color(0xFFF36618);
 
 final now = DateTime.now();
 var kDate = DateFormat('yyyy-MM-dd').format(DateTime.now());

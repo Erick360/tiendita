@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/screens/home_page.dart';
 
 class Authentication extends StatefulWidget {
@@ -60,7 +61,7 @@ class _AuthenticationState extends State<Authentication> {
               width: double.infinity,
               padding: EdgeInsets.only(top: 15, bottom: 15,left: 10, right: 10),
               decoration: const BoxDecoration(
-                  color: Color(0xFFF36618),
+                  color: kActiveColor,
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(25),
                       bottomRight: Radius.circular(25)

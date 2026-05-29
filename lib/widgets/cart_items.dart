@@ -27,6 +27,7 @@ class CartNotifier extends StateNotifier<List<CartItems>> {
     }
   }
 
+
   void updateQuantity(int id, int newQuantity) {
     if (newQuantity <= 0) {
       state = state.where((item) => item.productId != id).toList();
@@ -39,6 +40,7 @@ class CartNotifier extends StateNotifier<List<CartItems>> {
       state = newState;
     }
   }
+
 
   void clearCart() => state = [];
 

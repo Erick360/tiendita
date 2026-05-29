@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:tiendita/screens/auth/authentication.dart';
 import 'package:tiendita/screens/company/company_edit_screen.dart';
 import 'package:tiendita/widgets/company_name.dart';
@@ -78,7 +79,23 @@ class SettingsScreen extends ConsumerWidget{
             onTap: (){
             },
           ),
-
+          const Divider(),
+          ListTile(
+            leading: const Icon(Bootstrap.database_add),
+            title: Text("Importar"),
+            subtitle: Text("Importar base de datos"),
+            trailing: Icon(Icons.chevron_right),
+            onTap: (){},
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Bootstrap.database_down),
+            title: Text("Exportar"),
+            subtitle: Text("Exportar base de datos"),
+            trailing: Icon(Icons.chevron_right),
+            onTap: (){},
+          ),
+          const Divider()
         ],
       ),
     );

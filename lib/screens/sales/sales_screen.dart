@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/clients_model.dart';
@@ -6,6 +7,7 @@ import 'package:tiendita/providers/clients_provider.dart';
 import 'package:tiendita/widgets/cart_items.dart';
 import 'package:tiendita/screens/sales/sales_history_custom.dart';
 import 'package:tiendita/screens/sales/sales_history_today.dart';
+import 'package:tiendita/widgets/quantity_input.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import '../../models/products_model.dart';
 import '../../models/sales_model.dart';
@@ -27,6 +29,15 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
 
   Key _clientSearch = UniqueKey();
   Key _productSearch = UniqueKey();
+
+  final formKey = GlobalKey<FormState>();
+  TextEditingController _stock = TextEditingController();
+
+  @override
+  void dispose(){
+    _stock.dispose();
+    super.dispose();
+  }
 
   @override
   void initState(){
@@ -307,15 +318,6 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                 ),
                                 DataColumn(
                                     label: TextData(
-                                      "stock",
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    )
-                                ),
-                                DataColumn(
-                                    label: TextData(
                                       "Cantidad",
                                       18,
                                       Colors.black,
@@ -332,6 +334,15 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                       FontWeight.bold,
                                     )
                                 ),
+                                DataColumn(
+                                    label: TextData(
+                                      "Eliminar",
+                                      18,
+                                      Colors.black,
+                                      "Poppins",
+                                      FontWeight.bold,
+                                    )
+                                ),
                               ],
                               rows: cart.asMap().entries.map((entry){
                                 int index = entry.key;
@@ -341,6 +352,15 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                       DataCell(Text('${index + 1}')),
                                       DataCell(Text(item.name)),
                                       DataCell(Text('\$${item.price.toStringAsFixed(2)}')),
+                                      DataCell(
+                                        QuantityInput(
+                                          initialQuantity: item.quantity,
+                                          onChanged: (newQuantity){
+                                            cartNotifier.updateQuantity(item.productId, newQuantity);
+                                          },
+                                        ),
+                                      ),
+                                      /*
                                       DataCell(
                                         Row(
                                           mainAxisSize: MainAxisSize.min,
@@ -378,6 +398,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                           ],
                                         ),
                                       ),
+                                      */
                                       DataCell(Text('\$${item.total.toStringAsFixed(2)}')),
                                       DataCell(
                                         IconButton(

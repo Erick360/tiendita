@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/screens/shops/shops_history_custom.dart';
 import 'package:tiendita/screens/shops/shops_history_today.dart';
+import 'package:tiendita/widgets/quantity_input.dart';
 import '../../models/products_model.dart';
 import '../../models/purveyors_model.dart';
 import '../../models/shopping_model.dart';
@@ -331,6 +332,13 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                         DataCell(Text(item.name)),
                         DataCell(Text('\$${item.price.toStringAsFixed(2)}')),
                         DataCell(
+                          QuantityInput(
+                            initialQuantity: item.quantity,
+                              onChanged: (newQuantity){
+                                cartNotifier.updateQuantity(item.productId, newQuantity);
+                              },
+                          ),
+                          /*
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -366,6 +374,8 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                               ),
                             ],
                           ),
+                          */
+
                         ),
                         DataCell(Text('\$${item.total.toStringAsFixed(2)}')),
                         DataCell(
