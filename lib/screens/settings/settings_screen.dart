@@ -3,17 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:tiendita/screens/auth/authentication.dart';
 import 'package:tiendita/screens/company/company_edit_screen.dart';
+import 'package:tiendita/screens/settings/import_export_database.dart';
 import 'package:tiendita/widgets/company_name.dart';
 
 
-class SettingsScreen extends ConsumerWidget{
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
+
   static String id = 'settings_screen';
 
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFF25410),
@@ -43,32 +44,33 @@ class SettingsScreen extends ConsumerWidget{
       ),
       body: ListView(
         children: [
-                Column(
-                  children: [
-                    ListTile(
-                      leading: Icon(Icons.business),
-                      title: CompanyName(
-                          Colors.black,
-                          15
-                      ),
-                      subtitle: Text('Sobre mi negocio',style: TextStyle(
-                        color: Colors.black
-                      ),),
-                      trailing:   Icon(Icons.chevron_right),
-                      onTap: (){
-                          Navigator.pushNamed(context, CompanyEditScreen.id);
-                      },
-                    ),
-                    const Divider()
-                  ],
+          Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.business),
+                title: CompanyName(
+                    Colors.black,
+                    15
                 ),
+                subtitle: Text('Sobre mi negocio', style: TextStyle(
+                    color: Colors.black
+                ),),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.pushNamed(context, CompanyEditScreen.id);
+                },
+              ),
+              const Divider()
+            ],
+          ),
           // Security settings
           ListTile(
             leading: const Icon(Icons.security),
             title: Text('Seguridad'),
             subtitle: Text('PIN y Huella digital'),
             trailing: Icon(Icons.chevron_right),
-            onTap: () => Navigator.pushReplacementNamed(context, Authentication.id),
+            onTap: () =>
+                Navigator.pushReplacementNamed(context, Authentication.id),
           ),
           const Divider(),
           ListTile(
@@ -76,26 +78,17 @@ class SettingsScreen extends ConsumerWidget{
             title: Text('Temas'),
             subtitle: Text('cambiar estilo'),
             trailing: Icon(Icons.chevron_right),
-            onTap: (){
-            },
+            onTap: () {},
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Bootstrap.database_add),
-            title: Text("Importar"),
-            subtitle: Text("Importar base de datos"),
+            title: Text("Gestion"),
+            subtitle: Text("Importar u Exportar base de datos"),
             trailing: Icon(Icons.chevron_right),
-            onTap: (){},
+            onTap: () => Navigator.pushNamed(context, ImportExportDatabase.id),
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Bootstrap.database_down),
-            title: Text("Exportar"),
-            subtitle: Text("Exportar base de datos"),
-            trailing: Icon(Icons.chevron_right),
-            onTap: (){},
-          ),
-          const Divider()
         ],
       ),
     );

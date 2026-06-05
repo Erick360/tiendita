@@ -147,7 +147,7 @@ class TienditaDatabase extends _$TienditaDatabase {
     return LazyDatabase(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       final file = File(p.join(dbFolder.path, 'db_tiendita.sqlite'));
-      return NativeDatabase(file);
+      return NativeDatabase.createInBackground(file);
     });
 }
 
