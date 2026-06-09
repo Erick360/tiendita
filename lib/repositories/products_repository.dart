@@ -39,4 +39,15 @@ class ProductsRepository{
     return await (database.delete(database.products)
       ..where((t) => t.id_product.equals(id))).go();
   }
+
+  Future<void> updateStock(int productId, int quantityChange) async{
+    final product = await(database.select(database.products)
+      ..where((tbl)=> tbl.id_product.equals(productId))).getSingle();
+
+    final newStock = product.stock + quantityChange;
+
+    await (database.update(database.products)
+      ..where((tbl) => tbl.id_product.equals(productId)))
+      .write(ProductsCompanion(stock: Value(newStock)));
+  }
 }

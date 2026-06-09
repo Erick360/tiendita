@@ -3,12 +3,14 @@ import 'package:flutter/services.dart';
 
 class QuantityInput extends StatefulWidget {
   final int initialQuantity;
+  final int maxStock;
   final ValueChanged<int> onChanged;
 
   const QuantityInput({
     Key? key,
     required this.initialQuantity,
-    required this.onChanged
+    required this.onChanged,
+    required this.maxStock
   }) : super(key: key);
 
   @override
@@ -51,6 +53,7 @@ class _QuantityInputState extends State<QuantityInput> {
       child: TextField(
         controller: _controller,
         keyboardType: TextInputType.number,
+        maxLength: 3,
         inputFormatters: [
           FilteringTextInputFormatter.digitsOnly,
         ],
@@ -63,11 +66,19 @@ class _QuantityInputState extends State<QuantityInput> {
           isDense: true,
           contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
           border: OutlineInputBorder(),
+          counterText: '',
         ),
         onChanged: (value) {
           final newQuantity = int.tryParse(value);
-          if (newQuantity != null && newQuantity >= 0) {
-            widget.onChanged(newQuantity);
+          if (newQuantity != null && newQuantity >=0) {
+            if(newQuantity > widget.maxStock){
+              widget.onChanged(widget.maxStock);
+              _controller.text = widget.maxStock.toString();
+            }else{
+              widget.onChanged(newQuantity);
+            }
+          } else if(value.isEmpty){
+            widget.onChanged(1);
           }
         },
       ),

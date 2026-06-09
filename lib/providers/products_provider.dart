@@ -47,6 +47,13 @@ class ProductsNotifier extends StateNotifier<AsyncValue<ProductsModel?>>{
     }
   }
 
+  Future<void> updateStock(int id, int stock)async{
+    try{
+      await _repo.updateStock(id, stock);
+    }catch(e, stack){
+      state = AsyncError(e, stack);
+    }
+  }
 
 
   Future<void> saveProduct(ProductsModel products) async{

@@ -357,6 +357,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                           onChanged: (newQuantity){
                                             cartNotifier.updateQuantity(item.productId, newQuantity);
                                           },
+                                          maxStock: item.stock,
                                         ),
                                       ),
                                       /*
@@ -458,6 +459,13 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                             await ref
                                 .read(salesNotifierProvider.notifier)
                                 .saveSales(newSale);
+                            
+                            
+                            final cartItems = ref.read(cartProvider);
+                            for(var i in cartItems){
+                               await ref.read
+                                 (productsNotifierProvider.notifier).updateStock(i.productId, -i.quantity);
+                            }
 
                             if (context.mounted) {
                               showSuccessSnackBar(

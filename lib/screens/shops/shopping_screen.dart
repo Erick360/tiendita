@@ -337,6 +337,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                               onChanged: (newQuantity){
                                 cartNotifier.updateQuantity(item.productId, newQuantity);
                               },
+                            maxStock: 9999,
                           ),
                           /*
                           Row(
@@ -441,6 +442,12 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                         await ref
                             .read(shopsNotifierProvider.notifier)
                             .saveShopping(newPurchase);
+
+                        final cartItems = ref.read(cartProvider);
+                        for(var j in cartItems){
+                          await ref.read(productsNotifierProvider.notifier).updateStock(j.productId, j.quantity);
+                        }
+
 
                         if (context.mounted) {
                           showSuccessSnackBar(
