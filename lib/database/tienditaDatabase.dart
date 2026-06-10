@@ -57,7 +57,7 @@ class Sales extends Table{
 
 class SalesDetails extends Table{
   IntColumn get id_sales_detail => integer().autoIncrement()();
-  TextColumn get local_coin => text().withLength(min: 1, max: 50)();
+  //TextColumn get local_coin => text().withLength(min: 1, max: 50)();
   RealColumn get price_sale => real()();
   RealColumn get amount_sale => real()();
   RealColumn get total_sales => real()();

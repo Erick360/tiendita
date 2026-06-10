@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tiendita/screens/clients/ClientsDataSource.dart';
+import 'package:tiendita/models/clients_model.dart';
+import 'package:tiendita/screens/clients/clients_data_source.dart';
 import '../../constants/constants.dart';
 import '../../providers/clients_provider.dart';
 import '../../widgets/footer_button.dart';
@@ -122,7 +123,7 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
           Expanded(
             child: clientsList.when(
               data: (clients) {
-                final filteredClients = clients.where((client){
+                final filteredClients = clients.whereType<ClientsModel?>().where((client){
                   final clientName = client?.clientName.toLowerCase() ?? "";
                   return clientName.contains(_searchQuery);
                 });
@@ -137,7 +138,7 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
                 }
 
                 final source = ClientsDataSource(
-                    clients: clients,
+                    clients: filteredClients.toList(),
                     context: context,
                     onDelete: (id) => _confirmDelete(context, id)
                 );

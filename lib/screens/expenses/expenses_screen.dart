@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:tiendita/screens/expenses/edit_expense.dart';
 import '../../constants/constants.dart';
 import '../../providers/expenses_provider.dart';
 import '../../widgets/footer_button.dart';
@@ -273,9 +275,11 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                                     showCheckboxColumn: false,
                                     columns: [
                                       DataColumn(label: TextData(_isShowingToday ? "Hora" : "Fecha", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                      DataColumn(label: TextData('Nombre', 18, Colors.black, "Poppins", FontWeight.bold)),
                                       DataColumn(label: TextData("Descripción", 18, Colors.black, "Poppins", FontWeight.bold)),
                                       DataColumn(label: TextData("Monto", 18, Colors.black, "Poppins", FontWeight.bold)),
-                                      DataColumn(label: TextData("Acciones", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                      DataColumn(label: TextData("Editar", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                      DataColumn(label: TextData("Borrar", 18, Colors.black, "Poppins", FontWeight.bold)),
                                     ],
                                     rows: expenses.map((expense) {
                                       return DataRow(
@@ -286,8 +290,26 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                                                   : DateFormat('dd/MM/yy').format(expense!.expenseDate),
                                               style: TextStyle(fontWeight: _isShowingToday ? FontWeight.bold : FontWeight.normal)
                                           )),
+                                          DataCell(Text(expense.expenseName)),
                                           DataCell(Text(expense.description)),
                                           DataCell(Text("\$${expense.amount.toStringAsFixed(2)}", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red))),
+                                          DataCell(
+                                            IconButton(
+                                              icon: Icon(
+                                                FontAwesomeIcons.penToSquare,
+                                                color: Colors.blueAccent,
+                                                size: 20,
+                                              ),
+                                              onPressed: (){
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => EditExpense(expense),
+                                                    )
+                                                );
+                                              },
+                                            ),
+                                          ),
                                           DataCell(
                                             IconButton(
                                               icon: const Icon(Icons.delete_outline, color: Colors.red),

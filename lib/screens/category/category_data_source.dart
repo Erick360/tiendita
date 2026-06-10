@@ -25,7 +25,7 @@ class CategoryDataSource extends DataTableSource {
         DataCell(
           Text(
             category?.CategoryName ?? "Sin nombre",
-            style: TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
           ),
         ),
         DataCell(

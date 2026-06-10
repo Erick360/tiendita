@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/constants/constants.dart';
+import 'package:tiendita/models/purveyors_model.dart';
 import 'package:tiendita/providers/purveyor_provider.dart';
-import 'package:tiendita/screens/purveyors/PurveyorDataSource.dart';
+import 'package:tiendita/screens/purveyors/purveyor_data_source.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import '../../widgets/footer_button.dart';
 import 'create_purveyors.dart';
@@ -123,7 +124,7 @@ class PurveyorsScreen extends ConsumerStatefulWidget {
           Expanded(
             child: purveyorListAsync.when(
               data: (purveyors) {
-                 final filteredPurveyors = purveyors.where((purveyor){
+                 final filteredPurveyors = purveyors.whereType<PurveyorsModel?>().where((purveyor){
                   final purveyorName = purveyor?.PurveyorName.toLowerCase() ?? "";
                  return purveyorName.contains(_searchQuery);
                  }).toList();
@@ -139,7 +140,7 @@ class PurveyorsScreen extends ConsumerStatefulWidget {
                 final source = PurveyorDataSource(
                     context: context,
                     onDelete: (id) => _confirmDelete(context, id),
-                    purveyors: purveyors
+                    purveyors: filteredPurveyors
                 );
 
                 return SingleChildScrollView(

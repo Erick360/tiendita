@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/constants/constants.dart';
+import 'package:tiendita/models/category_model.dart';
 import 'package:tiendita/providers/category_provider.dart';
-import 'package:tiendita/screens/category/CategoryDataSource.dart';
+import 'package:tiendita/screens/category/category_data_source.dart';
 import 'package:tiendita/screens/category/create_category.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import 'package:tiendita/widgets/footer_button.dart';
@@ -124,7 +125,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
               loading: () =>
                   const Center(child: const CircularProgressIndicator()),
               data: (categories) {
-                final filteredCategory = categories.where((category){
+                final filteredCategory = categories.whereType<CategoryModel?>().where((category){
                   final categoryName = category?.CategoryName?.toLowerCase() ?? "";
                   return categoryName.contains(_searchQuery);
                 });
@@ -139,7 +140,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
                 }
 
                 final source = CategoryDataSource(
-                    categories: categories,
+                    categories: filteredCategory.toList(),
                     context: context,
                     onDelete: (id) => _confirmDelete(context, id),
                 );

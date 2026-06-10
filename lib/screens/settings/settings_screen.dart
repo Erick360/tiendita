@@ -44,6 +44,7 @@ class SettingsScreen extends ConsumerWidget {
       ),
       body: ListView(
         children: [
+          /*
           Column(
             children: [
               ListTile(
@@ -63,6 +64,8 @@ class SettingsScreen extends ConsumerWidget {
               const Divider()
             ],
           ),
+          */
+
           // Security settings
           ListTile(
             leading: const Icon(Icons.security),

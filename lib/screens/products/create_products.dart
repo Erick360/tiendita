@@ -30,7 +30,7 @@ class _StateCreateProducts extends ConsumerState<CreateProducts>{
   String? _selectedPresentation;
 
   final List<String> _units = ['Kilo', 'Gramo', 'Litro', 'Mililitro','Metro','Centimetro'];
-  final List<String> _presentation = ['Caja', 'Saco', 'Pieza','Tira','Bolsa'];
+  final List<String> _presentation = ['Caja', 'Saco', 'Pieza','Tira','Bolsa','Docena','Media Docena'];
 
   @override
   void dispose(){

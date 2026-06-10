@@ -33,7 +33,7 @@ class ProductsDataSource extends DataTableSource {
         DataCell(
           Text(
             product?.productName ?? "sin Nombre",
-            style: TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
           ),
         ),
         DataCell(

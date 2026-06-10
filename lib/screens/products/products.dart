@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiendita/screens/products/ProductsDataSource.dart';
+import 'package:tiendita/screens/products/products_data_source.dart';
 import '../../constants/constants.dart';
+import '../../models/products_model.dart';
 import '../../providers/products_provider.dart';
 import '../../widgets/footer_button.dart';
 import '../../widgets/text_data.dart';
@@ -123,14 +124,15 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
           Expanded(
             child: productList.when(
                 data: (products){
-                  final filteredProducts = products.where((product){
+                  final filteredProducts = products.whereType<ProductsModel?>().where((product){
                     final productName =  product?.productName.toLowerCase() ?? "";
                     return productName.contains(_searchQuery);
                   }).toList();
 
                   if(filteredProducts.isEmpty){
                     return Center(
-                        child: Text(_searchQuery.isEmpty ? "No hay datos registrados" : "No se encontraron productos",
+                        child: Text(
+                            _searchQuery.isEmpty ? "No hay datos registrados" : "No se encontraron productos",
                         style: TextStyle(fontSize: 16)
                         ),
                     );
@@ -138,7 +140,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
 
 
                   final source = ProductsDataSource(
-                      products: products,
+                      products: filteredProducts,
                       context: context,
                       onDelete: (id) => _confirmDelete(context, id),
                       ref: ref
@@ -199,7 +201,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                                   ),
                                   DataColumn(
                                     label: TextData(
-                                      'U medida',
+                                      'Unidad de\nmedida',
                                       18,
                                       Colors.black,
                                       "Poppins",
@@ -208,7 +210,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                                   ),
                                   DataColumn(
                                     label: TextData(
-                                      'Precio de compra',
+                                      'Precio de\ncompra',
                                       18,
                                       Colors.black,
                                       "Poppins",
@@ -217,7 +219,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                                   ),
                                   DataColumn(
                                     label: TextData(
-                                      'Precio de venta',
+                                      'Precio de\nventa',
                                       18,
                                       Colors.black,
                                       "Poppins",
@@ -253,7 +255,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                                   ),
                                   DataColumn(
                                     label: TextData(
-                                      'Fecha de caducidad',
+                                      'Fecha de\ncaducidad',
                                       18,
                                       Colors.black,
                                       "Poppins",

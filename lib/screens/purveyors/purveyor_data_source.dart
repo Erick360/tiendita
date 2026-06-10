@@ -25,7 +25,7 @@ class PurveyorDataSource extends DataTableSource {
         DataCell(
           Text(
             purveyor?.PurveyorName ?? "Sin nombre",
-            style: TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
           ),
         ),
         DataCell(
