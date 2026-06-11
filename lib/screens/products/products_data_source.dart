@@ -62,7 +62,7 @@ class ProductsDataSource extends DataTableSource {
               Icon(Icons.attach_money, size: 20),
               //SizedBox(width: 2),
               Text(
-                "${product?.priceShop ?? "sin precio de Compra"}",
+                "${product?.priceShop?.toStringAsFixed(2) ?? "sin precio de Compra"}",
                 style: TextStyle(fontSize: 15),
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,
@@ -75,7 +75,7 @@ class ProductsDataSource extends DataTableSource {
             children: [
               Icon(Icons.attach_money, size: 20),
               Text(
-                "${product?.priceSale ?? "sin precio de Venta"}",
+                "${product?.priceSale?.toStringAsFixed(2) ?? "sin precio de Venta"}",
                 style: TextStyle(fontSize: 15),
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,
@@ -102,7 +102,7 @@ class ProductsDataSource extends DataTableSource {
               Icon(Icons.list_alt, size: 20),
               const SizedBox(width: 2),
               Text(
-                "${product?.status ?? "sin status"}",
+                "${product?.status==1  ? "Disponible" : "No Disponible"}",
                 style: TextStyle(fontSize: 15),
               ),
             ],

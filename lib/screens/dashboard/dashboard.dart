@@ -101,7 +101,7 @@ class _DashboardState extends ConsumerState<Dashboard>{
                             Expanded(
                                 child: MetricCard(
                                     title: "Invertido",
-                                    value: "${totalShops.toStringAsFixed(2)}",
+                                    value: "\$${totalShops.toStringAsFixed(2)}",
                                     icon: Icons.monetization_on_outlined,
                                     color: Colors.green,
                                   isLoading: isLoadingShops,

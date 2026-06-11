@@ -6,8 +6,8 @@ import 'package:path/path.dart' as p;
 part 'tienditaDatabase.g.dart';
 
 enum ProductStatus {
-  active, // 0
-  inactive, // 1
+  active, // 1
+  inactive, // 0
 }
 
 

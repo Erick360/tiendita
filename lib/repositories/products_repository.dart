@@ -22,6 +22,24 @@ class ProductsRepository{
     map((rows) => rows.map((row) => ProductsModel.fromRow(row)).toList());
   }
   
+  Stream<List<ProductsModel>> watchAllProductsStockLow(){
+    final query =
+    database.select(database.products)..
+    where((p) => p.stock.isSmallerOrEqualValue(2));
+
+    return query.map((r) => ProductsModel.fromRow(r)).watch();
+  }
+
+  Stream<List<ProductsModel>> watchProductsAboutToExpire({int daysWarning = 15}){
+    final thresholdDate = DateTime.now().add(Duration(days: daysWarning));
+
+    final query = database.select(database.products)
+      ..where((p) => p.product_expires_at.isNotNull())
+      ..where((p) => p.product_expires_at.isSmallerOrEqualValue(thresholdDate));
+
+    return query.map((r) => ProductsModel.fromRow(r)).watch();
+  }
+  
   Future<bool> updateProductById(ProductsModel products) async{
     final res = await (database.update(database.products)..
     where((t) => t.id_product.equals(products.idProduct!))).write(products.toCompanion());

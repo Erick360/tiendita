@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/screens/auth/authentication.dart';
 import 'package:tiendita/screens/settings/import_export_database.dart';
@@ -29,12 +30,33 @@ import 'screens/products/products.dart';
 
 void main() {
   runApp(const ProviderScope(
-    child: MyApp(),
+    child: TienditaApp(),
   ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class TienditaApp extends StatefulWidget {
+  const TienditaApp({super.key});
+
+@override
+  _TienditaAppState createState() => _TienditaAppState();
+}
+
+class _TienditaAppState extends State<TienditaApp> {
+  //late FlutterLocalNotificationsPlugin notification;
+
+  /*
+  @override
+  void initState(){
+    super.initState();
+    notification = FlutterLocalNotificationsPlugin();
+    var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid
+    );
+    notification.initialize(settings: initializationSettings);    
+  }
+  */
 
   @override
   Widget build(BuildContext context) {

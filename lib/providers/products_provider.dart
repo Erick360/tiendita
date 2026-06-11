@@ -25,6 +25,18 @@ final productsNotifierProvider = StateNotifierProvider<ProductsNotifier, AsyncVa
   return ProductsNotifier(repository);
 });
 
+final lowStockProvider = StreamProvider<List<ProductsModel>>((ref){
+  final repo = ref.watch(productsRepositoryProvider);
+
+  return repo.watchAllProductsStockLow();
+});
+
+final expiringProductsProvider = StreamProvider<List<ProductsModel>>((ref){
+  final repo = ref.watch(productsRepositoryProvider);
+
+  return repo.watchProductsAboutToExpire();
+});
+
 class ProductsNotifier extends StateNotifier<AsyncValue<ProductsModel?>>{
   final ProductsRepository _repo;
   ProductsNotifier(this._repo): super(const AsyncValue.loading());

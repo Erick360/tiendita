@@ -51,6 +51,34 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
     final clientAsync = ref.watch(clientListProvider);
     final productsAsync = ref.watch(productsListProvider);
 
+    ref.listen<AsyncValue<List<ProductsModel>>>(lowStockProvider, (previous, next){
+      next.whenData((lowStock){
+            if(lowStock.isNotEmpty){
+                final productNames = lowStock.map((product) => product.productName).join(', ');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.warning_amber_outlined, color: Colors.white, size: 20),
+                      const SizedBox(width: 5),
+                      Text('Stock bajo en: $productNames',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)
+                      ],
+                    ),
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                    duration: const Duration(seconds: 5),
+                  )
+                );
+            }
+          });
+    });
+
+
     return Scaffold(
       appBar:  AppBar(
         backgroundColor: kActiveColor,

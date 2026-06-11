@@ -60,6 +60,36 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
       }
     }
 
+
+    ref.listen<AsyncValue<List<ProductsModel>>>(expiringProductsProvider, (previous, next){
+      next.whenData((expiringProducts){
+        if(expiringProducts.isNotEmpty){
+          final productNames = expiringProducts.map((p) => p.productName).join(', ');
+
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Column(
+                  children: [
+                    Icon(Icons.timer, size: 20, color: Colors.white),
+                    const SizedBox(width: 5),
+                    Text("¡Atencion! Próximos a caducar: $productNames",
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)
+                    ),
+                  ],
+                ),
+                backgroundColor: Colors.redAccent,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)
+                ),
+                duration: const Duration(seconds: 5),
+              )
+          );
+        }
+      });
+    });
+
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -175,6 +205,15 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                           child: ConstrainedBox(
                             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
                             child: PaginatedDataTable(
+                              header: Center(
+                                child: Text(
+                                    "Lista de productos",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                               headingRowColor: WidgetStateProperty.all(Colors.grey[200]),
                                 headingRowHeight: 60,
                                 dataRowMaxHeight: 60,
