@@ -123,7 +123,7 @@ class _CompanyEditScreenState extends ConsumerState<CompanyEditScreen>{
             children: [
               const Text(
                   'Editar negocio',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,
                     fontFamily: 'Poppins',

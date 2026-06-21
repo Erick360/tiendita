@@ -8,6 +8,10 @@ import 'package:tiendita/screens/category/category_data_source.dart';
 import 'package:tiendita/screens/category/create_category.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import 'package:tiendita/widgets/footer_button.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'category_table.dart';
 
 class CategoryScreen extends ConsumerStatefulWidget {
   const CategoryScreen({super.key});
@@ -28,9 +32,66 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
     super.dispose();
   }
 
+  Future<void> exportCategoryPdf(List<CategoryModel?> categories) async{
+    final pdf = pw.Document();
+
+    final validCategories = categories.whereType<CategoryModel?>().toList();
+
+    final tableData = validCategories.map((category){
+      return[
+        category?.idCategory.toString() ?? "N/A",
+        category?.CategoryName ?? "Sin nombre",
+      ];
+    }).toList();
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32),
+        build: (pw.Context context){
+          return [
+            pw.Header(
+              level: 0,
+              child: pw.Text(
+                'Reporte de Categorias',
+                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.SizedBox(height: 28),
+            pw.TableHelper.fromTextArray(
+              headers: ['ID,' 'Nombre'],
+              data: tableData,
+              border: null,
+              headerStyle: pw.TextStyle(
+                color: PdfColors.white,
+                fontWeight: pw.FontWeight.bold
+              ),
+              headerDecoration: const pw.BoxDecoration(
+                color: PdfColors.deepOrange,
+              ),
+              rowDecoration: const pw.BoxDecoration(
+                border: pw.Border(
+                  bottom: pw.BorderSide(color: PdfColors.green300, width: 0.5),
+                ),
+              ),
+              cellAlignment: pw.Alignment.centerLeft,
+              cellPadding: const pw.EdgeInsets.all(8)
+            ),
+          ];
+        }
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat) async => pdf.save(),
+      name: 'Reporte_Categorias.pdf'
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    Future<void> _confirmDelete(BuildContext context, int id) async{
+    Future<void> confirmDelete(BuildContext context, int id) async{
       final bool? confirm = await showDialog<bool>(
           context: context,
           builder: (BuildContext context){
@@ -123,7 +184,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
             child: categoryListAsync.when(
               error: (e, stack) => Text("Error: e"),
               loading: () =>
-                  const Center(child: const CircularProgressIndicator()),
+                  const Center(child: CircularProgressIndicator()),
               data: (categories) {
                 final filteredCategory = categories.whereType<CategoryModel?>().where((category){
                   final categoryName = category?.CategoryName?.toLowerCase() ?? "";
@@ -142,7 +203,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
                 final source = CategoryDataSource(
                     categories: filteredCategory.toList(),
                     context: context,
-                    onDelete: (id) => _confirmDelete(context, id),
+                    onDelete: (id) => confirmDelete(context, id),
                 );
 
                 return SingleChildScrollView(
@@ -165,56 +226,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
                       margin: const EdgeInsets.all(8),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
-                        child: PaginatedDataTable(
-                          header: Center(
-                            child: const Text("Lista de categorias",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold
-                              ),
-                            ),
-                          ),
-                          headingRowColor: WidgetStateProperty.all(
-                            Colors.grey[200],
-                          ),
-                          headingRowHeight: 60,
-                          dataRowMaxHeight: 60,
-                          dividerThickness: 2,
-                          columnSpacing: 20,
-                          showCheckboxColumn: false,
-                          columns: [
-                            DataColumn(
-                              label: TextData(
-                                "Nombre",
-                                18,
-                                Colors.black,
-                                "Poppins",
-                                FontWeight.bold,
-                              ),
-                            ),
-                            DataColumn(
-                              label: TextData(
-                                "Editar",
-                                18,
-                                Colors.black,
-                                "Poppins",
-                                FontWeight.bold,
-                              ),
-                            ),
-                            DataColumn(
-                              label: TextData(
-                                "Eliminar",
-                                18,
-                                Colors.black,
-                                "Poppins",
-                                FontWeight.bold,
-                              ),
-                              numeric: true,
-                            ),
-                          ],
-                          //rows: filteredCategory.map((category) {}).toList(),
-                          source: source,
-                        ),
+                        child: buildCategoryPaginatedDataTable(source),
                       ),
                     ),
                   ),
@@ -250,12 +262,27 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FooterButton("Exportar a Excel", "images/excel.png", () {}),
+            FooterButton("Exportar a Excel", "images/excel.png", () {
+
+            }),
             const SizedBox(width: 40),
-            FooterButton("Exportar a PDF", "images/pdf.png", () {}),
+            FooterButton("Exportar a PDF", "images/pdf.png", () {
+              final currentData = ref.read(categoryListProvider).value;
+
+              if(currentData != null && currentData.isNotEmpty){
+                final filteredCategories = currentData.whereType<CategoryModel>().where((cat){
+                  return cat.CategoryName!.toLowerCase().contains(_searchQuery);
+                }).toList();
+
+                exportCategoryPdf(filteredCategories);
+              }else{
+                showErrorSnackBar(context, "No hay datos para exportar                                 ");
+              }
+            }),
           ],
         ),
       ),
     );
   }
+
 }

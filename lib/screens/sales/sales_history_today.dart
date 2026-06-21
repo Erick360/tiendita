@@ -22,6 +22,7 @@ class _SalesHistoryTodayState extends ConsumerState<SalesHistoryToday>{
       ref.read(salesNotifierProvider.notifier).loadSalesPerDay(DateTime.now());
     });
   }
+  @override
   Widget build(BuildContext context){
     final shopsToday = ref.watch(salesNotifierProvider);
 

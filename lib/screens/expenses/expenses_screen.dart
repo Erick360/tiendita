@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:tiendita/models/expenses_model.dart';
 import 'package:tiendita/screens/expenses/edit_expense.dart';
 import '../../constants/constants.dart';
 import '../../providers/expenses_provider.dart';
 import '../../widgets/footer_button.dart';
 import '../../widgets/text_data.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import 'create_expense.dart';
 
 class ExpensesScreen extends ConsumerStatefulWidget {
@@ -21,6 +25,66 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
   DateTime? _startDate;
   DateTime? _endDate;
   bool _isShowingToday = true;
+
+  Future<void> exportExpensesPdf(List<ExpensesModel> exp) async{
+    final pdf = pw.Document();
+    final validExpenses = exp.whereType<ExpensesModel>().toList();
+    final tableData = validExpenses.map((expense){
+      return [
+        expense.idExpenses ?? 'N/A',
+        expense.expenseName,
+        expense.description,
+        DateFormat('dd/MM/yyyy').format(expense.expenseDate),
+        '\$${expense.amount.toStringAsFixed(2)}',
+      ];
+    }).toList();
+
+    pdf.addPage(
+      pw.MultiPage(
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.all(32),
+          build: (pw.Context context) {
+            return [
+              pw.Header(
+                level: 0,
+                child: pw.Text(
+                  'Reporte de Gastos',
+                  style: pw.TextStyle(
+                      fontSize: 24, fontWeight: pw.FontWeight.bold),
+                ),
+              ),
+              pw.SizedBox(height: 20),
+              pw.TableHelper.fromTextArray(
+                  headers: ['ID', 'Nombre', 'Descripcion', 'Fecha','Monto'],
+                  data: tableData,
+                  border: pw.TableBorder.all(
+                      width: 1.5, color: PdfColors.black),
+                  headerStyle: pw.TextStyle(
+                      color: PdfColors.white,
+                      fontWeight: pw.FontWeight.bold
+                  ),
+                  headerDecoration: const pw.BoxDecoration(
+                    color: PdfColors.deepOrange,
+                  ),
+                  rowDecoration: const pw.BoxDecoration(
+                    border: pw.Border(
+                      bottom: pw.BorderSide(
+                          color: PdfColors.green300, width: 1),
+                    ),
+                  ),
+                  cellAlignment: pw.Alignment.centerLeft,
+                  cellPadding: const pw.EdgeInsets.all(8)
+              ),
+
+            ];
+          }
+      ),
+    );
+        await Printing.layoutPdf(
+            onLayout: (PdfPageFormat) async => pdf.save(),
+            name: 'Lista_Productos.pdf',
+        );
+  }
 
   Future<void> _selectDateRange(BuildContext context) async {
     final DateTimeRange? pickedRange = await showDateRangePicker(
@@ -548,7 +612,19 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
           children: [
             FooterButton("Exportar a Excel", "images/excel.png", () {}),
             const SizedBox(width: 40),
-            FooterButton("Exportar a PDF", "images/pdf.png", () {}),
+            FooterButton("Exportar a PDF", "images/pdf.png", () {
+              final currentData = ref.read(expensesListProvider).value;
+
+              if(currentData!= null && currentData.isNotEmpty){
+                final filteredExpenses = currentData.whereType<ExpensesModel>().where((exp){
+                  return true;
+                }).toList();
+
+                exportExpensesPdf(filteredExpenses);
+              }else{
+                showErrorSnackBar(context, "No hay datos para exportar");
+              }
+            }),
           ],
         ),
       ),

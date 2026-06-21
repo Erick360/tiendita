@@ -15,7 +15,7 @@ class CategoryRepository{
 
   Future<CategoryModel?> getCategory() async{
     final categoryData = await (database.select(database.categories)..limit(1)).getSingleOrNull();
-    if(categoryData == null)throw new Exception("No se encontro ninguna categoria");
+    if(categoryData == null)throw Exception("No se encontro ninguna categoria");
     return CategoryModel.fromRow(categoryData);
   }
 

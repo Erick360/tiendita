@@ -23,6 +23,7 @@ class _ShoppingHistoryToday extends ConsumerState<ShoppingHistoryToday>{
     });
   }
 
+  @override
   Widget build(BuildContext context){
     final shopsToday = ref.watch(shopsNotifierProvider);
 

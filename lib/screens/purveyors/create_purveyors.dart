@@ -14,9 +14,9 @@ class CreatePurveyor extends ConsumerStatefulWidget{
 
 class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _purveyorNameController = TextEditingController();
-  TextEditingController _purveyorAddressController = TextEditingController();
-  TextEditingController _purveyorPhoneController = TextEditingController();
+  final TextEditingController _purveyorNameController = TextEditingController();
+  final TextEditingController _purveyorAddressController = TextEditingController();
+  final TextEditingController _purveyorPhoneController = TextEditingController();
   late final TextEditingController _purveyorEmailController = TextEditingController();
   late final TextEditingController _purveyorRfcController= TextEditingController();
 
@@ -80,7 +80,7 @@ class _StateCreatePurveyor extends ConsumerState<CreatePurveyor>{
           children: [
             const Text(
               'Ingresar Proveedor',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 22,
                 fontFamily: 'Poppins',

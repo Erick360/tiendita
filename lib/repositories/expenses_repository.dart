@@ -13,7 +13,7 @@ class ExpensesRepository{
 
   Future<ExpensesModel?> getExpense() async{
     final expenseData = await (database.select(database.expenses)..limit(1)).getSingleOrNull();
-    if(expenseData == null)throw new Exception("No se encontro ningun dato");
+    if(expenseData == null)throw Exception("No se encontro ningun dato");
     return ExpensesModel.fromRow(expenseData);
   }
 

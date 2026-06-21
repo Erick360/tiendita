@@ -5,7 +5,7 @@ import 'database_provider.dart';
 
 final expenseRepositoryProvider = Provider<ExpensesRepository>((ref) => ExpensesRepository(ref.read(databaseProvider)));
 
-//final expensesListProvider = StreamProvider<List<ExpensesModel?>>((ref) => ref.watch(expenseRepositoryProvider).watchAllExpenses());
+final expensesListProvider = StreamProvider<List<ExpensesModel?>>((ref) => ref.watch(expenseRepositoryProvider).watchAllExpenses());
 
 final expenseNotifierProvider = StateNotifierProvider<ExpensesNotifier, AsyncValue<List<ExpensesModel?>>>((ref) => ExpensesNotifier(ref.watch(expenseRepositoryProvider)));
 

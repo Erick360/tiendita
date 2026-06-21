@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/screens/home_page.dart';
@@ -24,31 +25,48 @@ class _AuthenticationState extends State<Authentication> {
     });
 
     try {
-      //(v3.0.0)
       authenticated = await auth.authenticate(
         localizedReason: 'Escanea tu huella (o usa tu rostro) para autenticarte.',
         persistAcrossBackgrounding: true,
         biometricOnly: false,
       );
 
-    } catch (e) {
-      print("Error Autenticación: $e");
+    } on PlatformException catch (e) {
+      print("Error nativo: ${e.code} - ${e.message}");
+
+      setState(() {
+        _isAuthenticating = false;
+      });
+
+      if (e.code == 'PasscodeNotSet' ||
+          e.code == 'NotEnrolled' ||
+          e.code == 'NotAvailable') {
+
+        Navigator.pushReplacementNamed(context, HomeScreen.id);
+        return;
+      }
+
       setState(() {
         _authStatus = "Error de Autenticación";
       });
       return;
-    } finally {
+
+    } catch (e) {
+      print("Error Autenticación: $e");
       setState(() {
         _isAuthenticating = false;
+        _authStatus = "Error de Autenticación";
       });
+      return;
     }
 
     setState(() {
+      _isAuthenticating = false;
       _authStatus = authenticated ? "Autenticación Exitosa!" : "Error de Autenticación!";
     });
 
     if (authenticated) {
-       Navigator.pushReplacementNamed(context, HomeScreen.id);
+      Navigator.pushReplacementNamed(context, HomeScreen.id);
     }
   }
 

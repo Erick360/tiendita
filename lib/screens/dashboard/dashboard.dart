@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/providers/shopping_provider.dart';
+import 'package:tiendita/screens/dashboard/weekly_sales_chart.dart';
 import 'package:tiendita/widgets/company_avatar.dart';
 import 'package:tiendita/providers/expenses_provider.dart';
 import 'package:tiendita/screens/dashboard/metric_card.dart';
@@ -10,7 +11,7 @@ import '../../providers/salesProviders.dart';
 import '../../widgets/company_name.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
-  Dashboard({super.key});
+  const Dashboard({super.key});
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -45,7 +46,7 @@ class _DashboardState extends ConsumerState<Dashboard>{
     sales.when(
       data: (sales) => totalSales = sales.fold(0.0, (sum, sale) => sum + (sale?.total ?? 0.0)),
       loading: () => isLoadingSales = true,
-      error: (e, stack) => print("Error loading sales: $e"),
+      error: (e, stack) => debugPrint("Error loading sales: $e"),
     );
 
     double totalShops = 0.0;
@@ -53,14 +54,14 @@ class _DashboardState extends ConsumerState<Dashboard>{
     shops.when(
       data: (shops) => totalShops = shops.fold(0.0, (sum, shop) => sum + (shop?.total ?? 0.0)),
       loading: () => isLoadingShops = true,
-      error: (e, stack) => print("Error loading shops: $e"),
+      error: (e, stack) => debugPrint("Error loading shops: $e"),
     );
 
     double totalExpenses = 0.0;
     bool isLoadingExpenses = false;
     expenses.when(
         data: (exp) => totalExpenses = exp.fold(0.0, (sum, exp) => sum + (exp?.amount ?? 0.0)),
-        error: (e, stack) => print("Error loading shops: $e"),
+        error: (e, stack) => debugPrint("Error loading shops: $e"),
         loading: () => isLoadingExpenses = true,
     );
 
@@ -110,6 +111,8 @@ class _DashboardState extends ConsumerState<Dashboard>{
                   ],
               ),
               const SizedBox(height: 24),
+              WeeklySalesChart(),
+              const SizedBox(height: 10),
               Text(
                 'Menu',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

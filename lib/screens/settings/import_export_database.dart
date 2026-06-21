@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
@@ -7,11 +8,13 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tiendita/providers/company_provider.dart';
 import 'package:tiendita/providers/database_provider.dart';
+import 'package:tiendita/screens/home_page.dart';
 
 class ImportExportDatabase extends ConsumerStatefulWidget{
   static String id = "import_database";
-  ImportExportDatabase({super.key});
+  const ImportExportDatabase({super.key});
 
   @override
   ConsumerState<ImportExportDatabase> createState() => _StateImportExportDatabase();
@@ -20,36 +23,48 @@ class ImportExportDatabase extends ConsumerStatefulWidget{
 class _StateImportExportDatabase extends ConsumerState<ImportExportDatabase>{
   bool _isLoading = false;
 
-  Future<File> _getDatabase() async{
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db_tiendita.sqlite'));
-    return file;
-  }
-
 
   Future<void> _exportDatabase() async{
     setState(() {
       _isLoading = true;
     });
     try{
-      final db = await _getDatabase();
-      if(await db.exists()){
-        await SharePlus.instance.share(
-          ShareParams(
-            files: [XFile(db.path)],
-            text: "Mi base de datos",
-          ),
-        );
-      }else{
+      final db = await getApplicationDocumentsDirectory();
+      final dbFile = File(p.join(db.path, 'db_tiendita.sqlite'));
+      final imagesDir = Directory(p.join(db.path, 'images'));
+
+      if(!await db.exists()){
         showErrorSnackBar(context, "Base de datos no encontrada");
+        return;
       }
+      final temDir = await getTemporaryDirectory();
+      final zipPath = p.join(temDir.path, 'respaldo_tiendita.zip');
+
+      final encoder = ZipFileEncoder();
+      encoder.create(zipPath);
+      encoder.addFile(dbFile);
+
+      if(await imagesDir.exists()){
+        encoder.addDirectory(imagesDir);
+      }
+      encoder.close();
+
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(zipPath)],
+          text: "Mi Respaldo (DB + Imagenes)",
+        ),
+      );
+
     }catch(e){
       showErrorSnackBar(context, "Error al exportar la base de datos");
-      print("Importar error: $e");
+      print("Error al exportar: $e");
     }finally{
-      setState(() {
-        _isLoading = false;
-      });
+      if(mounted){
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -62,29 +77,35 @@ class _StateImportExportDatabase extends ConsumerState<ImportExportDatabase>{
         type: FileType.any,
       );
       if(res != null && res.files.single.path != null){
-        File source = File(res.files.single.path!);
-        File target = await _getDatabase();
+        File zipBackup = File(res.files.single.path!);
+        final appDir = await getApplicationDocumentsDirectory();
 
         final database = ref.read(databaseProvider);
-
         await database.close();
 
-        if(await target.exists()){
-          await target.delete();
-        }
-
-        await source.copy(target.path);
+        extractFileToDisk(zipBackup.path, appDir.path);
 
         ref.invalidate(databaseProvider);
-        showSuccessSnackBar(context, "Base de datos importada con exito");
+
+        ref.invalidate(companyNotifierProvider);
+        if(mounted){
+          showSuccessSnackBar(context, "Base de datos importada con exito (Datos + Imagenes)");
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            HomeScreen.id,
+                (route) => false,
+          );
+        }
       }
     }catch(e){
       showErrorSnackBar(context, "Error al importar la base de datos");
-      print("Exportar error: $e");
+      debugPrint("Importar error: $e");
     }finally{
-      setState(() {
-        _isLoading = false;
-      });
+      if(mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

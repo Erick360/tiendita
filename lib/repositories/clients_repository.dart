@@ -12,7 +12,7 @@ class ClientsRepository{
 
   Future<ClientsModel?> getClient() async{
     final clientData = await(database.select(database.clients)..limit(1)).getSingleOrNull();
-    if(clientData == null)throw new Exception("No se encontro ningun dato");
+    if(clientData == null)throw Exception("No se encontro ningun dato");
     return ClientsModel.fromRow(clientData);
   }
 

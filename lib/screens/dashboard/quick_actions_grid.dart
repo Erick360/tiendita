@@ -13,6 +13,8 @@ import '../../screens/expenses/expenses_screen.dart';
 import '../../screens/purveyors/purveyors_screen.dart';
 
 class QuickActionsGrid extends StatelessWidget {
+  const QuickActionsGrid({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GridView.count(

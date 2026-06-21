@@ -54,6 +54,7 @@ class _SalesHistoryCustomState extends ConsumerState<SalesHistoryCustom>{
       ref.read(salesNotifierProvider.notifier).loadSalesByRange(_startDate!, _endDate!);
     }
   }
+  @override
   Widget build(BuildContext context){
     final shopsState = ref.watch(salesNotifierProvider);
     return Scaffold(

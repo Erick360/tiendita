@@ -15,11 +15,11 @@ class CreateProducts extends ConsumerStatefulWidget{
 
 class _StateCreateProducts extends ConsumerState<CreateProducts>{
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _productNameController = TextEditingController();
-  TextEditingController _productPriceShopController = TextEditingController();
-  TextEditingController _productPriceSalesController = TextEditingController();
-  TextEditingController _productStockController = TextEditingController();
-  TextEditingController _expirationDateController = TextEditingController();
+  final TextEditingController _productNameController = TextEditingController();
+  final TextEditingController _productPriceShopController = TextEditingController();
+  final TextEditingController _productPriceSalesController = TextEditingController();
+  final TextEditingController _productStockController = TextEditingController();
+  final TextEditingController _expirationDateController = TextEditingController();
 
   bool _isLoading = false;
   bool _isActive = true;

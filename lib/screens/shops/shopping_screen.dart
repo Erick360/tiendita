@@ -18,6 +18,7 @@ class ShoppingScreen extends ConsumerStatefulWidget {
   const ShoppingScreen({super.key});
   static String id = "shopping_screen";
 
+  @override
   ConsumerState<ShoppingScreen> createState() => _ShoppingScreenState();
 }
 

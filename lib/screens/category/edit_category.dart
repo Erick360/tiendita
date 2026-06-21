@@ -10,6 +10,7 @@ class EditCategory extends ConsumerStatefulWidget {
   const EditCategory(this._categoryToEdit,{super.key});
   static String id = "edit_category";
 
+  @override
   ConsumerState<EditCategory> createState() => _EditCategoryState();
 }
 
@@ -73,7 +74,7 @@ class _EditCategoryState extends ConsumerState<EditCategory> {
           children: [
             const Text(
               'Editar categoria',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 22,
                 fontFamily: 'Poppins',

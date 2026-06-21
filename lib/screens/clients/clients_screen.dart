@@ -6,7 +6,10 @@ import 'package:tiendita/screens/clients/clients_data_source.dart';
 import '../../constants/constants.dart';
 import '../../providers/clients_provider.dart';
 import '../../widgets/footer_button.dart';
-import '../../widgets/text_data.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'clients_table.dart';
 import 'create_client.dart';
 
 class ClientsScreen extends ConsumerStatefulWidget {
@@ -19,7 +22,64 @@ class ClientsScreen extends ConsumerStatefulWidget {
 
 class _ClientScreenState extends ConsumerState<ClientsScreen>{
   String _searchQuery = "";
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+
+  Future<void> exportCategoryPdf(List<ClientsModel?> clients) async{
+      final pdf = pw.Document();
+      final validClients = clients.whereType<ClientsModel?>().toList();
+      final tableData = validClients.map((client){
+        return [
+          client?.idClient ?? "N/A",
+          client?.clientName ?? "Sin nombre",
+          client?.clientLastName ?? "Sin apellidos",
+          client?.clientAddress ?? "Sin direccion",
+          client?.clientEmail ?? "Sin correo",
+          client?.clientPhoneNumber ?? "Sin telefono",
+        ];
+      }).toList();
+
+      pdf.addPage(
+        pw.MultiPage(
+            pageFormat: PdfPageFormat.a4,
+            margin: const pw.EdgeInsets.all(32),
+            build: (pw.Context context){
+              return [
+                pw.Header(
+                  level: 0,
+                  child: pw.Text(
+                    'Lista de Clientes',
+                    style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+                  ),
+                ),
+                pw.SizedBox(height: 20),
+                pw.TableHelper.fromTextArray(
+                    headers: ['ID','Nombre','Apellidos','Direccion','Correo','Telefono'],
+                    data: tableData,
+                    border: pw.TableBorder.all(width: 1.5,color: PdfColors.black),
+                    headerStyle: pw.TextStyle(
+                        color: PdfColors.white,
+                        fontWeight: pw.FontWeight.bold
+                    ),
+                    headerDecoration: const pw.BoxDecoration(
+                      color: PdfColors.deepOrange,
+                    ),
+                    rowDecoration: const pw.BoxDecoration(
+                      border: pw.Border(
+                        bottom: pw.BorderSide(color: PdfColors.green300, width: 1),
+                      ),
+                    ),
+                    cellAlignment: pw.Alignment.centerLeft,
+                    cellPadding: const pw.EdgeInsets.all(8)
+                ),
+              ];
+            }
+        ),
+      );
+      await Printing.layoutPdf(
+          onLayout: (PdfPageFormat) async => pdf.save(),
+          name: 'Lista_Clientes.pdf'
+      );
+  }
 
   @override
   void dispose(){
@@ -27,10 +87,11 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context){
     final clientsList = ref.watch(clientListProvider);
 
-    Future<void> _confirmDelete(BuildContext context, int id) async{
+    Future<void> confirmDelete(BuildContext context, int id) async{
       final bool? confirm = await showDialog<bool>(
           context: context,
           builder: (BuildContext context){
@@ -140,7 +201,7 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
                 final source = ClientsDataSource(
                     clients: filteredClients.toList(),
                     context: context,
-                    onDelete: (id) => _confirmDelete(context, id)
+                    onDelete: (id) => confirmDelete(context, id)
                 );
 
                 return SingleChildScrollView(
@@ -171,93 +232,7 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
                         ),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
-                          child: PaginatedDataTable(
-                            header: Center(
-                              child: const Text("Lista de clientes",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ),
-                            headingRowColor: WidgetStateProperty.all(
-                              Colors.grey[200],
-                            ),
-                            headingRowHeight: 45,
-                            dataRowMaxHeight: 50,
-                            dividerThickness: 2,
-                            columnSpacing: 20,
-                            showCheckboxColumn: false,
-                            columns: [
-                              DataColumn(
-                                label: TextData(
-                                  'Cliente',
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                ),
-                              ),
-                              DataColumn(
-                                label: TextData(
-                                  'Apellidos',
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                ),
-                              ),
-                              DataColumn(
-                                label: TextData(
-                                  'Direccion',
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                ),
-                              ),
-                              DataColumn(
-                                label: TextData(
-                                  'Correo',
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                ),
-                              ),
-                              DataColumn(
-                                label: TextData(
-                                  'Telefono',
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                ),
-
-                              ),
-                              DataColumn(
-                                label: TextData(
-                                  'Editar',
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                ),
-                              ),
-                              DataColumn(
-                                label: TextData(
-                                  'Eliminar',
-                                  18,
-                                  Colors.black,
-                                  "Poppins",
-                                  FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                            rowsPerPage: 10,
-                            availableRowsPerPage: [10,20,50],
-                            source: source,
-                          ),
+                          child: buildClientsPaginatedDataTable(source),
                         ),
                       ),
                     ),
@@ -266,7 +241,7 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
               },
               error: (e, stack) => Text('Error: $e'),
               loading: () =>
-              const Center(child: const CircularProgressIndicator()),
+              const Center(child: CircularProgressIndicator()),
             ),
           ),
         ],
@@ -302,11 +277,24 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
           children: [
             FooterButton("Exportar a Excel", "images/excel.png", () {}),
             const SizedBox(width: 40),
-            FooterButton("Exportar a PDF", "images/pdf.png", () {}),
+            FooterButton("Exportar a PDF", "images/pdf.png", () {
+              final currentData = ref.read(clientListProvider).value;
+
+              if(currentData!= null && currentData.isNotEmpty){
+                final filteredClients = currentData.whereType<ClientsModel>().where((cli){
+                  return cli.clientName.toLowerCase().contains(_searchQuery);
+                }).toList();
+
+                exportCategoryPdf(filteredClients);
+              }else{
+                showErrorSnackBar(context, "No hay datos para exportar");
+              }
+            }),
           ],
         ),
       ),
 
     );
   }
+
 }

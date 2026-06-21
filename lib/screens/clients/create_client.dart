@@ -9,16 +9,17 @@ class CreateClient extends ConsumerStatefulWidget{
   const CreateClient({super.key});
   static String id = "create_client";
 
+  @override
   ConsumerState<CreateClient> createState() => _CreateClientState();
 }
 
 class _CreateClientState extends ConsumerState<CreateClient>{
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _clientNameController = TextEditingController();
-  TextEditingController _clientLastNaController= TextEditingController();
-  TextEditingController _clientAddressController = TextEditingController();
-  TextEditingController _clientPhoneController = TextEditingController();
-  TextEditingController _clientEmailController = TextEditingController();
+  final TextEditingController _clientNameController = TextEditingController();
+  final TextEditingController _clientLastNaController= TextEditingController();
+  final TextEditingController _clientAddressController = TextEditingController();
+  final TextEditingController _clientPhoneController = TextEditingController();
+  final TextEditingController _clientEmailController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -79,7 +80,7 @@ class _CreateClientState extends ConsumerState<CreateClient>{
             children: [
               const Text(
                 'Ingresar Clientes',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,
                   fontFamily: 'Poppins',

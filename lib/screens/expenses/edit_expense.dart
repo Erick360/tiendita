@@ -8,15 +8,16 @@ class EditExpense extends ConsumerStatefulWidget{
   const EditExpense(ExpensesModel? expense,{super.key});
   static String id = "edit_expense";
 
+  @override
   ConsumerState<EditExpense> createState() => _EditExpenseState();
 }
 
 class _EditExpenseState extends ConsumerState<EditExpense>{
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameExpenseController = TextEditingController();
-  TextEditingController _expenseDescriptionController = TextEditingController();
-  TextEditingController _expenseAmountController = TextEditingController();
-  TextEditingController _expenseDateController = TextEditingController();
+  final TextEditingController _nameExpenseController = TextEditingController();
+  final TextEditingController _expenseDescriptionController = TextEditingController();
+  final TextEditingController _expenseAmountController = TextEditingController();
+  final TextEditingController _expenseDateController = TextEditingController();
   bool _isLoading = false;
   DateTime? _selectedDate;
   ExpensesModel? _currentExpense;

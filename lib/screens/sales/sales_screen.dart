@@ -30,7 +30,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
   Key _productSearch = UniqueKey();
 
   final formKey = GlobalKey<FormState>();
-  TextEditingController _stock = TextEditingController();
+  final TextEditingController _stock = TextEditingController();
 
   @override
   void dispose(){

@@ -5,7 +5,7 @@ import '../../constants/constants.dart';
 import '../../providers/clients_provider.dart';
 
 class EditClient extends ConsumerStatefulWidget{
-  EditClient(ClientsModel? client,{super.key});
+  const EditClient(ClientsModel? client,{super.key});
   static String id = "edit_client";
 
   @override
@@ -14,11 +14,11 @@ class EditClient extends ConsumerStatefulWidget{
 
 class _EditControllerState extends ConsumerState<EditClient>{
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _clientNameController = TextEditingController();
-  TextEditingController _clientLastNaController= TextEditingController();
-  TextEditingController _clientAddressController = TextEditingController();
-  TextEditingController _clientPhoneController = TextEditingController();
-  TextEditingController _clientEmailController = TextEditingController();
+  final TextEditingController _clientNameController = TextEditingController();
+  final TextEditingController _clientLastNaController= TextEditingController();
+  final TextEditingController _clientAddressController = TextEditingController();
+  final TextEditingController _clientPhoneController = TextEditingController();
+  final TextEditingController _clientEmailController = TextEditingController();
 
   bool _isLoading = false;
   ClientsModel? _currentClient;
@@ -111,7 +111,7 @@ class _EditControllerState extends ConsumerState<EditClient>{
           children: [
             const Text(
                 'Editar Proveedores',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,
                   fontFamily: 'Poppins',

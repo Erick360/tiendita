@@ -7,7 +7,7 @@ class TextData extends StatelessWidget{
       this.color,
       this.fontFamily,
       this.weight,
-      {Key? key}) : super(key: key);
+      {super.key});
   final double font;
   final String text;
   final Color color;

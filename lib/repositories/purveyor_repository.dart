@@ -13,7 +13,7 @@ class PurveyorRepository{
 
   Future<PurveyorsModel?> getPurveyor()  async{
     final purveyorData = await(database.select(database.purveyors)..limit(1)).getSingleOrNull();
-    if(purveyorData == null)throw new Exception("No se encontro ningun dato");
+    if(purveyorData == null)throw Exception("No se encontro ningun dato");
     return PurveyorsModel.fromRow(purveyorData);
   }
 

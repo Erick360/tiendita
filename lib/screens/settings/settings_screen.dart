@@ -30,7 +30,7 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(width: 5),
             const Text(
                 'Configuracion',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,
                   fontFamily: 'Poppins',

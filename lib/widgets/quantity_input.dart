@@ -7,11 +7,11 @@ class QuantityInput extends StatefulWidget {
   final ValueChanged<int> onChanged;
 
   const QuantityInput({
-    Key? key,
+    super.key,
     required this.initialQuantity,
     required this.onChanged,
     required this.maxStock
-  }) : super(key: key);
+  });
 
   @override
   State<QuantityInput> createState() => _QuantityInputState();

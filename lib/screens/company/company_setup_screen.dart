@@ -5,6 +5,7 @@ import 'package:tiendita/models/company_model.dart';
 import 'package:tiendita/screens/home_page.dart';
 import '../../providers/company_provider.dart';
 import 'package:tiendita/widgets/image_picker.dart';
+import '../settings/import_export_database.dart';
 
 class CompanySetupScreen extends ConsumerStatefulWidget{
   const CompanySetupScreen({super.key});
@@ -54,7 +55,12 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
 
       await ref.read(companyNotifierProvider.notifier).saveCompany(company);
       if(mounted){
-        Navigator.pushReplacementNamed(context, HomeScreen.id);
+        showSuccessSnackBar(context, "Base de datos importada exitosamente.");
+        Navigator.pushNamedAndRemoveUntil(
+            context,
+            HomeScreen.id,
+            (route) => false,
+        );
       }
 
     }catch(e){
@@ -67,7 +73,6 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
         _isLoading = false);
       }
     }
-
   }
   
   @override 
@@ -207,6 +212,31 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
                     setState(()=> _logoCompany = path);
                   },
                   label: 'Logo del negocio',
+                ),
+                const SizedBox(height: 20),
+
+                Column(
+                  children: [
+                    Text(
+                      "Ya tienes una base de datos lista?Importala ahora mismo",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: 'Monserrat',
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    SizedBox(
+                      height: 30,
+                      child: ElevatedButton.icon(
+                        icon: Icon(Icons.redo_outlined),
+                          onPressed: () => Navigator.pushNamed(context,  ImportExportDatabase.id),
+                          label: Text("Importar BD"),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 SizedBox(

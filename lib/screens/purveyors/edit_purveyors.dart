@@ -14,11 +14,11 @@ class EditPurveyors extends ConsumerStatefulWidget{
 
 class _StateEditPurveyors extends ConsumerState<EditPurveyors>{
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _purveyorNameController = TextEditingController();
-  TextEditingController _purveyorAddressController = TextEditingController();
-  TextEditingController _purveyorPhoneController = TextEditingController();
-  TextEditingController _purveyorEmailController = TextEditingController();
-  TextEditingController _purveyorRfcController = TextEditingController();
+  final TextEditingController _purveyorNameController = TextEditingController();
+  final TextEditingController _purveyorAddressController = TextEditingController();
+  final TextEditingController _purveyorPhoneController = TextEditingController();
+  final TextEditingController _purveyorEmailController = TextEditingController();
+  final TextEditingController _purveyorRfcController = TextEditingController();
 
   bool _isLoading = false;
   PurveyorsModel? _currentPurveyor;
@@ -108,7 +108,7 @@ class _StateEditPurveyors extends ConsumerState<EditPurveyors>{
           children: [
             const Text(
                 'Editar Proveedores',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,
                   fontFamily: 'Poppins',

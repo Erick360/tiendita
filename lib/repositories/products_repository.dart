@@ -13,7 +13,7 @@ class ProductsRepository{
 
   Future<ProductsModel?> getProduct() async{
     final productData = await(database.select(database.products)..limit(1)).getSingleOrNull();
-    if(productData == null)throw new Exception("No se encontro ningun dato");
+    if(productData == null)throw Exception("No se encontro ningun dato");
     return ProductsModel.fromRow(productData);
   }
 

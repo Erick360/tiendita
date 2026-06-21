@@ -14,13 +14,14 @@ class CreateExpense extends ConsumerStatefulWidget{
 
 class _CreateExpenseState extends ConsumerState<CreateExpense>{
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameExpenseController = TextEditingController();
-  TextEditingController _expenseDescriptionController = TextEditingController();
-  TextEditingController _expenseAmountController = TextEditingController();
-  TextEditingController _expenseDateController = TextEditingController();
+  final TextEditingController _nameExpenseController = TextEditingController();
+  final TextEditingController _expenseDescriptionController = TextEditingController();
+  final TextEditingController _expenseAmountController = TextEditingController();
+  final TextEditingController _expenseDateController = TextEditingController();
   bool _isLoading = false;
   DateTime? _selectedDate;
 
+  @override
   void dispose(){
     _nameExpenseController.dispose();
     _expenseDescriptionController.dispose();

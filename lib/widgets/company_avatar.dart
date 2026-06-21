@@ -5,7 +5,7 @@ import 'package:tiendita/providers/company_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CompanyAvatar extends ConsumerWidget{
-  CompanyAvatar({super.key});
+  const CompanyAvatar({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref){
     final CompanyIcon = ref.watch(companyLogoStreamProvider).value;

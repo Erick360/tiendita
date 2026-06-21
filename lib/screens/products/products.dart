@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/screens/products/products_data_source.dart';
+import 'package:tiendita/screens/products/products_table.dart';
 import '../../constants/constants.dart';
 import '../../models/products_model.dart';
 import '../../providers/products_provider.dart';
 import '../../widgets/footer_button.dart';
-import '../../widgets/text_data.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import 'create_products.dart';
 
 class ProductsScreen extends ConsumerStatefulWidget {
@@ -19,7 +22,7 @@ class ProductsScreen extends ConsumerStatefulWidget {
 
 class _MyProductsState extends ConsumerState<ProductsScreen> {
   String _searchQuery = "";
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void dispose(){
@@ -27,11 +30,83 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
     super.dispose();
   }
 
+  Future<void> exportProductsPdf(List<ProductsModel?> products) async{
+    final pdf = pw.Document();
+    final validProducts = products.whereType<ProductsModel?>().toList();
+    final tableData = validProducts.map((product){
+      return [
+        product?.idProduct ?? "N/A",
+        product?.productName ?? "Sin nombre",
+        product?.presentation ?? "Sin presentacion",
+        product?.units ?? "Sin medidas",
+        product?.priceShop ?? "Sin precio de compra",
+        product?.priceShop ?? "Sin precio de venta",
+        product?.stock ?? "Sin stock",
+        product?.status ?? "Sin status",
+
+        /*
+        product?.productImage != null ? SizedBox(
+          width: 50,
+          height: 50,
+          child: Image.file(
+            File(product!.productImage!),
+            fit: BoxFit.cover,
+          ),
+        ) : const Icon(Icons.image_not_supported, color: Colors.grey),
+  */
+        product?.productExpiresAt ?? "Sin fecha de caducidad",
+      ];
+    }).toList();
+
+    pdf.addPage(
+      pw.MultiPage(
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.all(32),
+          build: (pw.Context context){
+            return [
+              pw.Header(
+                level: 0,
+                child: pw.Text(
+                  'Lista de Productos',
+                  style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+                ),
+              ),
+              pw.SizedBox(height: 20),
+              pw.TableHelper.fromTextArray(
+                  headers: ['ID','Nombre','Presentacion','Unidad de\nmedida','Precio de\ncompra','Precio de\nventa','Stock','Status','Fecha de\ncaducidad'],
+                  data: tableData,
+                  border: pw.TableBorder.all(width: 1.5,color: PdfColors.black),
+                  headerStyle: pw.TextStyle(
+                      color: PdfColors.white,
+                      fontWeight: pw.FontWeight.bold
+                  ),
+                  headerDecoration: const pw.BoxDecoration(
+                    color: PdfColors.deepOrange,
+                  ),
+                  rowDecoration: const pw.BoxDecoration(
+                    border: pw.Border(
+                      bottom: pw.BorderSide(color: PdfColors.green300, width: 1),
+                    ),
+                  ),
+                  cellAlignment: pw.Alignment.centerLeft,
+                  cellPadding: const pw.EdgeInsets.all(8)
+              ),
+            ];
+          }
+      ),
+    );
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat) async => pdf.save(),
+        name: 'Lista_Productos.pdf'
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final productList = ref. watch(productsListProvider);
     
-    Future<void> _confirmDelete(BuildContext context, int id) async{
+    Future<void> confirmDelete(BuildContext context, int id) async{
       final bool? confirm = await showDialog<bool>(
           context: context,
           builder: (BuildContext context){
@@ -172,7 +247,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                   final source = ProductsDataSource(
                       products: filteredProducts,
                       context: context,
-                      onDelete: (id) => _confirmDelete(context, id),
+                      onDelete: (id) => confirmDelete(context, id),
                       ref: ref
                   );
 
@@ -204,133 +279,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                           ),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
-                            child: PaginatedDataTable(
-                              header: Center(
-                                child: Text(
-                                    "Lista de productos",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              headingRowColor: WidgetStateProperty.all(Colors.grey[200]),
-                                headingRowHeight: 60,
-                                dataRowMaxHeight: 60,
-                                columnSpacing: 20,
-                                showCheckboxColumn: false,
-                                columns:  [
-                                  DataColumn(
-                                    label: TextData(
-                                      'Producto',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Presentacion',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Unidad de\nmedida',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Precio de\ncompra',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Precio de\nventa',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Stock',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Status',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Imagen',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Fecha de\ncaducidad',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Categoria',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Editar',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: TextData(
-                                      'Eliminar',
-                                      18,
-                                      Colors.black,
-                                      "Poppins",
-                                      FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                                source: source,
-                            ),
+                            child: buildProductsPaginatedDataTable(source),
                           ),
                         ),
                       ),
@@ -372,7 +321,19 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
           children: [
             FooterButton("Exportar a Excel", "images/excel.png", () {}),
             const SizedBox(width: 40),
-            FooterButton("Exportar a PDF", "images/pdf.png", () {}),
+            FooterButton("Exportar a PDF", "images/pdf.png", () {
+              final currentData = ref.read(productsListProvider).value;
+
+              if(currentData!= null && currentData.isNotEmpty){
+                final filteredProducts = currentData.whereType<ProductsModel>().where((pro){
+                  return pro.productName.toLowerCase().contains(_searchQuery);
+                }).toList();
+
+                exportProductsPdf(filteredProducts);
+              }else{
+                showErrorSnackBar(context, "No hay datos para exportar");
+              }
+            }),
           ],
         ),
       ),

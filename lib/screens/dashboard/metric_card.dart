@@ -7,7 +7,7 @@ class MetricCard extends StatelessWidget {
   final Color color;
   final bool isLoading;
 
-  const MetricCard({
+  const MetricCard({super.key, 
     required this.title,
     required this.value,
     required this.icon,

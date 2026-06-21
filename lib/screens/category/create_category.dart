@@ -8,12 +8,13 @@ class CreateCategory extends ConsumerStatefulWidget {
   const CreateCategory({super.key});
   static String id = "create_category";
 
+  @override
   ConsumerState<CreateCategory> createState() => _StateCreateCategory();
 }
 
 class _StateCreateCategory extends ConsumerState<CreateCategory> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _createCategory = TextEditingController();
+  final TextEditingController _createCategory = TextEditingController();
   bool _isLoading = false;
 
   @override
@@ -62,7 +63,7 @@ class _StateCreateCategory extends ConsumerState<CreateCategory> {
           children: [
             const Text(
               'Crear Categoría',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 22,
                 fontFamily: 'Poppins',
