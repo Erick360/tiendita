@@ -1,16 +1,27 @@
-# tiendita
+# Tiendita - Gestión para Pequeños Negocios
 
-A new Flutter project.
+App móvil para gestionar ventas, compras y gastos de pequeños negocios.
 
-## Getting Started
+## Sistema Operativos
+- Android
+- Ios (proximamente)
 
-This project is a starting point for a Flutter application.
+## Tecnologías
+- Flutter/Dart
+- Drift (Base de datos local)
+- Riverpod
+- LocalAuth 
+- ImagePicker 
+- FilePicker 
+- SharePlus 
+- Excel 
+- Pdf
+- fl_chart 
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Características
+-  Control de ventas
+-  Registro de compras
+-  Seguimiento de gastos
+-  Inventario de productos
+-  Autenticación biométrica/PIN
+-  Exportacion de reportes a pdf/excel

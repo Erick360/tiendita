@@ -1,7 +1,11 @@
+import 'dart:io';
+import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/models/expenses_model.dart';
 import 'package:tiendita/screens/expenses/edit_expense.dart';
 import '../../constants/constants.dart';
@@ -85,6 +89,62 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
             name: 'Lista_Productos.pdf',
         );
   }
+
+  Future<void> exportExpensesExcel(List<ExpensesModel> exp) async {
+
+    try{
+    var excel = Excel.createExcel();
+
+    String sheetName = 'Gastos';
+    excel.rename(excel.getDefaultSheet()!, sheetName);
+    Sheet sheetObj = excel[sheetName];
+
+    sheetObj.appendRow([
+      TextCellValue('Id'),
+      TextCellValue('Nombre'),
+      TextCellValue('Descripcion'),
+      TextCellValue('Fecha'),
+      TextCellValue('Monto')
+    ]);
+
+    final validExpenses = exp.whereType<ExpensesModel>().toList();
+    for (var exp in validExpenses) {
+      sheetObj.appendRow([
+        IntCellValue(exp.idExpenses ?? 0),
+        TextCellValue(exp.expenseName),
+        TextCellValue(exp.description),
+        DateCellValue(day: exp.expenseDate.day,
+            month: exp.expenseDate.month,
+            year: exp.expenseDate.year),
+        DoubleCellValue(exp.amount)
+      ]);
+    }
+
+
+    var fileBytes = excel.save();
+    if (fileBytes != null) {
+      final directory = await getTemporaryDirectory();
+      final filePath = '${directory.path}/Reporte_Gastos.xlsx';
+      File(filePath)
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(fileBytes);
+      if (mounted) {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(filePath)],
+            text: 'Reporte de Gastos',
+          ),
+        );
+      }
+    }
+  }catch(e){
+    if(mounted){
+      showErrorSnackBar(context, "Error al generar Excel: $e");
+    }
+  }
+
+  }
+
 
   Future<void> _selectDateRange(BuildContext context) async {
     final DateTimeRange? pickedRange = await showDateRangePicker(
@@ -610,7 +670,19 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FooterButton("Exportar a Excel", "images/excel.png", () {}),
+            FooterButton("Exportar a Excel", "images/excel.png", () {
+              final currentData = ref.read(expensesListProvider).value;
+
+              if(currentData!= null && currentData.isNotEmpty){
+                final filteredExpenses = currentData.whereType<ExpensesModel>().where((exp){
+                  return true;
+                }).toList();
+
+                exportExpensesExcel(filteredExpenses);
+              }else{
+                showErrorSnackBar(context, "No hay datos para exportar");
+              }
+            }),
             const SizedBox(width: 40),
             FooterButton("Exportar a PDF", "images/pdf.png", () {
               final currentData = ref.read(expensesListProvider).value;

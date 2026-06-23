@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/category_model.dart';
 import 'package:tiendita/providers/category_provider.dart';
@@ -86,6 +91,47 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
       onLayout: (PdfPageFormat) async => pdf.save(),
       name: 'Reporte_Categorias.pdf'
     );
+  }
+
+  Future<void> exportCategoryExcel(List<CategoryModel> cat) async{
+    try{
+      var excel = Excel.createExcel();
+      String sheetName = 'Categorias';
+      excel.rename(excel.getDefaultSheet()!, sheetName);
+      Sheet sheetObj = excel[sheetName];
+
+      sheetObj.appendRow([
+        TextCellValue('Id'),
+        TextCellValue('Nombre'),
+      ]);
+
+      final validCategories = cat.whereType<CategoryModel>().toList();
+      for(var cat in validCategories){
+        sheetObj.appendRow([
+          IntCellValue(cat.idCategory ?? 0),
+          TextCellValue(cat.CategoryName ?? "N/A"),
+        ]);
+      }
+
+      var fileBytes = excel.save();
+      if(fileBytes != null){
+        final directory = await getTemporaryDirectory();
+        final filePath = '${directory.path}/Lista_Categorias.xlsx';
+        File(filePath)..createSync(recursive: true)..writeAsBytesSync(fileBytes);
+        if(mounted){
+          await SharePlus.instance.share(
+            ShareParams(
+              files: [XFile(filePath)],
+              text: 'Lista de Categorias',
+            ),
+          );
+        }
+      }
+    }catch(e){
+      if(mounted){
+        showErrorSnackBar(context, "Error al generar Excel: $e");
+      }
+    }
   }
 
 
@@ -263,7 +309,17 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             FooterButton("Exportar a Excel", "images/excel.png", () {
+              final currentData = ref.read(categoryListProvider).value;
 
+              if(currentData != null && currentData.isNotEmpty){
+                final filteredCategories = currentData.whereType<CategoryModel>().where((cat){
+                  return cat.CategoryName!.toLowerCase().contains(_searchQuery);
+                }).toList();
+
+                exportCategoryExcel(filteredCategories);
+              }else{
+                showErrorSnackBar(context, "No hay datos para exportar");
+              }
             }),
             const SizedBox(width: 40),
             FooterButton("Exportar a PDF", "images/pdf.png", () {

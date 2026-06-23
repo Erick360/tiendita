@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/models/clients_model.dart';
 import 'package:tiendita/screens/clients/clients_data_source.dart';
 import '../../constants/constants.dart';
@@ -85,6 +90,57 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
   void dispose(){
     _searchController.dispose();
     super.dispose();
+  }
+  
+  Future<void> exportClientsExcel(List<ClientsModel> cli) async{
+    try {
+      var excel = Excel.createExcel();
+
+      String sheetName = 'Clientes';
+      excel.rename(excel.getDefaultSheet()!, sheetName);
+      Sheet sheetObj = excel[sheetName];
+
+      sheetObj.appendRow([
+        TextCellValue("Id"),
+        TextCellValue("Nombre"),
+        TextCellValue("Apellidos"),
+        TextCellValue("Direccion"),
+        TextCellValue("Correo"),
+        TextCellValue("Telefono")
+      ]);
+      final validClients = cli.whereType<ClientsModel>().toList();
+      for (var cli in validClients) {
+        sheetObj.appendRow([
+          IntCellValue(cli.idClient ?? 0),
+          TextCellValue(cli.clientName),
+          TextCellValue(cli.clientLastName),
+          TextCellValue(cli.clientLastName),
+          TextCellValue(cli.clientAddress),
+          TextCellValue(cli.clientEmail),
+          TextCellValue(cli.clientPhoneNumber),
+        ]);
+      }
+      var fileBytes = excel.save();
+      if (fileBytes != null) {
+        final directory = await getTemporaryDirectory();
+        final filePath = '${directory.path}/Lista_Clientes.xlsx';
+        File(filePath)
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(fileBytes);
+        if (mounted) {
+          await SharePlus.instance.share(
+            ShareParams(
+              files: [XFile(filePath)],
+              text: 'Lista de Clientes',
+            ),
+          );
+        }
+      }
+    }catch(e){
+      if(mounted){
+        showErrorSnackBar(context, "Error al generar Excel: $e");
+      }
+    }
   }
 
   @override
@@ -275,7 +331,19 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FooterButton("Exportar a Excel", "images/excel.png", () {}),
+            FooterButton("Exportar a Excel", "images/excel.png", () {
+              final currentData = ref.read(clientListProvider).value;
+
+              if(currentData != null && currentData.isNotEmpty){
+                final filteredClients = currentData.whereType<ClientsModel>().where((cli){
+                  return cli.clientName.toLowerCase().contains(_searchQuery);
+                }).toList();
+
+                exportClientsExcel(filteredClients);
+              }else{
+                showErrorSnackBar(context, "No hay datos para exportar");
+              }
+            }),
             const SizedBox(width: 40),
             FooterButton("Exportar a PDF", "images/pdf.png", () {
               final currentData = ref.read(clientListProvider).value;

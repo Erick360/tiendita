@@ -1,6 +1,10 @@
+import 'dart:io';
+import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/purveyors_model.dart';
 import 'package:tiendita/providers/purveyor_provider.dart';
@@ -97,6 +101,60 @@ class PurveyorsScreen extends ConsumerStatefulWidget {
          name: 'Lista_Proveedores.pdf'
      );
    }
+
+   Future<void> exportPurveyorExcel(List<PurveyorsModel> pur) async {
+
+     try{
+     var excel = Excel.createExcel();
+
+     String sheetName = "Proveedores";
+     excel.rename(excel.getDefaultSheet()!, sheetName);
+     Sheet sheetObj = excel[sheetName];
+
+     sheetObj.appendRow([
+       TextCellValue("Id"),
+       TextCellValue("Nombre"),
+       TextCellValue("Direccion"),
+       TextCellValue("Correo"),
+       TextCellValue("Telefono"),
+       TextCellValue("RFC"),
+     ]);
+
+     final validPurveyors = pur.whereType<PurveyorsModel>().toList();
+     for (var cli in validPurveyors) {
+       sheetObj.appendRow([
+         IntCellValue(cli.idPurveyor ?? 0),
+         TextCellValue(cli.PurveyorName),
+         TextCellValue(cli.PurveyorAddress),
+         TextCellValue(cli.PurveyorEmail),
+         TextCellValue(cli.PurveyorPhoneNumber),
+         TextCellValue(cli.PurveyorRFC),
+       ]);
+     }
+
+     var fileBytes = excel.save();
+     if (fileBytes != null) {
+       final directory = await getTemporaryDirectory();
+       final filePath = '${directory.path}/Lista_Proveedores.xlsx';
+       File(filePath)
+         ..createSync(recursive: true)
+         ..writeAsBytesSync(fileBytes);
+       if (mounted) {
+         await SharePlus.instance.share(
+           ShareParams(
+             files: [XFile(filePath)],
+             text: 'Lista de Proveedores',
+           ),
+         );
+       }
+     }
+    }catch(e){
+      if(mounted){
+        showErrorSnackBar(context, "Error al generar Excel: $e");
+      }
+    }
+   }
+
 
    @override
    Widget build(BuildContext context) {
@@ -286,7 +344,19 @@ class PurveyorsScreen extends ConsumerStatefulWidget {
          child: Row(
            mainAxisAlignment: MainAxisAlignment.spaceBetween,
            children: [
-             FooterButton("Exportar a Excel", "images/excel.png", () {}),
+             FooterButton("Exportar a Excel", "images/excel.png", () {
+               final currentData = ref.read(purveyorListProvider).value;
+
+               if(currentData != null && currentData.isNotEmpty){
+                 final filteredPurveyors = currentData.whereType<PurveyorsModel>().where((pur){
+                   return pur.PurveyorName.toLowerCase().contains(_searchQuery);
+                 }).toList();
+
+                 exportPurveyorExcel(filteredPurveyors);
+               }else{
+                 showErrorSnackBar(context, "No hay datos para exportar");
+               }
+             }),
              const SizedBox(width: 40),
              FooterButton("Exportar a PDF", "images/pdf.png", () {
                final currentData = ref.read(purveyorListProvider).value;

@@ -1,6 +1,10 @@
+import 'dart:io';
+import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/screens/products/products_data_source.dart';
 import 'package:tiendita/screens/products/products_table.dart';
 import '../../constants/constants.dart';
@@ -101,6 +105,59 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
     );
   }
 
+
+  Future<void> exportProductsExcel(List<ProductsModel> products) async{
+    try{
+      var excel = Excel.createExcel();
+
+      String sheetName = 'Productos';
+      excel.rename(excel.getDefaultSheet()!, sheetName);
+      Sheet sheetObject = excel[sheetName];
+
+
+      sheetObject.appendRow([
+        TextCellValue('ID'),
+        TextCellValue('Nombre'),
+        TextCellValue('Presentación'),
+        TextCellValue('Unidad'),
+        TextCellValue('Precio Compra'),
+        TextCellValue('Precio Venta'),
+        TextCellValue('Stock'),
+      ]);
+
+      final validProducts = products.whereType<ProductsModel>().toList();
+      for(var product in validProducts){
+        sheetObject.appendRow([
+          IntCellValue(product.idProduct ?? 0),
+          TextCellValue(product.productName),
+          TextCellValue(product.presentation ?? 'N/A'),
+          TextCellValue(product.units ?? 'N/A'),
+          DoubleCellValue(product.priceShop!),
+          DoubleCellValue(product.priceSale!),
+          IntCellValue(product.stock!),
+        ]);
+      }
+
+      var fileBytes = excel.save();
+      if(fileBytes != null){
+        final directory = await getTemporaryDirectory();
+        final filePath = '${directory.path}/Reporte_Productos.xlsx';
+        File(filePath)..createSync(recursive: true)..writeAsBytesSync(fileBytes);
+        if(mounted){
+          await SharePlus.instance.share(
+            ShareParams(
+              files: [XFile(filePath)],
+              text: 'Reporte de Productos',
+            ),
+          );
+        }
+      }
+    }catch(e){
+      if(mounted){
+        showErrorSnackBar(context, "Error al generar Excel: $e");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -319,7 +376,19 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FooterButton("Exportar a Excel", "images/excel.png", () {}),
+            FooterButton("Exportar a Excel", "images/excel.png", () {
+              final currentData = ref.read(productsListProvider).value;
+
+              if(currentData != null && currentData.isNotEmpty){
+                final filteredProducts = currentData.whereType<ProductsModel>().where((pro){
+                  return pro.productName.toLowerCase().contains(_searchQuery);
+                }).toList();
+
+                exportProductsExcel(filteredProducts);
+              }else{
+               showErrorSnackBar(context, "No hay datos para exportar");
+              }
+            }),
             const SizedBox(width: 40),
             FooterButton("Exportar a PDF", "images/pdf.png", () {
               final currentData = ref.read(productsListProvider).value;
@@ -337,7 +406,6 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
           ],
         ),
       ),
-
     );
   }
 }
