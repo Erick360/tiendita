@@ -22,10 +22,10 @@ class ProductsRepository{
     map((rows) => rows.map((row) => ProductsModel.fromRow(row)).toList());
   }
   
-  Stream<List<ProductsModel>> watchAllProductsStockLow(){
+  Stream<List<ProductsModel>> watchAllProductsStockLow({required int limit}){
     final query =
     database.select(database.products)..
-    where((p) => p.stock.isSmallerOrEqualValue(2));
+    where((p) => p.stock.isSmallerOrEqualValue(limit));
 
     return query.map((r) => ProductsModel.fromRow(r)).watch();
   }

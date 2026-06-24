@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/constants/constants.dart';
+import 'package:tiendita/providers/theme_provider.dart';
 import 'package:tiendita/screens/auth/authentication.dart';
 import 'package:tiendita/screens/settings/import_export_database.dart';
 import 'package:tiendita/screens/splash_screen.dart';
@@ -33,14 +35,9 @@ void main() {
   ));
 }
 
-class TienditaApp extends StatefulWidget {
+class TienditaApp extends ConsumerWidget {
   const TienditaApp({super.key});
 
-@override
-  _TienditaAppState createState() => _TienditaAppState();
-}
-
-class _TienditaAppState extends State<TienditaApp> {
   //late FlutterLocalNotificationsPlugin notification;
 
   /*
@@ -58,9 +55,35 @@ class _TienditaAppState extends State<TienditaApp> {
   */
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeNotifierProvider);
+
     return MaterialApp(
-      theme: ThemeData.light(),
+      debugShowCheckedModeBanner: false,
+      title: "Tiendita",
+      themeMode: themeMode,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: kActiveColor,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(backgroundColor: kActiveColor),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: kActiveColor,
+          brightness: Brightness.light
+        ),
+      ),
+
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: kActiveColor,
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF1E1E1E)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: kActiveColor,
+          brightness: Brightness.dark
+        )
+      ),
+
       home:  SplashScreen(),
       routes: {
         HomeScreen.id: (context) => const HomeScreen(),

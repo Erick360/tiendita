@@ -3,6 +3,7 @@ import 'package:tiendita/models/products_model.dart';
 import 'package:tiendita/providers/category_provider.dart';
 import 'package:tiendita/providers/database_provider.dart';
 import 'package:tiendita/repositories/products_repository.dart';
+import 'alert_settings_provider.dart';
 import '../models/category_model.dart';
 
 final productsRepositoryProvider = Provider<ProductsRepository>((ref){
@@ -28,13 +29,17 @@ final productsNotifierProvider = StateNotifierProvider<ProductsNotifier, AsyncVa
 final lowStockProvider = StreamProvider<List<ProductsModel>>((ref){
   final repo = ref.watch(productsRepositoryProvider);
 
-  return repo.watchAllProductsStockLow();
+  final settings = ref.watch(alertSettingsProvider);
+
+  return repo.watchAllProductsStockLow(limit: settings.stockLimit);
 });
 
 final expiringProductsProvider = StreamProvider<List<ProductsModel>>((ref){
   final repo = ref.watch(productsRepositoryProvider);
 
-  return repo.watchProductsAboutToExpire();
+  final settings = ref.watch(alertSettingsProvider);
+
+  return repo.watchProductsAboutToExpire(daysWarning: settings.expiryDays);
 });
 
 class ProductsNotifier extends StateNotifier<AsyncValue<ProductsModel?>>{
