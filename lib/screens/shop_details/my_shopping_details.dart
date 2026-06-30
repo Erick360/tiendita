@@ -1,9 +1,17 @@
+import 'dart:io';
+
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:printing/printing.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/providers/shopping_provider.dart';
 import '../../constants/constants.dart';
 import '../../widgets/text_data.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 enum ReportPeriod { daily, weekly, monthly }
 
@@ -50,6 +58,122 @@ class _ShoppingDetailsState extends ConsumerState<ShoppingDetails>{
         break;
     }
     ref.read(shopsNotifierProvider.notifier).loadShopsByRange(start, end);
+  }
+
+  Future<void> _exportShoppingPdf(List<dynamic> shops, double total) async{
+
+    try{
+      final kPdf = pw.Document();
+
+      final tableData = shops.map((shop){
+      return[
+        shop.numShop ?? "N/A",
+        shop.shopDate != null ?
+        DateFormat("dd/MM/yyyy hh:mm a").format(shop.shopDate!) : 'Sin fecha',
+        '\$${shop.total.toStringAsFixed(2) ?? '.00'}',
+      ];
+    }).toList();
+    String periodName = getDay(DateFormat('EEEE').format(now));
+    if(_selectedPeriod == ReportPeriod.weekly) periodName = "Semanal";
+    if(_selectedPeriod == ReportPeriod.monthly) periodName = getMonth(DateFormat.MMMM().format(now));
+
+    kPdf.addPage(
+      pw.MultiPage(
+        margin: pw.EdgeInsets.all(32),
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context){
+          return [
+            pw.Header(
+              level: 0,
+              child: pw.Text(
+                'Reporte de Compras $periodName',
+                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.SizedBox(height: 10),
+            pw.Text(
+              'Compras Totales: \$${total.toStringAsFixed(2)}',
+              style:  pw.TextStyle(fontSize: 16, color: PdfColors.deepOrange),
+            ),
+            pw.SizedBox(height: 20),
+            pw.TableHelper.fromTextArray(
+              headers: ['Ticket de Compra','Fecha y Hora', 'Total'],
+                data: tableData,
+              border: pw.TableBorder.all(width: 1.5,color: PdfColors.black),
+              headerStyle: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColors.black,
+              ),
+              headerDecoration: pw.BoxDecoration(
+                border: pw.Border(
+                  bottom: pw.BorderSide(color: PdfColors.green300, width: 0.5),
+                ),
+              ),
+                cellAlignment: pw.Alignment.centerLeft,
+                cellPadding: const pw.EdgeInsets.all(8)
+            ),
+          ];
+        }
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => kPdf.save(),
+      name: 'Reporte_Compras_$periodName.pdf',
+    );
+    }catch(e){
+      if(mounted){
+        showErrorSnackBar(context, 'Error al generar PDF: Intente de nuevo');
+      }
+    }
+  }
+
+  Future<void> _exportShopsExcel(List<dynamic> shops, double total) async{
+    try{
+
+      String sheetName = 'Reporte_Compras_${getDay(DateFormat('EEEE').format(now))}_${getMonth(DateFormat.MMMM().format(now))}_${now.year}}';
+      if(_selectedPeriod == ReportPeriod.weekly) sheetName = "Semanal";
+      if(_selectedPeriod == ReportPeriod.monthly) sheetName = '${getMonth(DateFormat.MMMM().format(now))}_${now.year}';
+
+      kExcel.rename(kExcel.getDefaultSheet()!, sheetName);
+      Sheet sheetObj = kExcel[sheetName];
+
+      sheetObj.appendRow([
+        TextCellValue('Ticket de Compra'),
+        TextCellValue('Fecha y Hora'),
+        TextCellValue('Total'),
+      ]);
+
+
+      shops.map((shop){
+        return [
+          sheetObj.appendRow([
+            TextCellValue(shop.numShop ?? "N/A"),
+            TextCellValue(shop.shopDate != null ? DateFormat("dd/MM/yyyy hh:mm a").format(shop.shopDate!) : 'Sin fecha'),
+            TextCellValue('\$${shop.total.toStringAsFixed(2) ?? '.00'}'),
+          ]),
+        ];
+      }).toList();
+
+      if(kFileBytes != null){
+        final directory = await getTemporaryDirectory();
+        final filePath = '${directory.path}/Reporte_Compras_${getDay(DateFormat('EEEE').format(now))}_${getMonth(DateFormat.MMMM().format(now))}_${now.year}}.xlsx';
+        File(filePath)..createSync(recursive: true)..writeAsBytesSync(kFileBytes!);
+        if(mounted){
+          await SharePlus.instance.share(
+            ShareParams(
+              files: [XFile(filePath)],
+              text: 'Reporte de Compras',
+            ),
+          );
+        }
+      }
+
+    }catch(e){
+      if(mounted){
+        showErrorSnackBar(context, 'Error al generar Excel: Intente de nuevo');
+      }
+    }
   }
 
   Widget _buildTab(String title, ReportPeriod period) {
@@ -181,6 +305,41 @@ class _ShoppingDetailsState extends ConsumerState<ShoppingDetails>{
                                 ),
                               ],
                             ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          Row(
+                            children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                  onPressed: () => _exportShoppingPdf(shops, totalEarnings),
+                                  icon: const Icon(Icons.picture_as_pdf, color: Colors.white),
+                                  label: const Text('Exportar a PDF', style: TextStyle(color: Colors.white)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blueGrey[800],
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                              const SizedBox(width: 10),
+                            Expanded(
+                                child: ElevatedButton.icon(
+                                    onPressed: () => _exportShopsExcel(shops, totalEarnings),
+                                  label: const Text('Exportar a Excel', style: TextStyle(color: Colors.white),),
+                                  icon: const Icon(Icons.document_scanner, color: Colors.white),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blueGrey[800],
+                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                )
+                              ),
+                            ]
                           ),
                           const SizedBox(height: 20),
                           Expanded(

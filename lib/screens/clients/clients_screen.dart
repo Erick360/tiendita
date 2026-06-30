@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/models/clients_model.dart';
@@ -29,9 +27,18 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
   String _searchQuery = "";
   final TextEditingController _searchController = TextEditingController();
 
+
+  @override
+  void dispose(){
+    _searchController.dispose();
+    super.dispose();
+  }
+
   Future<void> exportCategoryPdf(List<ClientsModel?> clients) async{
-      final pdf = pw.Document();
-      final validClients = clients.whereType<ClientsModel?>().toList();
+      try{
+        final kPdf = pw.Document();
+
+        final validClients = clients.whereType<ClientsModel?>().toList();
       final tableData = validClients.map((client){
         return [
           client?.idClient ?? "N/A",
@@ -43,7 +50,7 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
         ];
       }).toList();
 
-      pdf.addPage(
+      kPdf.addPage(
         pw.MultiPage(
             pageFormat: PdfPageFormat.a4,
             margin: const pw.EdgeInsets.all(32),
@@ -81,24 +88,22 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
         ),
       );
       await Printing.layoutPdf(
-          onLayout: (PdfPageFormat) async => pdf.save(),
+          onLayout: (PdfPageFormat) async => kPdf.save(),
           name: 'Lista_Clientes.pdf'
       );
+    }catch(e){
+        if(mounted) showErrorSnackBar(context, "Error al generar PDF: Intente de nuevo");
+      }
   }
 
-  @override
-  void dispose(){
-    _searchController.dispose();
-    super.dispose();
-  }
+
   
   Future<void> exportClientsExcel(List<ClientsModel> cli) async{
     try {
-      var excel = Excel.createExcel();
 
       String sheetName = 'Clientes';
-      excel.rename(excel.getDefaultSheet()!, sheetName);
-      Sheet sheetObj = excel[sheetName];
+      kExcel.rename(kExcel.getDefaultSheet()!, sheetName);
+      Sheet sheetObj = kExcel[sheetName];
 
       sheetObj.appendRow([
         TextCellValue("Id"),
@@ -120,13 +125,13 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
           TextCellValue(cli.clientPhoneNumber),
         ]);
       }
-      var fileBytes = excel.save();
-      if (fileBytes != null) {
+
+      if (kFileBytes != null) {
         final directory = await getTemporaryDirectory();
         final filePath = '${directory.path}/Lista_Clientes.xlsx';
         File(filePath)
           ..createSync(recursive: true)
-          ..writeAsBytesSync(fileBytes);
+          ..writeAsBytesSync(kFileBytes!);
         if (mounted) {
           await SharePlus.instance.share(
             ShareParams(
@@ -138,7 +143,7 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
       }
     }catch(e){
       if(mounted){
-        showErrorSnackBar(context, "Error al generar Excel: $e");
+        showErrorSnackBar(context, "Error al generar Excel: Intente de nuevo");
       }
     }
   }
@@ -186,7 +191,7 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(FontAwesomeIcons.peopleGroup, color: Colors.white, size: 20),
+            Icon(Icons.people, color: Colors.white, size: 20),
             const SizedBox(width: 5),
             Text(
               'Mis Clientes',

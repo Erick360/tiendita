@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/constants/constants.dart';
@@ -38,8 +36,8 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
   }
 
   Future<void> exportCategoryPdf(List<CategoryModel?> categories) async{
-    final pdf = pw.Document();
-
+    try{
+  final kPdf = pw.Document();
     final validCategories = categories.whereType<CategoryModel?>().toList();
 
     final tableData = validCategories.map((category){
@@ -49,7 +47,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
       ];
     }).toList();
 
-    pdf.addPage(
+    kPdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(32),
@@ -88,17 +86,22 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
     );
 
     await Printing.layoutPdf(
-      onLayout: (PdfPageFormat) async => pdf.save(),
+      onLayout: (PdfPageFormat) async => kPdf.save(),
       name: 'Reporte_Categorias.pdf'
     );
+    }catch(e){
+      if(mounted){
+        showErrorSnackBar(context, "Error al generar PDF: Intente de nuevo");
+      }
+    }
   }
 
   Future<void> exportCategoryExcel(List<CategoryModel> cat) async{
     try{
-      var excel = Excel.createExcel();
+
       String sheetName = 'Categorias';
-      excel.rename(excel.getDefaultSheet()!, sheetName);
-      Sheet sheetObj = excel[sheetName];
+      kExcel.rename(kExcel.getDefaultSheet()!, sheetName);
+      Sheet sheetObj = kExcel[sheetName];
 
       sheetObj.appendRow([
         TextCellValue('Id'),
@@ -113,11 +116,11 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
         ]);
       }
 
-      var fileBytes = excel.save();
-      if(fileBytes != null){
+      final kFileBytes = kExcel.save();
+      if(kFileBytes != null){
         final directory = await getTemporaryDirectory();
         final filePath = '${directory.path}/Lista_Categorias.xlsx';
-        File(filePath)..createSync(recursive: true)..writeAsBytesSync(fileBytes);
+        File(filePath)..createSync(recursive: true)..writeAsBytesSync(kFileBytes);
         if(mounted){
           await SharePlus.instance.share(
             ShareParams(
@@ -129,7 +132,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
       }
     }catch(e){
       if(mounted){
-        showErrorSnackBar(context, "Error al generar Excel: $e");
+        showErrorSnackBar(context, "Error al generar Excel: Intente de nuevo");
       }
     }
   }
@@ -178,7 +181,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(FontAwesomeIcons.listCheck, color: Colors.white, size: 20),
+            Icon(Icons.list_alt, color: Colors.white, size: 20),
             const SizedBox(width: 5),
             TextData(
               "Categorias",

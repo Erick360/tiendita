@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -30,74 +29,76 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
   DateTime? _endDate;
   bool _isShowingToday = true;
 
-  Future<void> exportExpensesPdf(List<ExpensesModel> exp) async{
-    final pdf = pw.Document();
-    final validExpenses = exp.whereType<ExpensesModel>().toList();
-    final tableData = validExpenses.map((expense){
-      return [
-        expense.idExpenses ?? 'N/A',
-        expense.expenseName,
-        expense.description,
-        DateFormat('dd/MM/yyyy').format(expense.expenseDate),
-        '\$${expense.amount.toStringAsFixed(2)}',
-      ];
-    }).toList();
+  Future<void> exportExpensesPdf(List<ExpensesModel> exp) async {
+    try {
+      final kPdf = pw.Document();
+      final validExpenses = exp.whereType<ExpensesModel>().toList();
+      final tableData = validExpenses.map((expense) {
+        return [
+          expense.idExpenses ?? 'N/A',
+          expense.expenseName,
+          expense.description,
+          DateFormat('dd/MM/yyyy').format(expense.expenseDate),
+          '\$${expense.amount.toStringAsFixed(2)}',
+        ];
+      }).toList();
 
-    pdf.addPage(
-      pw.MultiPage(
-          pageFormat: PdfPageFormat.a4,
-          margin: const pw.EdgeInsets.all(32),
-          build: (pw.Context context) {
-            return [
-              pw.Header(
-                level: 0,
-                child: pw.Text(
-                  'Reporte de Gastos',
-                  style: pw.TextStyle(
-                      fontSize: 24, fontWeight: pw.FontWeight.bold),
+      kPdf.addPage(
+        pw.MultiPage(
+            pageFormat: PdfPageFormat.a4,
+            margin: const pw.EdgeInsets.all(32),
+            build: (pw.Context context) {
+              return [
+                pw.Header(
+                  level: 0,
+                  child: pw.Text(
+                    'Reporte de Gastos',
+                    style: pw.TextStyle(
+                        fontSize: 24, fontWeight: pw.FontWeight.bold),
+                  ),
                 ),
-              ),
-              pw.SizedBox(height: 20),
-              pw.TableHelper.fromTextArray(
-                  headers: ['ID', 'Nombre', 'Descripcion', 'Fecha','Monto'],
-                  data: tableData,
-                  border: pw.TableBorder.all(
-                      width: 1.5, color: PdfColors.black),
-                  headerStyle: pw.TextStyle(
-                      color: PdfColors.white,
-                      fontWeight: pw.FontWeight.bold
-                  ),
-                  headerDecoration: const pw.BoxDecoration(
-                    color: PdfColors.deepOrange,
-                  ),
-                  rowDecoration: const pw.BoxDecoration(
-                    border: pw.Border(
-                      bottom: pw.BorderSide(
-                          color: PdfColors.green300, width: 1),
+                pw.SizedBox(height: 20),
+                pw.TableHelper.fromTextArray(
+                    headers: ['ID', 'Nombre', 'Descripcion', 'Fecha', 'Monto'],
+                    data: tableData,
+                    border: pw.TableBorder.all(
+                        width: 1.5, color: PdfColors.black),
+                    headerStyle: pw.TextStyle(
+                        color: PdfColors.white,
+                        fontWeight: pw.FontWeight.bold
                     ),
-                  ),
-                  cellAlignment: pw.Alignment.centerLeft,
-                  cellPadding: const pw.EdgeInsets.all(8)
-              ),
+                    headerDecoration: const pw.BoxDecoration(
+                      color: PdfColors.deepOrange,
+                    ),
+                    rowDecoration: const pw.BoxDecoration(
+                      border: pw.Border(
+                        bottom: pw.BorderSide(
+                            color: PdfColors.green300, width: 1),
+                      ),
+                    ),
+                    cellAlignment: pw.Alignment.centerLeft,
+                    cellPadding: const pw.EdgeInsets.all(8)
+                ),
 
-            ];
-          }
-      ),
-    );
-        await Printing.layoutPdf(
-            onLayout: (PdfPageFormat) async => pdf.save(),
-            name: 'Lista_Productos.pdf',
-        );
+              ];
+            }
+        ),
+      );
+      await Printing.layoutPdf(
+        onLayout: (PdfPageFormat) async => kPdf.save(),
+        name: 'Lista_Productos.pdf',
+      );
+    }catch(e){
+      if(mounted) showErrorSnackBar(context, "Error al generar PDF: Intente de Nuevo");
+    }
   }
 
   Future<void> exportExpensesExcel(List<ExpensesModel> exp) async {
 
     try{
-    var excel = Excel.createExcel();
-
     String sheetName = 'Gastos';
-    excel.rename(excel.getDefaultSheet()!, sheetName);
-    Sheet sheetObj = excel[sheetName];
+    kExcel.rename(kExcel.getDefaultSheet()!, sheetName);
+    Sheet sheetObj = kExcel[sheetName];
 
     sheetObj.appendRow([
       TextCellValue('Id'),
@@ -121,13 +122,13 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
     }
 
 
-    var fileBytes = excel.save();
-    if (fileBytes != null) {
+
+    if (kFileBytes != null) {
       final directory = await getTemporaryDirectory();
       final filePath = '${directory.path}/Reporte_Gastos.xlsx';
       File(filePath)
         ..createSync(recursive: true)
-        ..writeAsBytesSync(fileBytes);
+        ..writeAsBytesSync(kFileBytes!);
       if (mounted) {
         await SharePlus.instance.share(
           ShareParams(
@@ -139,7 +140,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
     }
   }catch(e){
     if(mounted){
-      showErrorSnackBar(context, "Error al generar Excel: $e");
+      showErrorSnackBar(context, "Error al generar Excel: Intente de Nuevo");
     }
   }
 
@@ -420,7 +421,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                                           DataCell(
                                             IconButton(
                                               icon: Icon(
-                                                FontAwesomeIcons.penToSquare,
+                                                Icons.edit,
                                                 color: Colors.blueAccent,
                                                 size: 20,
                                               ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/models/clients_model.dart';
 
 import 'edit_client.dart';
@@ -86,7 +85,7 @@ class ClientsDataSource extends DataTableSource{
           DataCell(
             IconButton(
               icon: Icon(
-                FontAwesomeIcons.penToSquare,
+                Icons.edit,
                 color: Colors.blueAccent,
                 size: 20,
               ),

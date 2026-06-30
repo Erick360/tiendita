@@ -1,8 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/screens/home_page.dart';
+
 
 class Authentication extends StatefulWidget {
   const Authentication({super.key});
@@ -31,43 +32,30 @@ class _AuthenticationState extends State<Authentication> {
         biometricOnly: false,
       );
 
-    } on PlatformException catch (e) {
-      print("Error nativo: ${e.code} - ${e.message}");
-
-      setState(() {
-        _isAuthenticating = false;
-      });
-
-      if (e.code == 'PasscodeNotSet' ||
-          e.code == 'NotEnrolled' ||
-          e.code == 'NotAvailable') {
-
-        Navigator.pushReplacementNamed(context, HomeScreen.id);
-        return;
-      }
-
-      setState(() {
-        _authStatus = "Error de Autenticación";
-      });
-      return;
 
     } catch (e) {
-      print("Error Autenticación: $e");
+      if (kDebugMode) {
+        print("Error Autenticación: $e");
+      }
       setState(() {
         _isAuthenticating = false;
         _authStatus = "Error de Autenticación";
       });
       return;
+    }finally{
+      setState(() {
+       _isAuthenticating = false;
+      });
     }
 
     setState(() {
-      _isAuthenticating = false;
-      _authStatus = authenticated ? "Autenticación Exitosa!" : "Error de Autenticación!";
+      _authStatus = authenticated ? "Autenticacion Exitosa!" : "Error de Autenticacion!";
     });
 
-    if (authenticated) {
+    if(authenticated){
       Navigator.pushReplacementNamed(context, HomeScreen.id);
     }
+
   }
 
   @override

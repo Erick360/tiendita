@@ -1,3 +1,4 @@
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -5,6 +6,86 @@ const kActiveColor = Color(0xFFF36618);
 
 final now = DateTime.now();
 var kDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+var kExcel = Excel.createExcel();
+var kFileBytes = kExcel.save();
+
+
+
+///////////////////////////////////////////
+
+String getDay(String date){
+  String res = '';
+  switch(date){
+    case 'Monday':
+      res = 'Lunes';
+      break;
+      case 'Tuesday':
+      res = 'Martes';
+      break;
+    case 'Wednesday':
+      res = 'Miercoles';
+      break;
+      case 'Thursday':
+      res = 'Jueves';
+      break;
+    case 'Friday':
+      res = 'Viernes';
+      break;
+    case 'Saturday':
+      res = 'Sabado';
+      break;
+      case 'Sunday':
+        res = 'Domingo';
+        break;
+  }
+  return res;
+}
+
+String getMonth(String date){
+  String res = '';
+  switch(date){
+    case 'January':
+      res = 'Enero';
+      break;
+    case 'February':
+      res = 'Febrero';
+      break;
+    case 'March':
+      res = 'Marzo';
+      break;
+    case 'April':
+      res = 'Abril';
+      break;
+      case 'May':
+      res = 'Mayo';
+      break;
+    case 'June':
+      res = 'Junio';
+      break;
+    case 'July':
+      res = 'Julio';
+      break;
+    case 'August':
+      res = 'Agosto';
+      break;
+      case 'September':
+      res = 'Septiembre';
+      break;
+    case 'October':
+      res = 'Octubre';
+      break;
+    case 'November':
+      res = 'Noviembre';
+      break;
+    case 'December':
+      res = 'Diciembre';
+      break;
+  }
+  return res;
+}
+
+/////////////////////////////////////////////////
 
 //Success Message
 void showSuccessSnackBar(BuildContext context, String message) {

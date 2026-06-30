@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -34,85 +33,91 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
     super.dispose();
   }
 
-  Future<void> exportProductsPdf(List<ProductsModel?> products) async{
-    final pdf = pw.Document();
-    final validProducts = products.whereType<ProductsModel?>().toList();
-    final tableData = validProducts.map((product){
-      return [
-        product?.idProduct ?? "N/A",
-        product?.productName ?? "Sin nombre",
-        product?.presentation ?? "Sin presentacion",
-        product?.units ?? "Sin medidas",
-        product?.priceShop ?? "Sin precio de compra",
-        product?.priceShop ?? "Sin precio de venta",
-        product?.stock ?? "Sin stock",
-        product?.status ?? "Sin status",
+  Future<void> exportProductsPdf(List<ProductsModel?> products) async {
+    try {
+      final kPdf = pw.Document();
 
-        /*
-        product?.productImage != null ? SizedBox(
-          width: 50,
-          height: 50,
-          child: Image.file(
-            File(product!.productImage!),
-            fit: BoxFit.cover,
-          ),
-        ) : const Icon(Icons.image_not_supported, color: Colors.grey),
-  */
-        product?.productExpiresAt ?? "Sin fecha de caducidad",
-      ];
-    }).toList();
+      final validProducts = products.whereType<ProductsModel?>().toList();
+      final tableData = validProducts.map((product) {
+        return [
+          product?.idProduct ?? "N/A",
+          product?.productName ?? "Sin nombre",
+          product?.presentation ?? "Sin presentacion",
+          product?.units ?? "Sin medidas",
+          product?.priceShop ?? "Sin precio de compra",
+          product?.priceShop ?? "Sin precio de venta",
+          product?.stock ?? "Sin stock",
+          product?.status ?? "Sin status",
+          product?.productExpiresAt ?? "Sin fecha de caducidad",
+        ];
+      }).toList();
 
-    pdf.addPage(
-      pw.MultiPage(
-          pageFormat: PdfPageFormat.a4,
-          margin: const pw.EdgeInsets.all(32),
-          build: (pw.Context context){
-            return [
-              pw.Header(
-                level: 0,
-                child: pw.Text(
-                  'Lista de Productos',
-                  style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+      kPdf.addPage(
+        pw.MultiPage(
+            pageFormat: PdfPageFormat.a4,
+            margin: const pw.EdgeInsets.all(32),
+            build: (pw.Context context) {
+              return [
+                pw.Header(
+                  level: 0,
+                  child: pw.Text(
+                    'Lista de Productos',
+                    style: pw.TextStyle(
+                        fontSize: 24, fontWeight: pw.FontWeight.bold),
+                  ),
                 ),
-              ),
-              pw.SizedBox(height: 20),
-              pw.TableHelper.fromTextArray(
-                  headers: ['ID','Nombre','Presentacion','Unidad de\nmedida','Precio de\ncompra','Precio de\nventa','Stock','Status','Fecha de\ncaducidad'],
-                  data: tableData,
-                  border: pw.TableBorder.all(width: 1.5,color: PdfColors.black),
-                  headerStyle: pw.TextStyle(
-                      color: PdfColors.white,
-                      fontWeight: pw.FontWeight.bold
-                  ),
-                  headerDecoration: const pw.BoxDecoration(
-                    color: PdfColors.deepOrange,
-                  ),
-                  rowDecoration: const pw.BoxDecoration(
-                    border: pw.Border(
-                      bottom: pw.BorderSide(color: PdfColors.green300, width: 1),
+                pw.SizedBox(height: 20),
+                pw.TableHelper.fromTextArray(
+                    headers: [
+                      'ID',
+                      'Nombre',
+                      'Presentacion',
+                      'Unidad de\nmedida',
+                      'Precio de\ncompra',
+                      'Precio de\nventa',
+                      'Stock',
+                      'Status',
+                      'Fecha de\ncaducidad'
+                    ],
+                    data: tableData,
+                    border: pw.TableBorder.all(
+                        width: 1.5, color: PdfColors.black),
+                    headerStyle: pw.TextStyle(
+                        color: PdfColors.white,
+                        fontWeight: pw.FontWeight.bold
                     ),
-                  ),
-                  cellAlignment: pw.Alignment.centerLeft,
-                  cellPadding: const pw.EdgeInsets.all(8)
-              ),
-            ];
-          }
-      ),
-    );
-    await Printing.layoutPdf(
-        onLayout: (PdfPageFormat) async => pdf.save(),
-        name: 'Lista_Productos.pdf'
-    );
+                    headerDecoration: const pw.BoxDecoration(
+                      color: PdfColors.deepOrange,
+                    ),
+                    rowDecoration: const pw.BoxDecoration(
+                      border: pw.Border(
+                        bottom: pw.BorderSide(
+                            color: PdfColors.green300, width: 1),
+                      ),
+                    ),
+                    cellAlignment: pw.Alignment.centerLeft,
+                    cellPadding: const pw.EdgeInsets.all(8)
+                ),
+              ];
+            }
+        ),
+      );
+      await Printing.layoutPdf(
+          onLayout: (PdfPageFormat) async => kPdf.save(),
+          name: 'Lista_Productos.pdf'
+      );
+    }catch(e){
+      if(mounted) showErrorSnackBar(context, "Error al generar PDF: Intente de nuevo");
+    }
   }
 
 
   Future<void> exportProductsExcel(List<ProductsModel> products) async{
     try{
-      var excel = Excel.createExcel();
 
       String sheetName = 'Productos';
-      excel.rename(excel.getDefaultSheet()!, sheetName);
-      Sheet sheetObject = excel[sheetName];
+      kExcel.rename(kExcel.getDefaultSheet()!, sheetName);
+      Sheet sheetObject = kExcel[sheetName];
 
 
       sheetObject.appendRow([
@@ -138,11 +143,10 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
         ]);
       }
 
-      var fileBytes = excel.save();
-      if(fileBytes != null){
+      if(kFileBytes != null){
         final directory = await getTemporaryDirectory();
         final filePath = '${directory.path}/Reporte_Productos.xlsx';
-        File(filePath)..createSync(recursive: true)..writeAsBytesSync(fileBytes);
+        File(filePath)..createSync(recursive: true)..writeAsBytesSync(kFileBytes!);
         if(mounted){
           await SharePlus.instance.share(
             ShareParams(
@@ -154,7 +158,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
       }
     }catch(e){
       if(mounted){
-        showErrorSnackBar(context, "Error al generar Excel: $e");
+        showErrorSnackBar(context, "Error al generar Excel: Intente de nuevo");
       }
     }
   }
@@ -232,7 +236,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(FontAwesomeIcons.bagShopping, color: Colors.white, size: 20),
+            Icon(Icons.shop, color: Colors.white, size: 20),
             const SizedBox(width: 5),
             Text(
               'Mis productos',

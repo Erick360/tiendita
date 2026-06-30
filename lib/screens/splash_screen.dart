@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:tiendita/providers/company_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/screens/company/company_setup_screen.dart';
+import 'package:tiendita/screens/home_page.dart';
 import 'auth/authentication.dart';
 
 class SplashScreen extends ConsumerStatefulWidget{
@@ -28,7 +30,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen>{
     final companyExists = await repository.companyExists();
 
     if(companyExists){
-      Navigator.pushReplacementNamed(context, Authentication.id);
+      final LocalAuthentication auth = LocalAuthentication();
+
+      final bool canAuthWithBiometrics = await auth.canCheckBiometrics;
+      final bool canAuthWithDevicePin = await auth.isDeviceSupported();
+      final bool canAuth = canAuthWithBiometrics || canAuthWithDevicePin;
+
+      if(canAuth){
+        Navigator.pushReplacementNamed(context, Authentication.id);
+      }else{
+        Navigator.pushReplacementNamed(context, HomeScreen.id);
+      }
     }else{
       Navigator.pushReplacementNamed(context, CompanySetupScreen.id);
     }

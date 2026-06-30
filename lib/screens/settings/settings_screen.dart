@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:tiendita/providers/alert_settings_provider.dart';
 import 'package:tiendita/providers/theme_provider.dart';
@@ -67,7 +66,7 @@ void _showThemeDialog(BuildContext context, WidgetRef ref, ThemeMode currentThem
   if(currentTheme == ThemeMode.dark) themeText = 'Modo Oscuro';
   if(currentTheme == ThemeMode.system) themeText = 'Sistema';
 
-  Future<int?> _showNumberDialog(BuildContext context, String title, int currentValue) {
+  Future<int?> showNumberDialog(BuildContext context, String title, int currentValue) {
     final TextEditingController controller = TextEditingController(text: currentValue.toString());
     return showDialog<int>(
       context: context,
@@ -139,7 +138,7 @@ void _showThemeDialog(BuildContext context, WidgetRef ref, ThemeMode currentThem
             trailing: const Icon(Icons.edit, size: 20),
             onTap: () async{
               final currentLimit = ref.read(alertSettingsProvider).stockLimit;
-              int? newLimit = await _showNumberDialog(context, 'Limite de Stock', currentLimit);
+              int? newLimit = await showNumberDialog(context, 'Limite de Stock', currentLimit);
               if(newLimit != null){
                 ref.read(alertSettingsProvider.notifier).updateStockLimit(newLimit);
               }
@@ -152,7 +151,7 @@ void _showThemeDialog(BuildContext context, WidgetRef ref, ThemeMode currentThem
             trailing: const Icon(Icons.edit, size: 20),
             onTap: () async{
               final currentDays = ref.read(alertSettingsProvider).expiryDays;
-              int? newDays = await _showNumberDialog(context, 'Dias de advertencia', currentDays);
+              int? newDays = await showNumberDialog(context, 'Dias de advertencia', currentDays);
               if(newDays != null){
                 ref.read(alertSettingsProvider.notifier).updateExpiryDays(newDays);
               }
@@ -177,7 +176,7 @@ void _showThemeDialog(BuildContext context, WidgetRef ref, ThemeMode currentThem
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Bootstrap.database_add),
+            leading: const Icon(Icons.import_export),
             title: Text("Gestion"),
             subtitle: Text("Importar u Exportar base de datos"),
             trailing: Icon(Icons.chevron_right),

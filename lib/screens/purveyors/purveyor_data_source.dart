@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/models/purveyors_model.dart';
 
 import 'edit_purveyors.dart';
@@ -80,7 +79,7 @@ class PurveyorDataSource extends DataTableSource {
         DataCell(
           IconButton(
             icon: Icon(
-              FontAwesomeIcons.penToSquare,
+              Icons.people,
               color: Colors.blueAccent,
               size: 20,
             ),

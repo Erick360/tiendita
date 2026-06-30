@@ -68,7 +68,7 @@ class TienditaApp extends ConsumerWidget {
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(backgroundColor: kActiveColor),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: kActiveColor,
+          seedColor: Colors.white,
           brightness: Brightness.light
         ),
       ),

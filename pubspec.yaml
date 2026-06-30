@@ -15,19 +15,19 @@ dependencies:
   cupertino_icons: ^1.0.8
   build_runner: ^2.4.0
   drift: ^2.29.0
-  sqlite3_flutter_libs: ^0.5.40
+  sqlite3_flutter_libs: ^0.6.0+eol
   path: ^1.9.1
   path_provider: ^2.1.5
   drift_dev: ^2.29.0
   local_auth: ^3.0.1
-  font_awesome_flutter: ^10.12.0
+  font_awesome_flutter: ^11.0.0
   flutter_riverpod: ^2.6.1
   image_picker: ^1.2.2
   riverpod: any
   intl: ^0.20.2
-  icons_plus: ^5.0.0
-  file_picker: ^11.0.2
-  share_plus: ^12.0.2
+  #icons_plus: ^5.0.0
+  file_picker: ^12.0.0-beta.7
+  share_plus: ^13.1.0
   printing: ^5.13.0
   archive: ^3.6.1
   #flutter_local_notifications: ^22.0.0
@@ -51,7 +51,7 @@ dev_dependencies:
 #  adaptive_icon_foreground: "#images/tiendita_icon.png"
 
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 # build_runner: ^2.10.1
 
 

@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:share_plus/share_plus.dart';
@@ -128,7 +127,7 @@ class _StateImportExportDatabase extends ConsumerState<ImportExportDatabase>{
             children: [
               CircleAvatar(
                 radius: 28,
-                backgroundColor: kActiveColor.withOpacity(0.1),
+                backgroundColor: kActiveColor.withValues(alpha: 0.1),
                 child: Icon(icon, color: kActiveColor, size: 28),
               ),
               const SizedBox(width: 20),
@@ -176,7 +175,7 @@ class _StateImportExportDatabase extends ConsumerState<ImportExportDatabase>{
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Bootstrap.database_add, color: Colors.white, size: 20),
+            Icon(Icons.add_task_outlined, color: Colors.white, size: 20),
             const SizedBox(width: 5),
             Text(
               'Sincronización',

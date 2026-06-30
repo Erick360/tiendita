@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/models/category_model.dart';
 
 import 'edit_category.dart';
@@ -31,7 +30,7 @@ class CategoryDataSource extends DataTableSource {
         DataCell(
           IconButton(
             icon: Icon(
-              FontAwesomeIcons.penToSquare,
+              Icons.edit_outlined,
               color: Colors.blueAccent,
               size: 20,
             ),

@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:tiendita/models/products_model.dart';
 import '../../database/tienditaDatabase.dart';
@@ -46,7 +44,7 @@ class ProductsDataSource extends DataTableSource {
         DataCell(
           Row(
               children: [
-                Icon(Iconsax.ruler_outline, size: 20),
+                Icon(Icons.check, size: 20),
                 const SizedBox(width: 4),
                 Text(
                     product?.units ?? "sin medida",
@@ -87,7 +85,7 @@ class ProductsDataSource extends DataTableSource {
         DataCell(
           Row(
             children: [
-              Icon(Bootstrap.bag_check, size: 20),
+              Icon(Icons.check_circle, size: 20),
               const SizedBox(width: 2),
               Text(
                 "${product?.stock ?? "no stock"}",
@@ -159,7 +157,7 @@ class ProductsDataSource extends DataTableSource {
         DataCell(
           IconButton(
             icon: Icon(
-              FontAwesomeIcons.penToSquare,
+              Icons.edit,
               color: Colors.blueAccent,
               size: 20,
             ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiendita/screens/sales_details/my_sales_details.dart';
 import 'package:tiendita/screens/shop_details/my_shopping_details.dart';
 import 'package:tiendita/screens/products/products.dart';
@@ -32,7 +31,7 @@ class QuickActionsGrid extends StatelessWidget {
         ),
         QuickActionButton(
             title: 'Categorias',
-            icon: FontAwesomeIcons.listCheck,
+            icon: Icons.list_alt,
             color: Colors.lightGreen,
             onTap: () => Navigator.pushNamed(context, CategoryScreen.id)
         ),
@@ -74,7 +73,7 @@ class QuickActionsGrid extends StatelessWidget {
         ),
         QuickActionButton(
             title: 'Mis Proveedores',
-            icon: FontAwesomeIcons.truckFast,
+            icon: Icons.contact_page,
             color: Colors.indigoAccent,
             onTap: () => Navigator.pushNamed(context, PurveyorsScreen.id)
         ),
