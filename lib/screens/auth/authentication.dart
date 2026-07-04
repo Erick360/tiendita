@@ -1,133 +1,167 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:pinput/pinput.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/screens/home_page.dart';
+import '../../providers/security_provider.dart';
 
-
-class Authentication extends StatefulWidget {
-  const Authentication({super.key});
-  static String id = "auth";
+class AuthScreen extends ConsumerStatefulWidget {
+  const AuthScreen({super.key});
+  static String id = "auth_screen";
 
   @override
-  State<Authentication> createState() => _AuthenticationState();
+  ConsumerState<AuthScreen> createState() => _AuthState();
 }
 
-class _AuthenticationState extends State<Authentication> {
+class _AuthState extends ConsumerState<AuthScreen> {
   final LocalAuthentication auth = LocalAuthentication();
-  String _authStatus = "No autenticado";
-  bool _isAuthenticating = false;
+  final TextEditingController _pinController = TextEditingController();
+  bool biometricAvailable = false;
+  bool isLoading = false;
 
-  Future<void> _authenticateUser() async {
-    bool authenticated = false;
-    setState(() {
-      _isAuthenticating = true;
-      _authStatus = "Autenticando...";
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometricAvailability();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final security = ref.read(securityProvider);
+      if (security.useBiometrics) {
+        _biometricAuth();
+      }
     });
+  }
+
+  void _checkBiometricAvailability() async {
+    try {
+      bool available = await auth.canCheckBiometrics || await auth.isDeviceSupported();
+      setState(() {
+        biometricAvailable = available;
+      });
+    } catch (e) {
+      debugPrint('Error checking biometric availability: $e');
+    }
+  }
+
+  void _onCompleted(String enteredPin) async {
+    final savedPin = ref.read(securityProvider).appPin;
+
+    if (savedPin == null || savedPin.isEmpty) {
+      await ref.read(securityProvider.notifier).setAppPin(enteredPin);
+      if (mounted) Navigator.pushReplacementNamed(context, HomeScreen.id);
+      return;
+    }
+
+    if (enteredPin == savedPin) {
+      Navigator.pushReplacementNamed(context, HomeScreen.id);
+    } else {
+      showErrorSnackBar(context, 'PIN Incorrecto. Intente de nuevo');
+      _pinController.clear();
+    }
+  }
+
+  Future<void> _biometricAuth() async {
+    if (!biometricAvailable) return;
+
+    setState(() { isLoading = true; });
 
     try {
-      authenticated = await auth.authenticate(
-        localizedReason: 'Escanea tu huella (o usa tu rostro) para autenticarte.',
+      bool authenticate = await auth.authenticate(
+        localizedReason: 'Escanea tu huella (o usa tu rostro) para ingresar.',
         persistAcrossBackgrounding: true,
         biometricOnly: false,
       );
 
-
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error Autenticación: $e");
+      if (authenticate && mounted) {
+        Navigator.pushReplacementNamed(context, HomeScreen.id);
       }
-      setState(() {
-        _isAuthenticating = false;
-        _authStatus = "Error de Autenticación";
-      });
-      return;
-    }finally{
-      setState(() {
-       _isAuthenticating = false;
-      });
+    } on PlatformException catch (e) {
+      debugPrint('Error al autenticar con biometricos: ${e.message}');
+    } finally {
+      if (mounted) {
+        setState(() { isLoading = false; });
+      }
     }
-
-    setState(() {
-      _authStatus = authenticated ? "Autenticacion Exitosa!" : "Error de Autenticacion!";
-    });
-
-    if(authenticated){
-      Navigator.pushReplacementNamed(context, HomeScreen.id);
-    }
-
   }
 
   @override
   Widget build(BuildContext context) {
+    final isFirstTime = ref.watch(securityProvider).appPin == null || ref.watch(securityProvider).appPin!.isEmpty;
+
     return Scaffold(
-      body: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.only(top: 15, bottom: 15,left: 10, right: 10),
-              decoration: const BoxDecoration(
-                  color: kActiveColor,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(25),
-                      bottomRight: Radius.circular(25)
-                  ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Image.asset(
-                "images/tiendita_banner.png",
-                height: 130,
-              ),
-            ),
-            Expanded(
-                child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                          Icons.fingerprint,
-                          size: 80,
-                          color: _isAuthenticating ? const Color(0xFFF36618) : Colors.grey[400]
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        _authStatus,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: _authStatus.contains("Error") ? Colors.red : Colors.grey[700],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 40),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton.icon(
-                          onPressed: _isAuthenticating ? null : _authenticateUser,
-                          icon: _isAuthenticating
-                              ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                              : const Icon(Icons.fingerprint_outlined, size: 30),
-                          label: Text(_isAuthenticating ? 'Esperando...' : 'Acceder'),
-                          style:
-                          ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-                    ],
-                  ),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 60),
+              Text(
+                isFirstTime ? 'Crear PIN' : 'Ingresar PIN',
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
-            ),
-          ],
+              ),
+              const SizedBox(height: 18),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Text(
+                  isFirstTime
+                      ? "Crea un PIN de 4 dígitos para proteger tu negocio"
+                      : "Por favor ingrese su PIN de 4 dígitos para continuar",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              ),
+              const SizedBox(height: 40),
+
+              Pinput(
+                obscureText: true,
+                autofocus: true,
+                controller: _pinController,
+                length: 4,
+                onCompleted: _onCompleted,
+              ),
+
+              const Spacer(),
+
+              if (biometricAvailable && !isFirstTime)
+                Column(
+                  children: [
+                    const Text("O", style: TextStyle(fontSize: 20, color: Colors.grey)),
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: isLoading ? null : _biometricAuth,
+                      borderRadius: BorderRadius.circular(40),
+                      child: Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          color: Colors.blue[50],
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.blue[200]!),
+                        ),
+                        child: isLoading
+                            ? const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                          ),
+                        )
+                            : Icon(Icons.fingerprint, size: 35, color: Colors.blue[600]),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text('Usar Biometría', style: TextStyle(color: Colors.blue[600], fontSize: 16)),
+                    const SizedBox(height: 40),
+                  ],
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

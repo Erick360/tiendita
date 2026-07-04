@@ -55,7 +55,7 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
 
       await ref.read(companyNotifierProvider.notifier).saveCompany(company);
       if(mounted){
-        showSuccessSnackBar(context, "Base de datos importada exitosamente.");
+        showSuccessSnackBar(context, "Datos guardados correctamente");
         Navigator.pushNamedAndRemoveUntil(
             context,
             HomeScreen.id,

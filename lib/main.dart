@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/providers/theme_provider.dart';
 import 'package:tiendita/screens/auth/authentication.dart';
+import 'package:tiendita/screens/settings/change_pin.dart';
 import 'package:tiendita/screens/settings/import_export_database.dart';
 import 'package:tiendita/screens/splash_screen.dart';
 import 'package:tiendita/screens/category/category_screen.dart';
@@ -108,8 +109,9 @@ class TienditaApp extends ConsumerWidget {
         ExpensesScreen.id: (context) => const ExpensesScreen(),
         SalesHistoryToday.id: (context) => const SalesHistoryToday(),
         SalesHistoryCustom.id: (context) => const SalesHistoryCustom(),
-        Authentication.id: (context) => const Authentication(),
+        AuthScreen.id: (context) => AuthScreen(),
         ImportExportDatabase.id: (context) => ImportExportDatabase(),
+        ChangePinScreen.id: (context) => ChangePinScreen(),
       },
     );
   }

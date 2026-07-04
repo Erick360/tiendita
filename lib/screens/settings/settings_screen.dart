@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app_settings/app_settings.dart';
 import 'package:tiendita/providers/alert_settings_provider.dart';
 import 'package:tiendita/providers/theme_provider.dart';
+import 'package:tiendita/screens/settings/change_pin.dart';
 import 'package:tiendita/screens/settings/import_export_database.dart';
 
 
@@ -164,7 +164,8 @@ void _showThemeDialog(BuildContext context, WidgetRef ref, ThemeMode currentThem
             subtitle: Text('PIN y Huella digital'),
             trailing: Icon(Icons.chevron_right),
             onTap: () =>
-                AppSettings.openAppSettings(type: AppSettingsType.lockAndPassword),
+                Navigator.pushReplacementNamed(context, ChangePinScreen.id)
+                //AppSettings.openAppSettings(type: AppSettingsType.lockAndPassword),
           ),
           const Divider(),
           ListTile(

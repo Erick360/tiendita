@@ -101,8 +101,9 @@ class _SalesDetailsState extends ConsumerState<SalesDetails>{
     }).toList();
     String periodName = getDay(DateFormat('EEEE').format(now));
     if (_selectedPeriod == ReportPeriod.weekly) periodName = "Semanal";
-    if (_selectedPeriod == ReportPeriod.monthly)
+    if (_selectedPeriod == ReportPeriod.monthly) {
       periodName = getMonth(DateFormat.MMMM().format(now));
+    }
 
     kPdf.addPage(
       pw.MultiPage(
