@@ -36,7 +36,7 @@ class Products extends Table{
   RealColumn get price_sale => real()();//precio de venta
   IntColumn get stock => integer()();
   // that shows if a product is available (active,inactive)
-  IntColumn get status => intEnum<ProductStatus>().withDefault(const Constant(2))();
+  IntColumn get status => intEnum<ProductStatus>().withDefault(const Constant(1))();
   TextColumn get productImage => text().withLength(min: 1, max: 255)();//storage an image
   DateTimeColumn get product_expires_at => dateTime().nullable()();
 

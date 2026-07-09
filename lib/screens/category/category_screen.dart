@@ -283,6 +283,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
               },
             ),
           ),
+          const SizedBox(height: 40),
         ],
       ),
       floatingActionButton: SizedBox(
@@ -294,6 +295,8 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
           },
           backgroundColor: Color(0xFFF25410),
           elevation: 4,
+          mouseCursor: WidgetStateMouseCursor.textable,
+          tooltip: "Agregar Categoria",
           shape: const CircleBorder(),
           child: const Icon(Icons.add, size: 30, color: Colors.white),
         ),

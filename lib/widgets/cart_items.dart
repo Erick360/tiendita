@@ -26,7 +26,19 @@ class CartNotifier extends StateNotifier<List<CartItems>> {
       state = [...state, item];
     }
   }
+/*
+  void increaseQuantity(BuildContext context, ProductsModel products){
+    final index = state.indexWhere((item) => item.productId == products.idProduct);
 
+    if(index != -1){
+      final currentCartItem = state[index];
+
+      if(currentCartItem.quantity + 1 > products.stock){
+
+      }
+    }
+  }
+  */
 
   void updateQuantity(int id, int newQuantity) {
     if (newQuantity <= 0) {

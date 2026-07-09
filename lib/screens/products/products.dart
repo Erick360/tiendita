@@ -351,6 +351,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                 loading: () => const Center(child: CircularProgressIndicator()),
             ),
           ),
+          const SizedBox(height: 40),
         ],
       ),
 
@@ -363,6 +364,8 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
           },
           backgroundColor: Color(0xFFF25410),
           elevation: 4,
+          mouseCursor: WidgetStateMouseCursor.textable,
+          tooltip: "Agregar Producto",
           shape: const CircleBorder(),
           child: const Icon(Icons.add, size: 30, color: Colors.white),
         ),

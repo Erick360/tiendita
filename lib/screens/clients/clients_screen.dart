@@ -305,11 +305,12 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
               const Center(child: CircularProgressIndicator()),
             ),
           ),
+          const SizedBox(height: 40),
         ],
       ),
       floatingActionButton: SizedBox(
-        height: 60,
-        width: 60,
+        height: 65,
+        width: 65,
         child: FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(context, CreateClient.id);

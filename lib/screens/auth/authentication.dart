@@ -19,6 +19,7 @@ class _AuthState extends ConsumerState<AuthScreen> {
   final LocalAuthentication auth = LocalAuthentication();
   final TextEditingController _pinController = TextEditingController();
   bool biometricAvailable = false;
+  bool _hasEnrolledBiometrics = false;
   bool isLoading = false;
 
   @override
@@ -37,8 +38,11 @@ class _AuthState extends ConsumerState<AuthScreen> {
   void _checkBiometricAvailability() async {
     try {
       bool available = await auth.canCheckBiometrics || await auth.isDeviceSupported();
+      List<BiometricType> enrolledBiometrics = await auth.getAvailableBiometrics();
+
       setState(() {
         biometricAvailable = available;
+        _hasEnrolledBiometrics = enrolledBiometrics.isNotEmpty;
       });
     } catch (e) {
       debugPrint('Error checking biometric availability: $e');
@@ -65,6 +69,11 @@ class _AuthState extends ConsumerState<AuthScreen> {
   Future<void> _biometricAuth() async {
     if (!biometricAvailable) return;
 
+    if (!_hasEnrolledBiometrics) {
+      _showNoBiometricsAlert();
+      return;
+    }
+
     setState(() { isLoading = true; });
 
     try {
@@ -86,16 +95,66 @@ class _AuthState extends ConsumerState<AuthScreen> {
     }
   }
 
+  void _showNoBiometricsAlert() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(15)),
+          title: Row(
+            children: [
+              Icon(Icons.fingerprint, color: Colors.blue[600], size: 22),
+              const SizedBox(width: 10),
+              const Text("Atencion!"),
+            ],
+          ),
+          content: const Text(
+              'No tienes ninguna huella o rostro registrado en la configuración de este dispositivo.\n\nPor favor, utiliza tu PIN de 4 dígitos para ingresar.',
+              style: TextStyle(fontSize: 16),
+          ),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: kActiveColor),
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Entendido', style: TextStyle(color: Colors.white))
+            )
+          ],
+        ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isFirstTime = ref.watch(securityProvider).appPin == null || ref.watch(securityProvider).appPin!.isEmpty;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 60),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(top: 10, bottom: 5,left: 10, right: 10),
+                decoration: const BoxDecoration(
+                  color: kActiveColor,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30)
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 10,
+                      offset: Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Image.asset(
+                  "images/tiendita_banner.png",
+                  height: 130,
+                ),
+              ),
+              const SizedBox(height: 15),
               Text(
                 isFirstTime ? 'Crear PIN' : 'Ingresar PIN',
                 style: const TextStyle(
@@ -104,7 +163,7 @@ class _AuthState extends ConsumerState<AuthScreen> {
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 15),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Text(
@@ -124,13 +183,12 @@ class _AuthState extends ConsumerState<AuthScreen> {
                 length: 4,
                 onCompleted: _onCompleted,
               ),
-
               const Spacer(),
 
               if (biometricAvailable && !isFirstTime)
                 Column(
                   children: [
-                    const Text("O", style: TextStyle(fontSize: 20, color: Colors.grey)),
+                    const Text("O usa tus datos biometricos para iniciar", style: TextStyle(fontSize: 20, color: Colors.grey)),
                     const SizedBox(height: 20),
                     InkWell(
                       onTap: isLoading ? null : _biometricAuth,

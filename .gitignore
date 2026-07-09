@@ -26,10 +26,8 @@ migrate_working_dir/
 *.db
 
 # IDE
-.idea/
 .vscode/
 *.swo
-*.swp
 *~
 
 # Flutter/Dart/Pub related
@@ -43,6 +41,13 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+
+# Gradle
+.gradle/
+build/
+**/build/
+!gradle-wrapper.jar
+gradle-app.setting
 
 # Symbolication related
 app.*.symbols

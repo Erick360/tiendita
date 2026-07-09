@@ -34,6 +34,12 @@ final lowStockProvider = StreamProvider<List<ProductsModel>>((ref){
   return repo.watchAllProductsStockLow(limit: settings.stockLimit);
 });
 
+final productsAvailableProvider = StreamProvider<List<ProductsModel>>((ref){
+  final repo = ref.watch(productsRepositoryProvider);
+
+  return repo.watchAllAvailableProductsToSell();
+});
+
 final expiringProductsProvider = StreamProvider<List<ProductsModel>>((ref){
   final repo = ref.watch(productsRepositoryProvider);
 

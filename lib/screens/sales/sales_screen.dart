@@ -49,7 +49,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
     final cart = ref.watch(cartProvider);
     final cartNotifier = ref.watch(cartProvider.notifier);
     final clientAsync = ref.watch(clientListProvider);
-    final productsAsync = ref.watch(productsListProvider);
+    final productsAsync = ref.watch(productsAvailableProvider);
 
     ref.listen<AsyncValue<List<ProductsModel>>>(lowStockProvider, (previous, next){
       next.whenData((lowStock){
@@ -275,6 +275,11 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                         option.productName,
 
                         onSelected: (ProductsModel selection) {
+
+                          if(selection.stock! <= 0){
+                            showErrorSnackBar(context, 'El producto ${selection.productName} esta agotado');
+                            return;
+                          }
                           cartNotifier.addItem(
                             CartItems(
                               productId: selection.idProduct ?? 0,

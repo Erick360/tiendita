@@ -319,6 +319,7 @@ class _PurveyorScreenState extends ConsumerState<PurveyorsScreen> {
               loading: () => const Center(child: CircularProgressIndicator()),
             ),
           ),
+          const SizedBox(height: 40),
         ],
       ),
 
@@ -330,6 +331,8 @@ class _PurveyorScreenState extends ConsumerState<PurveyorsScreen> {
             Navigator.pushNamed(context, CreatePurveyor.id);
           },
           backgroundColor: Color(0xFFF25410),
+          mouseCursor: WidgetStateMouseCursor.textable,
+          tooltip: "Agregar Proveedor",
           elevation: 4,
           shape: const CircleBorder(),
           child: const Icon(Icons.add, size: 30, color: Colors.white),

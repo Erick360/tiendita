@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tiendita/constants/constants.dart';
-
 import '../../providers/shopping_provider.dart';
 import '../../widgets/text_data.dart';
 
@@ -26,6 +25,36 @@ class _ShoppingHistoryToday extends ConsumerState<ShoppingHistoryToday>{
   @override
   Widget build(BuildContext context){
     final shopsToday = ref.watch(shopsNotifierProvider);
+
+    Future<void> confirmDelete(BuildContext context, int id) async{
+      final bool? confirm = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context){
+            return AlertDialog(
+              title: const Text("Eliminar Compra"),
+              content: const Text("¿Estás seguro de que deseas eliminar este dato? Esta acción no se puede deshacer."),
+              shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("Canceler", style: TextStyle(color: Colors.grey)),
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text("Eliminar", style: TextStyle(color: Colors.white))
+                ),
+              ],
+            );
+          }
+      );
+      if(confirm == true && context.mounted){
+        await ref.read(shopsNotifierProvider.notifier).deleteShopping(id);
+        ref.read(shopsNotifierProvider.notifier).loadShopsForDay(DateTime.now());
+
+        showSuccessSnackBar(context, 'Compra eliminada correctamente');
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -96,8 +125,9 @@ class _ShoppingHistoryToday extends ConsumerState<ShoppingHistoryToday>{
                                         icon: const Icon(Icons.delete_outline, color: Colors.red),
                                         onPressed: () async {
                                           if (shop.idShopping != null) {
-                                            await ref.read(shopsNotifierProvider.notifier).deleteShopping(shop.idShopping!);
-                                            ref.read(shopsNotifierProvider.notifier).loadShopsForDay(DateTime.now());
+                                            confirmDelete(context, shop.idShopping!);
+                                            //await ref.read(shopsNotifierProvider.notifier).deleteShopping(shop.idShopping!);
+                                            //ref.read(shopsNotifierProvider.notifier).loadShopsForDay(DateTime.now());
                                           }
                                         },
                                       )

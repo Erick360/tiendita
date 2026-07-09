@@ -21,6 +21,13 @@ class ProductsRepository{
     return (database.select(database.products)).watch(). 
     map((rows) => rows.map((row) => ProductsModel.fromRow(row)).toList());
   }
+
+  Stream<List<ProductsModel>> watchAllAvailableProductsToSell(){
+    final query = database.select(database.products)
+    ..where((p) => p.status.equals(1))..where((p) => p.stock.isBiggerThanValue(0));
+
+    return query.map((r) => ProductsModel.fromRow(r)).watch();
+  }
   
   Stream<List<ProductsModel>> watchAllProductsStockLow({required int limit}){
     final query =
@@ -64,8 +71,12 @@ class ProductsRepository{
 
     final newStock = product.stock + quantityChange;
 
+    final newStatus = newStock <= 0 ? 0 : 1;
+
     await (database.update(database.products)
       ..where((tbl) => tbl.id_product.equals(productId)))
-      .write(ProductsCompanion(stock: Value(newStock)));
+      .write(ProductsCompanion(
+        stock: Value(newStock),
+        status: Value(newStatus as ProductStatus)));
   }
 }

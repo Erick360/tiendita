@@ -203,6 +203,8 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                   ),
                 ),
               ),
+
+
             const SizedBox(height: 16),
             productsAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
