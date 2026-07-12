@@ -499,6 +499,9 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                await ref.read
                                  (productsNotifierProvider.notifier).updateStock(i.productId, -i.quantity);
                             }
+                            ref.invalidate(productsListProvider);
+                            ref.invalidate(lowStockProvider);
+
 
                             if (context.mounted) {
                               showSuccessSnackBar(

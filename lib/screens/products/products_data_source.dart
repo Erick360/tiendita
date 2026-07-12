@@ -8,7 +8,7 @@ import '../../providers/category_provider.dart';
 import 'edit_products.dart';
 
 class ProductsDataSource extends DataTableSource {
-  final List<ProductsModel?> products;
+  List<ProductsModel?> products;
   final BuildContext context;
   final Function(int) onDelete;
   final WidgetRef ref;
@@ -19,6 +19,11 @@ class ProductsDataSource extends DataTableSource {
     required this.onDelete,
     required this.ref
   });
+
+  void updateData(List<ProductsModel?> newProducts){
+    products = newProducts;
+    notifyListeners();
+  }
 
 
   @override

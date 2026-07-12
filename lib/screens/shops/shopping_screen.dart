@@ -450,7 +450,8 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                         for(var j in cartItems){
                           await ref.read(productsNotifierProvider.notifier).updateStock(j.productId, j.quantity);
                         }
-
+                        ref.invalidate(productsListProvider);
+                        ref.invalidate(lowStockProvider);
 
                         if (context.mounted) {
                           showSuccessSnackBar(

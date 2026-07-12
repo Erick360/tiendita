@@ -24,7 +24,7 @@ class ProductsRepository{
 
   Stream<List<ProductsModel>> watchAllAvailableProductsToSell(){
     final query = database.select(database.products)
-    ..where((p) => p.status.equals(1))..where((p) => p.stock.isBiggerThanValue(0));
+    ..where((p) => p.status.equals(1) & p.stock.isBiggerThanValue(0));
 
     return query.map((r) => ProductsModel.fromRow(r)).watch();
   }
@@ -32,7 +32,7 @@ class ProductsRepository{
   Stream<List<ProductsModel>> watchAllProductsStockLow({required int limit}){
     final query =
     database.select(database.products)..
-    where((p) => p.stock.isSmallerOrEqualValue(limit));
+    where((p) => p.stock.isSmallerOrEqualValue(limit) & p.status.equals(1));
 
     return query.map((r) => ProductsModel.fromRow(r)).watch();
   }
@@ -41,8 +41,7 @@ class ProductsRepository{
     final thresholdDate = DateTime.now().add(Duration(days: daysWarning));
 
     final query = database.select(database.products)
-      ..where((p) => p.product_expires_at.isNotNull())
-      ..where((p) => p.product_expires_at.isSmallerOrEqualValue(thresholdDate));
+      ..where((p) => p.product_expires_at.isNotNull() & p.product_expires_at.isSmallerOrEqualValue(thresholdDate));
 
     return query.map((r) => ProductsModel.fromRow(r)).watch();
   }
@@ -71,12 +70,12 @@ class ProductsRepository{
 
     final newStock = product.stock + quantityChange;
 
-    final newStatus = newStock <= 0 ? 0 : 1;
+    final newStatus = newStock <= 0 ? ProductStatus.inactive : ProductStatus.active;
 
     await (database.update(database.products)
       ..where((tbl) => tbl.id_product.equals(productId)))
       .write(ProductsCompanion(
         stock: Value(newStock),
-        status: Value(newStatus as ProductStatus)));
+        status: Value(newStatus)));
   }
 }

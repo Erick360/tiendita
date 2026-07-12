@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:tiendita/screens/products/products_data_source.dart';
 import 'package:tiendita/screens/products/products_table.dart';
 import '../../constants/constants.dart';
 import '../../models/products_model.dart';
@@ -165,37 +164,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final productList = ref. watch(productsListProvider);
-    
-    Future<void> confirmDelete(BuildContext context, int id) async{
-      final bool? confirm = await showDialog<bool>(
-          context: context,
-          builder: (BuildContext context){
-            return AlertDialog(
-              title: const Text("Eliminar Producto"),
-              content: const Text("¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer."),
-              shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text("Canceler", style: TextStyle(color: Colors.grey)),
-                ),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text("Eliminar", style: TextStyle(color: Colors.white))
-                ),
-              ],
-            );
-          }
-      );
-      if(confirm == true && context.mounted){
-        await ref.read(productsNotifierProvider.notifier).deleteProduct(id);
-
-        showSuccessSnackBar(context, 'Producto eliminado correctamente');
-      }
-    }
-
+    final productList = ref.watch(productsListProvider);
 
     ref.listen<AsyncValue<List<ProductsModel>>>(expiringProductsProvider, (previous, next){
       next.whenData((expiringProducts){
@@ -305,12 +274,6 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                   }
 
 
-                  final source = ProductsDataSource(
-                      products: filteredProducts,
-                      context: context,
-                      onDelete: (id) => confirmDelete(context, id),
-                      ref: ref
-                  );
 
                   return SingleChildScrollView(
                     child: SingleChildScrollView(
@@ -340,7 +303,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
                           ),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
-                            child: buildProductsPaginatedDataTable(source),
+                            child: ProductsTable(),
                           ),
                         ),
                       ),
