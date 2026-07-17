@@ -1,20 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/models/cart_model.dart';
 
-class CartItems{
-  final int productId;
-  final String name;
-  final double price;
-  int quantity;
-  int stock;
-  CartItems({required this.productId,required this.name, required this.price, this.quantity = 1, required this.stock});
-
-  double get total => price * quantity;
-}
-
-class CartNotifier extends StateNotifier<List<CartItems>> {
+class CartNotifier extends StateNotifier<List<CartModel>> {
   CartNotifier() : super([]);
 
-  void addItem(CartItems item) {
+  void addItem(CartModel item) {
     final index = state.indexWhere((element) => element.productId == item.productId);
     if (index != -1) {
 
@@ -26,6 +16,17 @@ class CartNotifier extends StateNotifier<List<CartItems>> {
       state = [...state, item];
     }
   }
+
+  void updatePrice(int productId, double newPrice) {
+    state = [
+      for (final item in state)
+        if (item.productId == productId)
+          item.copyWith(newPrice: newPrice)
+        else
+          item
+    ];
+  }
+
 /*
   void increaseQuantity(BuildContext context, ProductsModel products){
     final index = state.indexWhere((item) => item.productId == products.idProduct);
@@ -63,6 +64,6 @@ class CartNotifier extends StateNotifier<List<CartItems>> {
 }
 
 
-final cartProvider = StateNotifierProvider<CartNotifier, List<CartItems>>((ref) {
+final cartProvider = StateNotifierProvider<CartNotifier, List<CartModel>>((ref) {
   return CartNotifier();
 });

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../constants/constants.dart';
-import '../../providers/salesProviders.dart';
+import '../../providers/sales_providers.dart';
 import '../../widgets/text_data.dart';
 
 class SalesHistoryToday extends ConsumerStatefulWidget {

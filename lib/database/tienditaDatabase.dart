@@ -6,10 +6,9 @@ import 'package:path/path.dart' as p;
 part 'tienditaDatabase.g.dart';
 
 enum ProductStatus {
-  active, // 1
   inactive, // 0
+  active, // 1
 }
-
 
 class Categories extends Table{
   IntColumn get id_category => integer().autoIncrement()();

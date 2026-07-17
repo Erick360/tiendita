@@ -7,6 +7,7 @@ import 'package:tiendita/widgets/quantity_input.dart';
 import '../../models/products_model.dart';
 import '../../models/purveyors_model.dart';
 import '../../models/shopping_model.dart';
+import 'package:tiendita/models/cart_model.dart';
 import '../../providers/products_provider.dart';
 import '../../providers/purveyor_provider.dart';
 import '../../providers/shopping_provider.dart';
@@ -232,13 +233,17 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
 
                   onSelected: (ProductsModel selection) {
                     cartNotifier.addItem(
-                      CartItems(
+                      CartModel(
                         productId: selection.idProduct ?? 0,
                         name: selection.productName,
-                        price: selection.priceShop ?? 0.0,
+                        newPrice: selection.priceShop ?? 0.0,
                         stock: selection.stock ?? 0,
                       ),
                     );
+                    setState(() {
+                      _productSearch = UniqueKey();
+                    });
+
                     FocusScope.of(context).unfocus();
                   },
                   fieldViewBuilder:
@@ -328,12 +333,12 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                   ],
                   rows: cart.asMap().entries.map((entry) {
                     int index = entry.key;
-                    CartItems item = entry.value;
+                    CartModel item = entry.value;
                     return DataRow(
                       cells: [
                         DataCell(Text('${index + 1}')),
                         DataCell(Text(item.name)),
-                        DataCell(Text('\$${item.price.toStringAsFixed(2)}')),
+                        DataCell(Text('\$${item.newPrice.toStringAsFixed(2)}')),
                         DataCell(
                           QuantityInput(
                             initialQuantity: item.quantity,
@@ -404,7 +409,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
               children: [
                 Expanded(
                     child: OutlinedButton.icon(
-                        onPressed: (){
+                        onPressed: () async {
                           cartNotifier.clearCart();
                           setState(() {
                             _productSearch = UniqueKey();
@@ -468,11 +473,14 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                           "COMP-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}";
 
                           _purveyorSearch = UniqueKey();
-                          _purveyorSearch = UniqueKey();
+                          _productSearch = UniqueKey();
                         });
                       },
                       icon: const Icon(Icons.save),
                       label: const Text("Registrar Compra"),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
                     ),
                 ),
               ],

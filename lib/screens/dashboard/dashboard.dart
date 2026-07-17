@@ -7,7 +7,7 @@ import 'package:tiendita/widgets/company_avatar.dart';
 import 'package:tiendita/providers/expenses_provider.dart';
 import 'package:tiendita/screens/dashboard/metric_card.dart';
 import 'package:tiendita/screens/dashboard/quick_actions_grid.dart';
-import '../../providers/salesProviders.dart';
+import '../../providers/sales_providers.dart';
 import '../../widgets/company_name.dart';
 
 class Dashboard extends ConsumerStatefulWidget {

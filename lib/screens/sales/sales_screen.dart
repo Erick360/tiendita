@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/clients_model.dart';
@@ -10,7 +11,8 @@ import 'package:tiendita/widgets/quantity_input.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import '../../models/products_model.dart';
 import '../../models/sales_model.dart';
-import '../../providers/salesProviders.dart';
+import 'package:tiendita/models/cart_model.dart';
+import '../../providers/sales_providers.dart';
 import '../../providers/products_provider.dart';
 
 class SalesScreen extends ConsumerStatefulWidget {
@@ -77,7 +79,6 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
             }
           });
     });
-
 
     return Scaffold(
       appBar:  AppBar(
@@ -182,7 +183,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                     onPressed: () {
                                       setState(() {
                                         _selectedClientId = 1;
-                                        _selectedClientName = "Venta rápida";
+                                        _selectedClientName = "Venta Rápida";
                                         controller.clear();
                                       });
                                     },
@@ -238,7 +239,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                 ),
                                 DataCell(
                                   Text(
-                                    _selectedClientName ?? 'venta rapida',
+                                    _selectedClientName ?? 'Venta Rápida',
                                     style: const TextStyle(fontSize: 16),
                                   ),
                                 ),
@@ -276,18 +277,22 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
 
                         onSelected: (ProductsModel selection) {
 
-                          if(selection.stock! <= 0){
+                          /*if(selection.stock! <= 0){
                             showErrorSnackBar(context, 'El producto ${selection.productName} esta agotado');
                             return;
-                          }
+                          }*/
+
                           cartNotifier.addItem(
-                            CartItems(
+                            CartModel(
                               productId: selection.idProduct ?? 0,
                               name: selection.productName,
-                              price: selection.priceSale ?? 0.0,
+                              newPrice: selection.priceSale ?? 0.0,
                               stock: selection.stock ?? 0,
                             ),
                           );
+
+                          setState(() {_productSearch = UniqueKey();});
+
                           FocusScope.of(context).unfocus();
                         },
                         fieldViewBuilder:
@@ -378,12 +383,35 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                               ],
                               rows: cart.asMap().entries.map((entry){
                                 int index = entry.key;
-                                CartItems item = entry.value;
+                                CartModel item = entry.value;
                                 return DataRow(
                                     cells: [
                                       DataCell(Text('${index + 1}')),
                                       DataCell(Text(item.name)),
-                                      DataCell(Text('\$${item.price.toStringAsFixed(2)}')),
+                                      DataCell(
+                                        TextFormField(
+                                          initialValue: item.newPrice.toStringAsFixed(2),
+                                          keyboardType: TextInputType.number,
+                                          maxLength: 4,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.digitsOnly,
+                                          ],
+                                          textAlign: TextAlign.center,
+                                          decoration: const InputDecoration(
+                                            isDense: true,
+                                            contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                            border: OutlineInputBorder(),
+                                            counterText: '',
+                                          ),
+                                          onChanged: (value) {
+                                            double? newPrice = double.tryParse(value);
+                                            if (newPrice != null && newPrice >= 0) {
+                                              cartNotifier.updatePrice(item.productId, newPrice);
+                                            }
+                                          },
+                                        ),
+                                      ),
+
                                       DataCell(
                                         QuantityInput(
                                           initialQuantity: item.quantity,
@@ -393,45 +421,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                           maxStock: item.stock,
                                         ),
                                       ),
-                                      /*
-                                      DataCell(
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.remove_circle_outline,
-                                                color: Colors.red,
-                                              ),
-                                              onPressed: () {
-                                                if (item.quantity > 1) {
-                                                  cartNotifier.updateQuantity(
-                                                    item.productId,
-                                                    item.quantity - 1,
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                            Text(
-                                              '${item.quantity}',
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.add_circle_outline,
-                                                color: Colors.green,
-                                              ),
-                                              onPressed: () => cartNotifier.updateQuantity(
-                                                item.productId,
-                                                item.quantity + 1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      */
+
                                       DataCell(Text('\$${item.total.toStringAsFixed(2)}')),
                                       DataCell(
                                         IconButton(
@@ -535,5 +525,47 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
           ),
     );
   }
-  
 }
+
+
+
+
+/*
+                                      DataCell(
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.remove_circle_outline,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                if (item.quantity > 1) {
+                                                  cartNotifier.updateQuantity(
+                                                    item.productId,
+                                                    item.quantity - 1,
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                            Text(
+                                              '${item.quantity}',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.add_circle_outline,
+                                                color: Colors.green,
+                                              ),
+                                              onPressed: () => cartNotifier.updateQuantity(
+                                                item.productId,
+                                                item.quantity + 1,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      */

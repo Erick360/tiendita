@@ -106,7 +106,7 @@ class ProductsDataSource extends DataTableSource {
               Icon(Icons.list_alt, size: 20),
               const SizedBox(width: 2),
               Text(
-                product?.status==1  ? "Disponible" : "No Disponible",
+                product?.status == 0  ? "No Disponible" : "Disponible",
                 style: TextStyle(fontSize: 15),
               ),
             ],
