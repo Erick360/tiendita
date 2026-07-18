@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/clients_model.dart';
+import 'package:tiendita/models/quantity_model.dart';
 import 'package:tiendita/providers/clients_provider.dart';
 import 'package:tiendita/widgets/cart_items.dart';
 import 'package:tiendita/screens/sales/sales_history_custom.dart';
@@ -12,6 +13,7 @@ import 'package:tiendita/widgets/text_data.dart';
 import '../../models/products_model.dart';
 import '../../models/sales_model.dart';
 import 'package:tiendita/models/cart_model.dart';
+import '../../models/text_data_model.dart';
 import '../../providers/sales_providers.dart';
 import '../../providers/products_provider.dart';
 
@@ -328,56 +330,68 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                               columns: [
                                 DataColumn(
                                   label: TextData(
+                                    model: TextDataModel(
                                       "Item",
                                     18,
                                     Colors.black,
                                     "Poppins",
                                     FontWeight.bold,
+                          ),
                                   )
                                 ),
                                 DataColumn(
                                     label: TextData(
+                                      model: TextDataModel(
                                       "Nombre",
                                       18,
                                       Colors.black,
                                       "Poppins",
                                       FontWeight.bold,
+                                      ),
                                     )
                                 ),
                                 DataColumn(
                                     label: TextData(
+                                      model: TextDataModel(
                                       "Precio venta ",
                                       18,
                                       Colors.black,
                                       "Poppins",
                                       FontWeight.bold,
+                                      ),
                                     )
                                 ),
                                 DataColumn(
                                     label: TextData(
+                                      model: TextDataModel(
                                       "Cantidad",
                                       18,
                                       Colors.black,
                                       "Poppins",
                                       FontWeight.bold,
+                                      ),
                                     )
                                 ),
                                 DataColumn(
                                     label: TextData(
+                                      model: TextDataModel(
                                       "Importe",
                                       18,
                                       Colors.black,
                                       "Poppins",
                                       FontWeight.bold,
+                                      ),
                                     )
                                 ),
                                 DataColumn(
                                     label: TextData(
+                                      model: TextDataModel(
                                       "Eliminar",
                                       18,
                                       Colors.black,
                                       "Poppins",
                                       FontWeight.bold,
+                                      ),
                                     )
                                 ),
                               ],
@@ -414,6 +428,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
 
                                       DataCell(
                                         QuantityInput(
+                                          model: QuantityModel(
                                           initialQuantity: item.quantity,
                                           onChanged: (newQuantity){
                                             cartNotifier.updateQuantity(item.productId, newQuantity);
@@ -421,6 +436,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen>{
                                           maxStock: item.stock,
                                         ),
                                       ),
+                                ),
 
                                       DataCell(Text('\$${item.total.toStringAsFixed(2)}')),
                                       DataCell(

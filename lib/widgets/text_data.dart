@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:tiendita/models/text_data_model.dart';
 
 class TextData extends StatelessWidget{
-  const TextData(
-      this.text,
-      this.font,
-      this.color,
-      this.fontFamily,
-      this.weight,
-      {super.key});
-  final double font;
-  final String text;
-  final Color color;
-  final String fontFamily;
-  final FontWeight weight;
+  final TextDataModel model;
+  const TextData({super.key, required this.model});
 
   @override
   Widget build(BuildContext context){
     return Text(
-      text,
+      model.text,
       style: TextStyle(
-        color: color,
-        fontSize: font,
-        fontFamily: fontFamily,
-        fontWeight: weight
+        color: model.color,
+        fontSize: model.font,
+        fontFamily: model.fontFamily,
+        fontWeight: model.weight
       ),
     );
   }

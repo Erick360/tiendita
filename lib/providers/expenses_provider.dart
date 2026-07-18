@@ -51,19 +51,20 @@ class ExpensesNotifier extends StateNotifier<AsyncValue<List<ExpensesModel?>>> {
   Future<void> loadExpensesPerDay(DateTime time) async{
     try{
       state = const AsyncLoading();
+      final expenses = await _repo.getExpensesPerDay(time);
+      /*
       print("Buscando gastos para la fecha: $time");
-
       final allExpenses = await _repo.database.select(_repo.database.expenses).get();
       print("Total de compras en toda la base de datos: ${allExpenses.length}");
       for(var exp in allExpenses) {
         print("   - Id: ${exp.id_expenses} | Nombre ${exp.expense_name}| Fecha guardada: ${exp.expenseDate}");
       }
-
-      final expenses = await _repo.getExpensesPerDay(time);
       print("Total de compras hot: ${expenses.length}");
+      */
+
       state = AsyncData(expenses);
     }catch(e, stack){
-      print("ERROR FETCHING EXPENSES: $e");
+      //print("ERROR FETCHING EXPENSES: $e");
       state = AsyncError(e, stack);
     }
   }

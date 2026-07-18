@@ -6,14 +6,15 @@ import 'package:tiendita/screens/shops/shops_history_today.dart';
 import 'package:tiendita/widgets/quantity_input.dart';
 import '../../models/products_model.dart';
 import '../../models/purveyors_model.dart';
+import '../../models/quantity_model.dart';
 import '../../models/shopping_model.dart';
 import 'package:tiendita/models/cart_model.dart';
+import '../../models/text_data_model.dart';
 import '../../providers/products_provider.dart';
 import '../../providers/purveyor_provider.dart';
 import '../../providers/shopping_provider.dart';
 import '../../widgets/text_data.dart';
 import 'package:tiendita/widgets/cart_items.dart';
-
 
 class ShoppingScreen extends ConsumerStatefulWidget {
   const ShoppingScreen({super.key});
@@ -135,7 +136,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                         return TextField(
                           controller: controller,
                           focusNode: focusNode,
-                          onSubmitted: (String value){
+                          onSubmitted: (String value) {
                             onFieldSubmitted();
                           },
                           decoration: const InputDecoration(
@@ -205,7 +206,6 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                 ),
               ),
 
-
             const SizedBox(height: 16),
             productsAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -251,7 +251,7 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                         return TextField(
                           controller: controller,
                           focusNode: focusNode,
-                          onSubmitted: (String value){
+                          onSubmitted: (String value) {
                             onFieldSubmitted();
                           },
                           decoration: const InputDecoration(
@@ -278,56 +278,68 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                   columns: [
                     DataColumn(
                       label: TextData(
-                        "Item",
-                        18,
-                        Colors.black,
-                        "Poppins",
-                        FontWeight.bold,
+                        model: TextDataModel(
+                          "Item",
+                          18,
+                          Colors.black,
+                          "Poppins",
+                          FontWeight.bold,
+                        ),
                       ),
                     ),
                     DataColumn(
                       label: TextData(
-                        "Nombre",
-                        18,
-                        Colors.black,
-                        "Poppins",
-                        FontWeight.bold,
+                        model: TextDataModel(
+                          "Nombre",
+                          18,
+                          Colors.black,
+                          "Poppins",
+                          FontWeight.bold,
+                        ),
                       ),
                     ),
                     DataColumn(
                       label: TextData(
-                        "Precio Compra",
-                        18,
-                        Colors.black,
-                        "Poppins",
-                        FontWeight.bold,
+                        model: TextDataModel(
+                          "Precio Compra",
+                          18,
+                          Colors.black,
+                          "Poppins",
+                          FontWeight.bold,
+                        ),
                       ),
                     ),
                     DataColumn(
                       label: TextData(
-                        "Cantidad",
-                        18,
-                        Colors.black,
-                        "Poppins",
-                        FontWeight.bold,
+                        model: TextDataModel(
+                          "Cantidad",
+                          18,
+                          Colors.black,
+                          "Poppins",
+                          FontWeight.bold,
+                        ),
                       ),
                     ),
                     DataColumn(
                       label: TextData(
-                        "Importe",
-                        18,
-                        Colors.black,
-                        "Poppins",
-                        FontWeight.bold,
+                        model: TextDataModel(
+                          "Importe",
+                          18,
+                          Colors.black,
+                          "Poppins",
+                          FontWeight.bold,
+                        ),
                       ),
                     ),
                     DataColumn(
                       label: TextData(
-                        "Eliminar",
-                        18,
-                        Colors.black,
-                        "Poppins",
-                        FontWeight.bold,
+                        model: TextDataModel(
+                          "Eliminar",
+                          18,
+                          Colors.black,
+                          "Poppins",
+                          FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -341,12 +353,18 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                         DataCell(Text('\$${item.newPrice.toStringAsFixed(2)}')),
                         DataCell(
                           QuantityInput(
-                            initialQuantity: item.quantity,
-                              onChanged: (newQuantity){
-                                cartNotifier.updateQuantity(item.productId, newQuantity);
+                            model: QuantityModel(
+                              initialQuantity: item.quantity,
+                              onChanged: (newQuantity) {
+                                cartNotifier.updateQuantity(
+                                  item.productId,
+                                  newQuantity,
+                                );
                               },
-                            maxStock: 9999,
+                              maxStock: 9999,
+                            ),
                           ),
+
                           /*
                           Row(
                             mainAxisSize: MainAxisSize.min,
@@ -384,7 +402,6 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
                             ],
                           ),
                           */
-
                         ),
                         DataCell(Text('\$${item.total.toStringAsFixed(2)}')),
                         DataCell(
@@ -408,80 +425,85 @@ class _ShoppingScreenState extends ConsumerState<ShoppingScreen> {
             Row(
               children: [
                 Expanded(
-                    child: OutlinedButton.icon(
-                        onPressed: () async {
-                          cartNotifier.clearCart();
-                          setState(() {
-                            _productSearch = UniqueKey();
-                            _purveyorSearch = UniqueKey();
-                          });
-                        },
-                        icon: const Icon(Icons.cancel, color: Colors.red),
-                      label: const Text("Cancelar", style: TextStyle(color: Colors.red)),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                      ),
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      cartNotifier.clearCart();
+                      setState(() {
+                        _productSearch = UniqueKey();
+                        _purveyorSearch = UniqueKey();
+                      });
+                    },
+                    icon: const Icon(Icons.cancel, color: Colors.red),
+                    label: const Text(
+                      "Cancelar",
+                      style: TextStyle(color: Colors.red),
                     ),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 15),
                 Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        if (_selectedPurveyorId == null) {
-                          showErrorSnackBar(
-                            context,
-                            'Por favor, selecciona un proveedor.',
-                          );
-                          return;
-                        }
-                        if (cart.isEmpty) {
-                          showErrorSnackBar(context, 'El carrito está vacío.');
-                          return;
-                        }
-
-                        final newPurchase = ShoppingModel(
-                          shopDate: DateTime.now(),
-                          numShop: _currentPurchaseTicket,
-                          subtotal: cartNotifier.subtotal,
-                          total: cartNotifier.total,
-                          idPurveyor: _selectedPurveyorId!,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      if (_selectedPurveyorId == null) {
+                        showErrorSnackBar(
+                          context,
+                          'Por favor, selecciona un proveedor.',
                         );
+                        return;
+                      }
+                      if (cart.isEmpty) {
+                        showErrorSnackBar(context, 'El carrito está vacío.');
+                        return;
+                      }
 
+                      final newPurchase = ShoppingModel(
+                        shopDate: DateTime.now(),
+                        numShop: _currentPurchaseTicket,
+                        subtotal: cartNotifier.subtotal,
+                        total: cartNotifier.total,
+                        idPurveyor: _selectedPurveyorId!,
+                      );
+
+                      await ref
+                          .read(shopsNotifierProvider.notifier)
+                          .saveShopping(newPurchase);
+
+                      final cartItems = ref.read(cartProvider);
+                      for (var j in cartItems) {
                         await ref
-                            .read(shopsNotifierProvider.notifier)
-                            .saveShopping(newPurchase);
+                            .read(productsNotifierProvider.notifier)
+                            .updateStock(j.productId, j.quantity);
+                      }
+                      ref.invalidate(productsListProvider);
+                      ref.invalidate(lowStockProvider);
 
-                        final cartItems = ref.read(cartProvider);
-                        for(var j in cartItems){
-                          await ref.read(productsNotifierProvider.notifier).updateStock(j.productId, j.quantity);
-                        }
-                        ref.invalidate(productsListProvider);
-                        ref.invalidate(lowStockProvider);
+                      if (context.mounted) {
+                        showSuccessSnackBar(
+                          context,
+                          '¡Compra registrada con éxito!',
+                        );
+                      }
 
-                        if (context.mounted) {
-                          showSuccessSnackBar(
-                            context,
-                            '¡Compra registrada con éxito!',
-                          );
-                        }
+                      cartNotifier.clearCart();
+                      setState(() {
+                        _selectedPurveyorId = null;
+                        _selectedPurveyorName = null;
+                        _currentPurchaseTicket =
+                            "COMP-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}";
 
-                        cartNotifier.clearCart();
-                        setState(() {
-                          _selectedPurveyorId = null;
-                          _selectedPurveyorName = null;
-                          _currentPurchaseTicket =
-                          "COMP-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}";
-
-                          _purveyorSearch = UniqueKey();
-                          _productSearch = UniqueKey();
-                        });
-                      },
-                      icon: const Icon(Icons.save),
-                      label: const Text("Registrar Compra"),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                      ),
+                        _purveyorSearch = UniqueKey();
+                        _productSearch = UniqueKey();
+                      });
+                    },
+                    icon: const Icon(Icons.save),
+                    label: const Text("Registrar Compra"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
                     ),
+                  ),
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:tiendita/models/company_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/models/image_picker_model.dart';
 import 'package:tiendita/providers/company_provider.dart';
 import 'package:tiendita/screens/settings/settings_screen.dart';
 import 'package:tiendita/widgets/image_picker.dart';
@@ -149,6 +150,7 @@ class _CompanyEditScreenState extends ConsumerState<CompanyEditScreen>{
                   padding: const EdgeInsets.all(16.0),
                   children: [
                     ImagePicker(
+                      model: ImagePickerModel(
                         initialImage: _logoCompany,
                         onImageSelected: (path){
                           setState(() {
@@ -156,7 +158,8 @@ class _CompanyEditScreenState extends ConsumerState<CompanyEditScreen>{
                           });
                         },
                       label: "Logo de la empresa",
-                    ),
+                      ),
+                ),
                     const SizedBox(height: 10),
                     TextFormField(
                       controller: _nameCompanyController,

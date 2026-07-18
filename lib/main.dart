@@ -27,7 +27,7 @@ import 'screens/shops/shopping_screen.dart';
 import 'screens/settings/settings_screen.dart';
 import 'screens/company/company_edit_screen.dart';
 import 'screens/company/company_setup_screen.dart';
-import 'screens/products/products.dart';
+import 'screens/products/products_screen.dart';
 
 
 void main() {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tiendita/models/footer_model.dart';
 import 'package:tiendita/screens/products/products_table.dart';
 import '../../constants/constants.dart';
 import '../../models/products_model.dart';
@@ -346,7 +347,9 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FooterButton("Exportar a Excel", "images/excel.png", () {
+            FooterButton(
+               model: FooterModel(
+                "Exportar a Excel", "images/excel.png", () {
               final currentData = ref.read(productsListProvider).value;
 
               if(currentData != null && currentData.isNotEmpty){
@@ -358,9 +361,11 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
               }else{
                showErrorSnackBar(context, "No hay datos para exportar");
               }
-            }),
+            })),
             const SizedBox(width: 40),
-            FooterButton("Exportar a PDF", "images/pdf.png", () {
+            FooterButton(
+                model: FooterModel(
+                "Exportar a PDF", "images/pdf.png", () {
               final currentData = ref.read(productsListProvider).value;
 
               if(currentData!= null && currentData.isNotEmpty){
@@ -372,7 +377,7 @@ class _MyProductsState extends ConsumerState<ProductsScreen> {
               }else{
                 showErrorSnackBar(context, "No hay datos para exportar");
               }
-            }),
+            })),
           ],
         ),
       ),

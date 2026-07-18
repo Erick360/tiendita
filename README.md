@@ -45,7 +45,9 @@ App móvil para gestionar ventas, compras y gastos de pequeños negocios.
 <p>Para instalar todas las dependencias, ejecute el siguiente comando en la terminal.</p>
 ```bash
 flutter pub get
+```
 
 <p>Para generar el código necesario para la base de datos, ejecute el siguiente comando en la terminal.</p>
 ```bash
 dart run build_runner build --delete-conflicting-outputs
+```

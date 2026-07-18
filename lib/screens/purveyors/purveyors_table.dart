@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiendita/screens/purveyors/purveyor_data_source.dart';
+import '../../models/text_data_model.dart';
 import '../../widgets/text_data.dart';
 
 PaginatedDataTable buildPurveyorsPaginatedDataTable(PurveyorDataSource source) {
@@ -23,65 +24,80 @@ PaginatedDataTable buildPurveyorsPaginatedDataTable(PurveyorDataSource source) {
     columns: [
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Nombre',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+  ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Direccion',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Correo',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Telefono',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+
+          ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'RFC',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Editar',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Eliminar',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
     ],

@@ -8,6 +8,7 @@ import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/providers/shopping_provider.dart';
 import '../../constants/constants.dart';
+import '../../models/text_data_model.dart';
 import '../../widgets/text_data.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -352,9 +353,9 @@ class _ShoppingDetailsState extends ConsumerState<ShoppingDetails>{
                                     columnSpacing: 30,
                                     showCheckboxColumn: false,
                                     columns: [
-                                      DataColumn(label: TextData("Ticket", 16, Colors.black, "Poppins", FontWeight.bold)),
-                                      DataColumn(label: TextData(_selectedPeriod == ReportPeriod.daily ? "Hora" : "Fecha", 16, Colors.black, "Poppins", FontWeight.bold)),
-                                      DataColumn(label: TextData("Total", 16, Colors.black, "Poppins", FontWeight.bold)),
+                                      DataColumn(label: TextData(model: TextDataModel( "Ticket", 16, Colors.black, "Poppins", FontWeight.bold))),
+                                      DataColumn(label: TextData(model: TextDataModel( _selectedPeriod == ReportPeriod.daily ? "Hora" : "Fecha", 16, Colors.black, "Poppins", FontWeight.bold))),
+                                      DataColumn(label: TextData(model: TextDataModel("Total", 16, Colors.black, "Poppins", FontWeight.bold))),
                                     ],
                                     rows: shops.map((shop) {
                                       return DataRow(

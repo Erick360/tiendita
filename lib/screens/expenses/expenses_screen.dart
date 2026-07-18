@@ -6,8 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/models/expenses_model.dart';
+import 'package:tiendita/models/footer_model.dart';
 import 'package:tiendita/screens/expenses/edit_expense.dart';
 import '../../constants/constants.dart';
+import '../../models/text_data_model.dart';
 import '../../providers/expenses_provider.dart';
 import '../../widgets/footer_button.dart';
 import '../../widgets/text_data.dart';
@@ -399,12 +401,12 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                                     columnSpacing: 25,
                                     showCheckboxColumn: false,
                                     columns: [
-                                      DataColumn(label: TextData(_isShowingToday ? "Hora" : "Fecha", 18, Colors.black, "Poppins", FontWeight.bold)),
-                                      DataColumn(label: TextData('Nombre', 18, Colors.black, "Poppins", FontWeight.bold)),
-                                      DataColumn(label: TextData("Descripción", 18, Colors.black, "Poppins", FontWeight.bold)),
-                                      DataColumn(label: TextData("Monto", 18, Colors.black, "Poppins", FontWeight.bold)),
-                                      DataColumn(label: TextData("Editar", 18, Colors.black, "Poppins", FontWeight.bold)),
-                                      DataColumn(label: TextData("Borrar", 18, Colors.black, "Poppins", FontWeight.bold)),
+                                      DataColumn(label: TextData(model: TextDataModel(_isShowingToday ? "Hora" : "Fecha", 18, Colors.black, "Poppins", FontWeight.bold))),
+                                      DataColumn(label: TextData(model: TextDataModel( 'Nombre', 18, Colors.black, "Poppins", FontWeight.bold))),
+                                      DataColumn(label: TextData(model: TextDataModel( "Descripción", 18, Colors.black, "Poppins", FontWeight.bold))),
+                                      DataColumn(label: TextData(model: TextDataModel( "Monto", 18, Colors.black, "Poppins", FontWeight.bold))),
+                                      DataColumn(label: TextData(model: TextDataModel( "Editar", 18, Colors.black, "Poppins", FontWeight.bold))),
+                                      DataColumn(label: TextData(model: TextDataModel( "Borrar", 18, Colors.black, "Poppins", FontWeight.bold))),
                                     ],
                                     rows: expenses.map((expense) {
                                       return DataRow(
@@ -671,7 +673,9 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FooterButton("Exportar a Excel", "images/excel.png", () {
+            FooterButton(
+                model: FooterModel(
+                "Exportar a Excel", "images/excel.png", () {
               final currentData = ref.read(expensesListProvider).value;
 
               if(currentData!= null && currentData.isNotEmpty){
@@ -684,8 +688,11 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                 showErrorSnackBar(context, "No hay datos para exportar");
               }
             }),
+            ),
             const SizedBox(width: 40),
-            FooterButton("Exportar a PDF", "images/pdf.png", () {
+            FooterButton(
+              model: FooterModel(
+                "Exportar a PDF", "images/pdf.png", () {
               final currentData = ref.read(expensesListProvider).value;
 
               if(currentData!= null && currentData.isNotEmpty){
@@ -698,6 +705,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                 showErrorSnackBar(context, "No hay datos para exportar");
               }
             }),
+            ),
           ],
         ),
       ),

@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:tiendita/widgets/text_data.dart';
-class FooterButton extends StatelessWidget{
-  final String label;
-  final String imagePath;
-  final VoidCallback onPressed;
+import 'package:tiendita/models/footer_model.dart';
+import '../models/text_data_model.dart';
 
-  const FooterButton(
-      this.label,
-  this.imagePath,
-  this.onPressed,
-      {super.key});
+class FooterButton extends StatelessWidget{
+final FooterModel model;
+const FooterButton({super.key, required this.model});
 
   @override
   Widget build(BuildContext context){
     return InkWell(
-      onTap: onPressed,
+      onTap: model.onPressed,
       borderRadius: BorderRadius.circular(10),
       child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
@@ -24,10 +20,18 @@ class FooterButton extends StatelessWidget{
             SizedBox(
               height: 25,
               width: 25,
-              child: Image.asset(imagePath),
+              child: Image.asset(model.imagePath),
             ),
             const SizedBox(height: 2),
-            TextData(label, 12, Colors.white, 'Monserrat', FontWeight.bold)
+            TextData(
+              model: TextDataModel(
+                model.label,
+                12,
+                Colors.white,
+                'Monserrat',
+                FontWeight.bold,
+              ),
+            )
           ],
         ),
       ),

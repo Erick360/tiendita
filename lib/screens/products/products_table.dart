@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/providers/products_provider.dart';
 import 'package:tiendita/screens/products/products_data_source.dart';
 import '../../constants/constants.dart';
+import '../../models/text_data_model.dart';
 import '../../widgets/text_data.dart';
 
 
@@ -75,111 +76,135 @@ class _ProductsTableState extends ConsumerState<ProductsTable> {
             columns: [
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Producto',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Presentacion',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Unidad de\nmedida',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Precio de\ncompra',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Precio de\nventa',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Stock',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Status',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Imagen',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Fecha de\ncaducidad',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Categoria',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Editar',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
+                  ),
                 ),
               ),
               DataColumn(
                 label: TextData(
+                  model: TextDataModel(
                   'Eliminar',
                   18,
                   Colors.black,
                   "Poppins",
                   FontWeight.bold,
                 ),
+              ),
               ),
             ],
             source: _dataSource!,

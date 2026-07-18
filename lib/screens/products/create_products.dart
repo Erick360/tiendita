@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
+import 'package:tiendita/models/image_picker_model.dart';
 import 'package:tiendita/models/products_model.dart';
 import 'package:tiendita/providers/products_provider.dart';
 import '../../widgets/image_picker.dart';
@@ -329,6 +330,7 @@ class _StateCreateProducts extends ConsumerState<CreateProducts>{
                   ),
                   const SizedBox(height: 15),
                   ImagePicker(
+                    model: ImagePickerModel(
                     initialImage: _imageProduct,
                     onImageSelected: (path){
                       setState(() {
@@ -336,6 +338,7 @@ class _StateCreateProducts extends ConsumerState<CreateProducts>{
                       });
                     },
                     label: "Imagen del producto",
+                  ),
                   ),
                   const SizedBox(height: 16),
                   SizedBox(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/constants/constants.dart';
 import 'package:tiendita/models/company_model.dart';
+import 'package:tiendita/models/image_picker_model.dart';
 import 'package:tiendita/screens/home_page.dart';
 import '../../providers/company_provider.dart';
 import 'package:tiendita/widgets/image_picker.dart';
@@ -207,12 +208,14 @@ class _CompanySetupState extends ConsumerState<CompanySetupScreen>{
                 ),
                 SizedBox(height: 20),
                 ImagePicker(
+                  model: ImagePickerModel(
                   initialImage: _logoCompany,
                   onImageSelected: (path) {
                     setState(()=> _logoCompany = path);
                   },
                   label: 'Logo del negocio',
                 ),
+          ),
                 const SizedBox(height: 20),
 
                 Column(

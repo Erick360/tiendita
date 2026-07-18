@@ -2,18 +2,13 @@ import 'dart:io';
 import 'package:tiendita/providers/image_provider.dart' as img_provider;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiendita/models/image_picker_model.dart';
 
 class ImagePicker extends ConsumerStatefulWidget{
-  final String? initialImage;
-  final Function(String?) onImageSelected;
-  final String label;
+  final ImagePickerModel model;
+  const ImagePicker({super.key, required this.model});
 
-  const ImagePicker({
-    super.key,
-    this.initialImage,
-    required this.onImageSelected,
-    this.label = "Imagen"
-  });
+
 
   @override
   ConsumerState<ImagePicker> createState() => _ImagePickerState();
@@ -25,7 +20,7 @@ class _ImagePickerState extends ConsumerState<ImagePicker>{
   @override
   void initState(){
     super.initState();
-    _imagePath = widget.initialImage;
+    _imagePath = widget.model.initialImage;
   }
 
 
@@ -89,13 +84,13 @@ Future<void> _showImageSourceDialog() async{
 
     if (imagePath != null) {
       setState(() => _imagePath = imagePath);
-      widget.onImageSelected(imagePath);
+      widget.model.onImageSelected(imagePath);
     }
   }
 
   void _removeImage() {
     setState(() => _imagePath = null);
-    widget.onImageSelected(null);
+    widget.model.onImageSelected(null);
   }
 
   @override
@@ -104,7 +99,7 @@ Future<void> _showImageSourceDialog() async{
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          widget.label,
+          widget.model.label,
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,

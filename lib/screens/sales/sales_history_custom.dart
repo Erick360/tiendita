@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../constants/constants.dart';
+import '../../models/text_data_model.dart';
 import '../../providers/sales_providers.dart';
 import '../../widgets/text_data.dart';
 
@@ -181,10 +182,10 @@ class _SalesHistoryCustomState extends ConsumerState<SalesHistoryCustom>{
                           columnSpacing: 25,
                           showCheckboxColumn: false,
                           columns: [
-                            DataColumn(label: TextData("Ticket", 18, Colors.black, "Poppins", FontWeight.bold)),
-                            DataColumn(label: TextData("Fecha", 18, Colors.black, "Poppins", FontWeight.bold)),
-                            DataColumn(label: TextData("Total", 18, Colors.black, "Poppins", FontWeight.bold)),
-                            DataColumn(label: TextData("Acciones", 18, Colors.black, "Poppins", FontWeight.bold)),
+                            DataColumn(label: TextData(model: TextDataModel("Ticket", 18, Colors.black, "Poppins", FontWeight.bold))),
+                            DataColumn(label: TextData(model: TextDataModel("Fecha", 18, Colors.black, "Poppins", FontWeight.bold))),
+                            DataColumn(label: TextData(model: TextDataModel("Total", 18, Colors.black, "Poppins", FontWeight.bold))),
+                            DataColumn(label: TextData(model: TextDataModel("Acciones", 18, Colors.black, "Poppins", FontWeight.bold))),
                           ],
                           rows: sales.map((sale) {
                             return DataRow(

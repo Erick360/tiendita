@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/models/sales_model.dart';
 import '../repositories/sales_repository.dart';
@@ -14,9 +15,13 @@ class SalesNotifier extends StateNotifier<AsyncValue<List<SalesModel?>>>{
   Future<void> saveSales(SalesModel model) async{
     try{
       final id = await _repo.createSale(model);
-      print("SUCCESS: Venta guardada en la base de datos con ID: $id");
+      if (kDebugMode) {
+        print("SUCCESS: Venta guardada en la base de datos con ID: $id");
+      }
     }catch(e, stack){
-      print("ERROR SAVING VENTA: $e");
+      if (kDebugMode) {
+        print("ERROR SAVING VENTA: $e");
+      }
       state = AsyncError(e, stack);
     }
   }
@@ -32,6 +37,9 @@ class SalesNotifier extends StateNotifier<AsyncValue<List<SalesModel?>>>{
   Future<void> loadSalesPerDay(DateTime date) async{
     try{
       state = const AsyncLoading();
+
+      final sales = await _repo.getSalesPerDay(date);
+      /*
       print("Buscando VENTAS para la fecha: $date");
 
       final allSales = await _repo.database.select(_repo.database.sales).get();
@@ -39,19 +47,17 @@ class SalesNotifier extends StateNotifier<AsyncValue<List<SalesModel?>>>{
       for(var sale in allSales){
         print("   - Ticket: ${sale.num_sale} | Fecha guardada: ${sale.sale_date}");
       }
-      final sales = await _repo.getSalesPerDay(date);
       print("Total de ventas hoy: ${sales.length}");
-
-
       final p = await _repo.database.select(_repo.database.products).get();
       print("Total de productos: ${p.length}");
       for(var pro in p){
         print("- Nombre: ${pro.productName} | Estatus: ${pro.status}");
       }
+      */
 
       state = AsyncData(sales);
     }catch(e, stack){
-      print("ERROR FETCHING SALES: $e");
+      //print("ERROR FETCHING SALES: $e");
       state = AsyncError(e, stack);
     }
   }

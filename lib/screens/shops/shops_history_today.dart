@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tiendita/constants/constants.dart';
+import '../../models/text_data_model.dart';
 import '../../providers/shopping_provider.dart';
 import '../../widgets/text_data.dart';
 
@@ -104,11 +105,11 @@ class _ShoppingHistoryToday extends ConsumerState<ShoppingHistoryToday>{
                             columnSpacing: 20,
                             showCheckboxColumn: false,
                             columns: [
-                              DataColumn(label: TextData("Ticket", 18, Colors.black, "Poppins", FontWeight.bold)),
-                              DataColumn(label: TextData("Hora", 18, Colors.black, "Poppins", FontWeight.bold)),
-                              DataColumn(label: TextData("Subtotal", 18, Colors.black, "Poppins", FontWeight.bold)),
-                              DataColumn(label: TextData("Total", 18, Colors.black, "Poppins", FontWeight.bold)),
-                              DataColumn(label: TextData("Acciones", 18, Colors.black, "Poppins", FontWeight.bold)),
+                              DataColumn(label: TextData(model: TextDataModel("Ticket", 18, Colors.black, "Poppins", FontWeight.bold))),
+                              DataColumn(label: TextData(model: TextDataModel("Hora", 18, Colors.black, "Poppins", FontWeight.bold))),
+                              DataColumn(label: TextData(model: TextDataModel("Subtotal", 18, Colors.black, "Poppins", FontWeight.bold))),
+                              DataColumn(label: TextData(model: TextDataModel("Total", 18, Colors.black, "Poppins", FontWeight.bold))),
+                              DataColumn(label: TextData(model: TextDataModel("Acciones", 18, Colors.black, "Poppins", FontWeight.bold))),
                             ],
                             rows: shops.map((shop){
                               return DataRow(

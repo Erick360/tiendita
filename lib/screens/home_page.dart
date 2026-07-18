@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/screens/settings/settings_screen.dart';
 import 'package:tiendita/widgets/text_data.dart';
 import 'package:tiendita/widgets/footer.dart';
+import '../models/text_data_model.dart';
 import 'dashboard/dashboard.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -63,7 +64,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0,
-        title: TextData('Mi Negocio', 22, Colors.white, 'Poppins', FontWeight.w600),
+        title: TextData(model: TextDataModel('Mi Negocio', 22, Colors.white, 'Poppins', FontWeight.w600)),
         backgroundColor: Color(0xFFF25410),
         centerTitle: true,
         leading: IconButton(

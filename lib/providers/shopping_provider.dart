@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiendita/models/shopping_model.dart';
 import 'package:tiendita/providers/database_provider.dart';
@@ -22,9 +23,13 @@ class ShoppingNotifier extends StateNotifier<AsyncValue<List<ShoppingModel?>>> {
   Future<void> saveShopping(ShoppingModel model) async {
     try{
        final id = await _repo.createShopping(model);
-      print("SUCCESS: Compra guardada en la base de datos con ID: $id");
+      if (kDebugMode) {
+        print("SUCCESS: Compra guardada en la base de datos con ID: $id");
+      }
     }catch(e, stack){
-      print("ERROR SAVING COMPRA: $e");
+      if (kDebugMode) {
+        print("ERROR SAVING COMPRA: $e");
+      }
       state = AsyncError(e, stack);
     }
   }
@@ -40,19 +45,22 @@ class ShoppingNotifier extends StateNotifier<AsyncValue<List<ShoppingModel?>>> {
   Future<void> loadShopsForDay(DateTime date) async {
     try {
       state = const AsyncLoading();
-      print("Buscando compras para la fecha: $date");
+      //print("Buscando compras para la fecha: $date");
+      final shops = await _repo.getShopsForDay(date);
 
+      /*
       final allShops = await _repo.database.select(_repo.database.shopping).get();
       print("Total de compras en toda la base de datos: ${allShops.length}");
       for(var shop in allShops) {
         print("   - Ticket: ${shop.num_shop} | Fecha guardada: ${shop.shop_date}");
       }
-
-      final shops = await _repo.getShopsForDay(date);
       print("Total de compras hot: ${shops.length}");
+      */
       state = AsyncData(shops);
     } catch (e, stack) {
-      print("ERROR FETCHING SHOPS: $e");
+      if (kDebugMode) {
+        print("ERROR FETCHING SHOPS: $e");
+      }
       state = AsyncError(e, stack);
     }
   }
@@ -67,4 +75,3 @@ class ShoppingNotifier extends StateNotifier<AsyncValue<List<ShoppingModel?>>> {
     }
   }
 }
-

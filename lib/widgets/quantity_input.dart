@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tiendita/models/quantity_model.dart';
 
 class QuantityInput extends StatefulWidget {
-  final int initialQuantity;
-  final int maxStock;
-  final ValueChanged<int> onChanged;
+  final QuantityModel model;
+  const QuantityInput({super.key, required this.model});
 
-  const QuantityInput({
-    super.key,
-    required this.initialQuantity,
-    required this.onChanged,
-    required this.maxStock
-  });
 
   @override
   State<QuantityInput> createState() => _QuantityInputState();
@@ -23,17 +17,17 @@ class _QuantityInputState extends State<QuantityInput> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.initialQuantity.toString());
+    _controller = TextEditingController(text: widget.model.initialQuantity.toString());
   }
 
   @override
   void didUpdateWidget(QuantityInput oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.initialQuantity != oldWidget.initialQuantity &&
-        int.tryParse(_controller.text) != widget.initialQuantity) {
+    if (widget.model.initialQuantity != oldWidget.model.initialQuantity &&
+        int.tryParse(_controller.text) != widget.model.initialQuantity) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          _controller.text = widget.initialQuantity.toString();
+          _controller.text = widget.model.initialQuantity.toString();
         }
       });
     }
@@ -71,14 +65,14 @@ class _QuantityInputState extends State<QuantityInput> {
         onChanged: (value) {
           final newQuantity = int.tryParse(value);
           if (newQuantity != null && newQuantity >=0) {
-            if(newQuantity > widget.maxStock){
-              widget.onChanged(widget.maxStock);
-              _controller.text = widget.maxStock.toString();
+            if(newQuantity > widget.model.maxStock){
+              widget.model.onChanged(widget.model.maxStock);
+              _controller.text = widget.model.maxStock.toString();
             }else{
-              widget.onChanged(newQuantity);
+              widget.model.onChanged(newQuantity);
             }
           } else if(value.isEmpty){
-            widget.onChanged(1);
+            widget.model.onChanged(1);
           }
         },
       ),

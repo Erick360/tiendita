@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
+import 'package:tiendita/models/footer_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -14,6 +15,7 @@ import 'package:tiendita/widgets/footer_button.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import '../../models/text_data_model.dart';
 import 'category_table.dart';
 
 class CategoryScreen extends ConsumerStatefulWidget {
@@ -184,11 +186,13 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
             Icon(Icons.list_alt, color: Colors.white, size: 20),
             const SizedBox(width: 5),
             TextData(
+              model: TextDataModel(
               "Categorias",
               22,
               Colors.white,
               'Poppins',
               FontWeight.w600,
+              ),
             ),
           ],
         ),
@@ -227,8 +231,8 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
       ),
       body: Column(
         children: <Widget>[
-          Padding(padding: const EdgeInsets.only(top: 30)),
-          const SizedBox(height: 10),
+          //Padding(padding: const EdgeInsets.only(top: 30)),
+          const SizedBox(height: 16),
           Expanded(
             child: categoryListAsync.when(
               error: (e, stack) => Text("Error: e"),
@@ -314,7 +318,10 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FooterButton("Exportar a Excel", "images/excel.png", () {
+
+            FooterButton(
+              model: FooterModel(
+                "Exportar a Excel", "images/excel.png", () {
               final currentData = ref.read(categoryListProvider).value;
 
               if(currentData != null && currentData.isNotEmpty){
@@ -327,8 +334,11 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
                 showErrorSnackBar(context, "No hay datos para exportar");
               }
             }),
+            ),
             const SizedBox(width: 40),
-            FooterButton("Exportar a PDF", "images/pdf.png", () {
+            FooterButton(
+                model: FooterModel(
+                "Exportar a PDF", "images/pdf.png", () {
               final currentData = ref.read(categoryListProvider).value;
 
               if(currentData != null && currentData.isNotEmpty){
@@ -341,6 +351,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen>{
                 showErrorSnackBar(context, "No hay datos para exportar                                 ");
               }
             }),
+            ),
           ],
         ),
       ),

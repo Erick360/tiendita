@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tiendita/models/clients_model.dart';
+import 'package:tiendita/models/footer_model.dart';
 import 'package:tiendita/screens/clients/clients_data_source.dart';
 import '../../constants/constants.dart';
 import '../../providers/clients_provider.dart';
@@ -337,7 +338,9 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FooterButton("Exportar a Excel", "images/excel.png", () {
+            FooterButton(
+                model: FooterModel(
+                "Exportar a Excel", "images/excel.png", () {
               final currentData = ref.read(clientListProvider).value;
 
               if(currentData != null && currentData.isNotEmpty){
@@ -350,8 +353,11 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
                 showErrorSnackBar(context, "No hay datos para exportar");
               }
             }),
+            ),
             const SizedBox(width: 40),
-            FooterButton("Exportar a PDF", "images/pdf.png", () {
+            FooterButton(
+                model: FooterModel(
+                "Exportar a PDF", "images/pdf.png", () {
               final currentData = ref.read(clientListProvider).value;
 
               if(currentData!= null && currentData.isNotEmpty){
@@ -364,6 +370,7 @@ class _ClientScreenState extends ConsumerState<ClientsScreen>{
                 showErrorSnackBar(context, "No hay datos para exportar");
               }
             }),
+            ),
           ],
         ),
       ),

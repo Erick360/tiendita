@@ -9,6 +9,7 @@ import 'package:tiendita/models/purveyors_model.dart';
 import 'package:tiendita/providers/purveyor_provider.dart';
 import 'package:tiendita/screens/purveyors/purveyor_data_source.dart';
 import 'package:tiendita/screens/purveyors/purveyors_table.dart';
+import '../../models/footer_model.dart';
 import '../../widgets/footer_button.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -351,7 +352,9 @@ class _PurveyorScreenState extends ConsumerState<PurveyorsScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FooterButton("Exportar a Excel", "images/excel.png", () {
+            FooterButton(
+            model: FooterModel(
+            "Exportar a Excel", "images/excel.png", () {
               final currentData = ref.read(purveyorListProvider).value;
 
               if (currentData != null && currentData.isNotEmpty) {
@@ -368,9 +371,11 @@ class _PurveyorScreenState extends ConsumerState<PurveyorsScreen> {
               } else {
                 showErrorSnackBar(context, "No hay datos para exportar");
               }
-            }),
+            })),
             const SizedBox(width: 40),
-            FooterButton("Exportar a PDF", "images/pdf.png", () {
+            FooterButton(
+                model: FooterModel(
+                "Exportar a PDF", "images/pdf.png", () {
               final currentData = ref.read(purveyorListProvider).value;
 
               if (currentData != null && currentData.isNotEmpty) {
@@ -387,7 +392,7 @@ class _PurveyorScreenState extends ConsumerState<PurveyorsScreen> {
               } else {
                 showErrorSnackBar(context, "No hay datos para exportar");
               }
-            }),
+            })),
           ],
         ),
       ),

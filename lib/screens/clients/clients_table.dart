@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../models/text_data_model.dart';
 import '../../widgets/text_data.dart';
 import 'clients_data_source.dart';
 
@@ -23,66 +24,80 @@ PaginatedDataTable buildClientsPaginatedDataTable(ClientsDataSource cli) {
     columns: [
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Cliente',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Apellidos',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Direccion',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Correo',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Telefono',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
 
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Editar',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
       DataColumn(
         label: TextData(
+          model: TextDataModel(
           'Eliminar',
           18,
           Colors.black,
           "Poppins",
           FontWeight.bold,
+          ),
         ),
       ),
     ],

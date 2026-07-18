@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tiendita/screens/sales_details/my_sales_details.dart';
 import 'package:tiendita/screens/shop_details/my_shopping_details.dart';
-import 'package:tiendita/screens/products/products.dart';
+import 'package:tiendita/screens/products/products_screen.dart';
 import 'package:tiendita/screens/sales/sales_screen.dart';
 import 'package:tiendita/screens/shops/shopping_screen.dart';
 import 'package:tiendita/screens/dashboard/quick_action_button.dart';
